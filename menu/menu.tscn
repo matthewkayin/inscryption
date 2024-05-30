@@ -1,0 +1,250 @@
+[gd_scene load_steps=8 format=3 uid="uid://ddc4t62k3m8be"]
+
+[ext_resource type="Script" path="res://menu/menu.gd" id="1_dcs8p"]
+[ext_resource type="FontFile" uid="uid://dpq6fp6gls8cw" path="res://ui/Marksman.ttf" id="1_h3v4o"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_4q6e8"]
+font = ExtResource("1_h3v4o")
+font_size = 96
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_tyegr"]
+font = ExtResource("1_h3v4o")
+font_size = 32
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_280jt"]
+font = ExtResource("1_h3v4o")
+font_size = 48
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_p1isb"]
+font = ExtResource("1_h3v4o")
+font_size = 32
+font_color = Color(0.835294, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_vc6rj"]
+font = ExtResource("1_h3v4o")
+font_size = 48
+font_color = Color(0, 0, 0, 1)
+
+[node name="menu" type="Node2D"]
+texture_filter = 1
+script = ExtResource("1_dcs8p")
+
+[node name="bg" type="ColorRect" parent="."]
+offset_right = 640.0
+offset_bottom = 360.0
+color = Color(0.843137, 0.886275, 0.639216, 1)
+
+[node name="title" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 125.0
+offset_top = 12.0
+offset_right = 515.0
+offset_bottom = 88.0
+grow_horizontal = 2
+text = "Inscryption"
+label_settings = SubResource("LabelSettings_4q6e8")
+horizontal_alignment = 1
+
+[node name="subtitle" type="Label" parent="title"]
+offset_left = 226.0
+offset_top = 62.0
+offset_right = 434.0
+offset_bottom = 88.0
+text = "Goobert's Version"
+label_settings = SubResource("LabelSettings_tyegr")
+
+[node name="main_cluster" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="name" type="Label" parent="main_cluster"]
+offset_left = 143.0
+offset_top = 187.0
+offset_right = 245.0
+offset_bottom = 225.0
+text = "Name:"
+label_settings = SubResource("LabelSettings_280jt")
+
+[node name="edit" type="LineEdit" parent="main_cluster/name"]
+layout_mode = 0
+offset_left = 107.0
+offset_top = -4.0
+offset_right = 358.0
+offset_bottom = 42.0
+theme_override_fonts/font = ExtResource("1_h3v4o")
+theme_override_font_sizes/font_size = 48
+
+[node name="warn" type="Label" parent="main_cluster"]
+visible = false
+offset_left = 116.0
+offset_top = 152.0
+offset_right = 500.0
+offset_bottom = 190.0
+text = "Please enter a name."
+label_settings = SubResource("LabelSettings_p1isb")
+horizontal_alignment = 2
+
+[node name="hide_timer" type="Timer" parent="main_cluster/warn"]
+one_shot = true
+
+[node name="host_button" type="Button" parent="main_cluster"]
+offset_left = 301.0
+offset_top = 261.0
+offset_right = 393.0
+offset_bottom = 307.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_h3v4o")
+theme_override_font_sizes/font_size = 48
+text = "HOST"
+
+[node name="join_button" type="Button" parent="main_cluster"]
+offset_left = 409.0
+offset_top = 261.0
+offset_right = 501.0
+offset_bottom = 307.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_h3v4o")
+theme_override_font_sizes/font_size = 48
+text = "JOIN"
+
+[node name="host_cluster" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="status" type="Label" parent="host_cluster"]
+layout_mode = 0
+offset_left = 96.0
+offset_top = 164.0
+offset_right = 588.0
+offset_bottom = 243.0
+text = "Awaiting an opponent..."
+label_settings = SubResource("LabelSettings_vc6rj")
+horizontal_alignment = 1
+
+[node name="back_button" type="Button" parent="host_cluster"]
+offset_left = 264.0
+offset_top = 261.0
+offset_right = 398.0
+offset_bottom = 307.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_h3v4o")
+theme_override_font_sizes/font_size = 48
+text = "CANCEL"
+
+[node name="yes_button" type="Button" parent="host_cluster"]
+visible = false
+offset_left = 220.0
+offset_top = 261.0
+offset_right = 301.0
+offset_bottom = 307.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_h3v4o")
+theme_override_font_sizes/font_size = 48
+text = "YES"
+
+[node name="no_button" type="Button" parent="host_cluster"]
+visible = false
+offset_left = 349.0
+offset_top = 261.0
+offset_right = 430.0
+offset_bottom = 307.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_h3v4o")
+theme_override_font_sizes/font_size = 48
+text = "NO"
+
+[node name="join_cluster" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ip" type="Label" parent="join_cluster"]
+offset_left = 197.0
+offset_top = 187.0
+offset_right = 299.0
+offset_bottom = 225.0
+text = "IP:"
+label_settings = SubResource("LabelSettings_280jt")
+
+[node name="edit" type="LineEdit" parent="join_cluster/ip"]
+layout_mode = 0
+offset_left = 53.0
+offset_top = -4.0
+offset_right = 304.0
+offset_bottom = 42.0
+theme_override_fonts/font = ExtResource("1_h3v4o")
+theme_override_font_sizes/font_size = 48
+text = "127.0.0.1"
+
+[node name="warn" type="Label" parent="join_cluster"]
+visible = false
+offset_left = 116.0
+offset_top = 152.0
+offset_right = 500.0
+offset_bottom = 190.0
+text = "Please enter a name."
+label_settings = SubResource("LabelSettings_p1isb")
+horizontal_alignment = 2
+
+[node name="hide_timer" type="Timer" parent="join_cluster/warn"]
+one_shot = true
+
+[node name="connect_button" type="Button" parent="join_cluster"]
+offset_left = 346.0
+offset_top = 261.0
+offset_right = 501.0
+offset_bottom = 307.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_h3v4o")
+theme_override_font_sizes/font_size = 48
+text = "CONNECT"
+
+[node name="back_button" type="Button" parent="join_cluster"]
+offset_left = 235.0
+offset_top = 261.0
+offset_right = 331.0
+offset_bottom = 307.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_h3v4o")
+theme_override_font_sizes/font_size = 48
+text = "BACK"
+
+[node name="status" type="Label" parent="join_cluster"]
+layout_mode = 0
+offset_left = 96.0
+offset_top = 164.0
+offset_right = 588.0
+offset_bottom = 243.0
+text = "Awaiting an opponent..."
+label_settings = SubResource("LabelSettings_vc6rj")
+horizontal_alignment = 1
+
+[node name="connect_back_button" type="Button" parent="join_cluster"]
+offset_left = 264.0
+offset_top = 261.0
+offset_right = 398.0
+offset_bottom = 307.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_h3v4o")
+theme_override_font_sizes/font_size = 48
+text = "CANCEL"
