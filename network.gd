@@ -1,10 +1,14 @@
 extends Node
 
+signal server_client_connected
+signal server_client_disconnected
+signal client_server_disconnected
+
 const PORT = 6767
 
 var peer
 
-var opponent_peer_id
+var opponent_id = -1
 var player = {
     "name":  ""
 }
@@ -20,24 +24,38 @@ func _ready():
     multiplayer.connection_failed.connect(_client_on_connection_fail)
     multiplayer.server_disconnected.connect(_client_on_server_disconnected)
 
+func network_disconnect():
+    if opponent_id != -1:
+        if multiplayer.is_server():
+            multiplayer.multiplayer_peer.close()
+        else:
+            multiplayer.disconnect_peer(opponent_id)
+    peer = null
+    multiplayer.multiplayer_peer = null
+    opponent_id = -1
+    opponent = {
+        "name": ""
+    }
+
 func _on_peer_connected(id):
-    opponent_peer_id = id
-    print("my name: ", player.name, " and someone connected: ", opponent_peer_id)
-    _on_opponent_greeting.rpc_id(opponent_peer_id, player)
+    opponent_id = id
+    _on_opponent_greeting.rpc_id(opponent_id, player)
 
 func _on_peer_disconnected(_id):
-    print("client disconnected ")
+    if multiplayer.is_server():
+        opponent_id = -1
+        opponent = {
+            "name": ""
+        }
+        server_client_disconnected.emit()
 
 @rpc("any_peer", "reliable")
 func _on_opponent_greeting(opponent_info):
     opponent = opponent_info
-    print("me: ", player.name, " opponent peer id ", opponent_peer_id)
-    print("me: ", player.name, " opponent info ", opponent)
+    if multiplayer.is_server():
+        server_client_connected.emit()
 
 # SERVER
-
-func server_disconnect():
-    multiplayer.multiplayer_peer = null
 
 func server_create():
     peer = ENetMultiplayerPeer.new()
@@ -46,25 +64,24 @@ func server_create():
 
 # CLIENT
 
-func client_disconnect():
-    multiplayer.multiplayer_peer = null
-
 func client_connect(ip_addr: String):
     peer = ENetMultiplayerPeer.new()
     var error = peer.create_client(ip_addr, PORT)
     if error:
-        client_disconnect()
+        network_disconnect()
         return false
     multiplayer.multiplayer_peer = peer
     return true
 
 func _client_on_connection_ok():
-    print("connected to server")
+    pass
 
 func _client_on_connection_fail():
-    print("failed to connect to server")
-    client_disconnect()
+    network_disconnect()
 
 func _client_on_server_disconnected():
-    print("server disconnected")
-    client_disconnect()
+    opponent_id = -1
+    opponent = {
+        "name": ""
+    }
+    client_server_disconnected.emit()

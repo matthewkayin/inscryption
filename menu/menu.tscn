@@ -170,6 +170,7 @@ theme_override_font_sizes/font_size = 48
 text = "NO"
 
 [node name="join_cluster" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -248,3 +249,42 @@ theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("1_h3v4o")
 theme_override_font_sizes/font_size = 48
 text = "CANCEL"
+
+[node name="lobby_cluster" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="start_button" type="Button" parent="lobby_cluster"]
+offset_left = 385.0
+offset_top = 261.0
+offset_right = 501.0
+offset_bottom = 307.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_h3v4o")
+theme_override_font_sizes/font_size = 48
+text = "READY"
+
+[node name="back_button" type="Button" parent="lobby_cluster"]
+offset_left = 273.0
+offset_top = 261.0
+offset_right = 369.0
+offset_bottom = 307.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_h3v4o")
+theme_override_font_sizes/font_size = 48
+text = "BACK"
+
+[node name="status" type="Label" parent="lobby_cluster"]
+layout_mode = 0
+offset_left = 96.0
+offset_top = 120.0
+offset_right = 588.0
+offset_bottom = 240.0
+text = "You are in a lobby.
+fr: NOT READY
+bread: READY"
+label_settings = SubResource("LabelSettings_vc6rj")
