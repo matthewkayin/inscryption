@@ -159,6 +159,20 @@ func player_turn_process():
     var hovered_ability = null
     if hovered_card != null:
         hovered_ability = hovered_card.get_hovered_ability(mouse_pos)
+    else:
+        # Check sigil hover on player board
+        for i in range(0, player_cardslots.size()):
+            var cardslot = player_cardslots[i]
+            if Rect2(cardslot.global_position - (Card.CARD_SIZE * 0.5), Card.CARD_SIZE).has_point(mouse_pos) and player_board[i] != null:
+                hovered_ability = player_board[i].get_hovered_ability(mouse_pos)
+                break
+        if hovered_ability == null:
+            # Check sigil hover on opponent board
+            for i in range(0, opponent_cardslots.size()):
+                var cardslot = opponent_cardslots[i]
+                if Rect2(cardslot.global_position - (Card.CARD_SIZE * 0.5), Card.CARD_SIZE).has_point(mouse_pos) and opponent_board[i] != null:
+                    hovered_ability = opponent_board[i].get_hovered_ability(mouse_pos)
+                    break
 
     if hovered_ability != null:
         cursor_type = director.CursorType.RULEBOOK

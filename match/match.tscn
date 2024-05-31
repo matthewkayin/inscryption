@@ -458,10 +458,11 @@ frame_progress = 1.0
 
 [node name="rulebook" type="NinePatchRect" parent="."]
 visible = false
+z_index = 2
 offset_left = 31.0
-offset_top = 355.0
+offset_top = 379.0
 offset_right = 320.0
-offset_bottom = 399.0
+offset_bottom = 423.0
 scale = Vector2(2, 2)
 texture = ExtResource("11_j4jf2")
 patch_margin_left = 8
