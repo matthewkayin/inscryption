@@ -440,6 +440,7 @@ label_settings = SubResource("LabelSettings_njcht")
 
 [node name="card_hover" type="Sprite2D" parent="."]
 visible = false
+z_index = 1
 material = SubResource("ShaderMaterial_ie3c2")
 position = Vector2(-4, -4)
 scale = Vector2(2, 2)

@@ -59,10 +59,8 @@ func _ready():
     bell.frame_coords.x = int(BellState.DISABLED)
     score_scale.display_scores(0, 0)
 
-    for i in range(0, 2):
+    for i in range(0, 4):
         await hand_add_card(Card.CardName.SQUIRREL)
-    await hand_add_card(Card.CardName.STOAT)
-    await hand_add_card(Card.CardName.BULLFROG)
     state = State.PLAYER_TURN
 
     board_add_card(Turn.PLAYER, 1, Card.CardName.STOAT)
@@ -70,6 +68,11 @@ func _ready():
 
 func _process(_delta):
     if state == State.WAIT:
+        return
+    if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+        state = State.WAIT
+        await hand_add_card(Card.CardName.SQUIRREL)
+        state = State.PLAYER_TURN
         return
     if rulebook.visible:
         rulebook_process()
@@ -80,19 +83,34 @@ func _process(_delta):
 
 func hand_update_positions():
     const HAND_CENTER = Vector2(320, 407)
-    const HAND_CARD_PADDING = 16
     const HAND_UPDATE_DURATION = 0.25
+
+    var hand_size = player_hand.size()
+    var HAND_CARD_PADDING 
+    if hand_size < 6:
+        HAND_CARD_PADDING = 98
+    elif hand_size == 6:
+        HAND_CARD_PADDING = 90
+    else:
+        const LAST_CARD_POSITION = 532.0 - 82.0
+        HAND_CARD_PADDING = LAST_CARD_POSITION / (hand_size - 1)
 
     if player_hand.size() == 0:
         return
     var tween = get_tree().create_tween()
     if player_hand.size() == 1:
         tween.parallel().tween_property(player_hand[0], "position", HAND_CENTER, HAND_UPDATE_DURATION)
-    else:
-        var hand_area_size = (player_hand.size() * Card.CARD_SIZE.x) + ((player_hand.size() - 1) * HAND_CARD_PADDING)
-        var hand_area_start = 320 - int(hand_area_size / 2.0)
+    else: 
+        var hand_area_size 
+        var hand_area_start 
+        if hand_size < 7:
+            hand_area_size = (player_hand.size() * HAND_CARD_PADDING) - (HAND_CARD_PADDING - Card.CARD_SIZE.x)
+            hand_area_start = 320 - int(hand_area_size / 2.0) + (Card.CARD_SIZE.x / 2.0)
+        else:
+            hand_area_size = 532.0
+            hand_area_start = 95.0
         for i in range(0, player_hand.size()):
-            var card_x = hand_area_start + (i * (Card.CARD_SIZE.x + HAND_CARD_PADDING))
+            var card_x = hand_area_start + (i * HAND_CARD_PADDING)
             tween.parallel().tween_property(player_hand[i], "position", Vector2(card_x, HAND_CENTER.y), HAND_UPDATE_DURATION)
     await tween.finished
 
@@ -145,13 +163,18 @@ func player_turn_process():
     var mouse_pos = get_viewport().get_mouse_position()
     var hovered_card = null
     for card in player_hand:
+        card.z_index = 0
+    for i in range(player_hand.size() - 1, -1, -1):
+        var card = player_hand[i]
         if card.has_point(mouse_pos):
             # make sure that card hover is not already open on this card
             hovered_card = card
-            if card_hover.visible and card_hover.position == card.position: 
-                continue
-            card_hover.open(card.position)
+            if not (card_hover.visible and card_hover.position == card.position): 
+                card_hover.open(card.position)
+            break
 
+    if hovered_card != null:
+        hovered_card.z_index = 1
     if hovered_card == null and card_hover.visible:
         card_hover.close()
 
@@ -200,6 +223,7 @@ func player_turn_process():
         if can_summon:
             card_hover.close()
             hovered_card.animate_presummon()
+            hovered_card.z_index = 1
             state = State.PLAYER_SUMMONING
 
             summoning_card = hovered_card
@@ -269,6 +293,7 @@ func player_summoning_process():
                 var tween = get_tree().create_tween()
                 tween.tween_property(summoning_card, "position", hovered_cardslot.global_position, 0.25)
                 await tween.finished
+                summoning_card.z_index = 0
                 # Swap the card out of player hand and onto the board
                 player_hand.erase(summoning_card)
                 player_board[hovered_cardslot_index] = summoning_card
