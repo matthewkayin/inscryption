@@ -4,7 +4,6 @@
 [ext_resource type="Script" path="res://match/match.gd" id="1_ldl7k"]
 [ext_resource type="Texture2D" uid="uid://b0n7yg4w1v1uy" path="res://match/board_small.png" id="2_ybiry"]
 [ext_resource type="Texture2D" uid="uid://ca8ivso5gmwmn" path="res://match/button.png" id="3_162f3"]
-[ext_resource type="Texture2D" uid="uid://bxggjxbkgmvrk" path="res://match/card/pixel_cardback.png" id="4_kjoda"]
 [ext_resource type="Texture2D" uid="uid://ng3gsgyqcykf" path="res://match/scale/scale_stand.png" id="5_mnc3l"]
 [ext_resource type="Texture2D" uid="uid://b05sqlc4d5r3s" path="res://match/scale/scale_rod.png" id="6_eyq27"]
 [ext_resource type="Script" path="res://match/scale/scale.gd" id="7_3qqth"]
@@ -14,10 +13,11 @@
 [ext_resource type="Texture2D" uid="uid://dt0k78efplx2s" path="res://match/bone_icon.png" id="8_wdy8x"]
 [ext_resource type="Texture2D" uid="uid://ba8sxm3cmprxk" path="res://match/frame.png" id="11_j4jf2"]
 [ext_resource type="Texture2D" uid="uid://c1ijlkj06nmkh" path="res://match/ability/pixelability_sentry.png" id="12_3akrn"]
-[ext_resource type="Texture2D" uid="uid://ddbf8jfgr4mni" path="res://match/card/pixel_card_empty.png" id="12_gcnja"]
-[ext_resource type="Texture2D" uid="uid://b7hd4qfssf3p" path="res://match/portrait/pixelportrait_bloodhound.png" id="13_oai3i"]
+[ext_resource type="Shader" path="res://match/card/card_hover.gdshader" id="16_tyn71"]
 [ext_resource type="Texture2D" uid="uid://cg8oku6y325xm" path="res://match/deckicon.png" id="17_j5wjk"]
+[ext_resource type="Texture2D" uid="uid://cvjwxhl58bep" path="res://match/card/card_hover.png" id="17_r61ia"]
 [ext_resource type="Texture2D" uid="uid://bsq150quekq58" path="res://match/deckicon_squirrel.png" id="18_7eevt"]
+[ext_resource type="Script" path="res://match/card/hover.gd" id="18_kjm2g"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_g8paj"]
 line_spacing = -4.0
@@ -38,10 +38,9 @@ outline_size = 2
 outline_color = Color(0.00784314, 0.0392157, 0.0666667, 1)
 shadow_size = 0
 
-[sub_resource type="LabelSettings" id="LabelSettings_vn7ua"]
-font = ExtResource("8_olekn")
-font_size = 24
-font_color = Color(0, 0, 0, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ie3c2"]
+shader = ExtResource("16_tyn71")
+shader_parameter/offset = 0
 
 [node name="match" type="Node2D"]
 texture_filter = 1
@@ -290,31 +289,6 @@ text = "10"
 label_settings = SubResource("LabelSettings_8wfxc")
 horizontal_alignment = 1
 
-[node name="card" type="Sprite2D" parent="."]
-position = Vector2(290, 134)
-texture = ExtResource("12_gcnja")
-
-[node name="portrait" type="Sprite2D" parent="card"]
-position = Vector2(0, -26)
-scale = Vector2(2, 2)
-texture = ExtResource("13_oai3i")
-
-[node name="power" type="Label" parent="card"]
-offset_left = -39.0
-offset_top = 37.0
-offset_right = 28.0
-offset_bottom = 63.0
-text = "0"
-label_settings = SubResource("LabelSettings_vn7ua")
-
-[node name="health" type="Label" parent="card"]
-offset_left = 31.0
-offset_top = 37.0
-offset_right = 98.0
-offset_bottom = 60.0
-text = "0"
-label_settings = SubResource("LabelSettings_vn7ua")
-
 [node name="hand_area" type="ColorRect" parent="."]
 offset_top = 326.0
 offset_right = 640.0
@@ -322,25 +296,23 @@ offset_bottom = 480.0
 color = Color(0.227451, 0.176471, 0.176471, 1)
 
 [node name="border" type="ColorRect" parent="hand_area"]
+layout_mode = 0
 offset_right = 640.0
 offset_bottom = 4.0
 color = Color(1, 0.572549, 0.14902, 1)
 
 [node name="border2" type="ColorRect" parent="hand_area"]
+layout_mode = 0
 offset_top = 4.0
 offset_right = 640.0
 offset_bottom = 7.0
 color = Color(0, 0, 0, 1)
 
 [node name="border3" type="ColorRect" parent="hand_area"]
+layout_mode = 0
 offset_top = -1.0
 offset_right = 640.0
 color = Color(0, 0, 0, 1)
-
-[node name="Sprite2D" type="Sprite2D" parent="hand_area"]
-position = Vector2(208, 82)
-scale = Vector2(2, 2)
-texture = ExtResource("4_kjoda")
 
 [node name="deck" type="Sprite2D" parent="."]
 position = Vector2(526, 333)
@@ -367,3 +339,13 @@ offset_bottom = 44.0
 scale = Vector2(2, 2)
 text = "x20"
 label_settings = SubResource("LabelSettings_njcht")
+
+[node name="card_hover" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_ie3c2")
+position = Vector2(-4, -4)
+scale = Vector2(2, 2)
+texture = ExtResource("17_r61ia")
+centered = false
+script = ExtResource("18_kjm2g")
+
+[node name="timer" type="Timer" parent="card_hover"]

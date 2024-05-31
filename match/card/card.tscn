@@ -1,0 +1,79 @@
+[gd_scene load_steps=10 format=3 uid="uid://copua4ifcsdp8"]
+
+[ext_resource type="Texture2D" uid="uid://ddbf8jfgr4mni" path="res://match/card/pixel_card_empty.png" id="1_wr2i5"]
+[ext_resource type="Script" path="res://match/card/card.gd" id="2_ffojd"]
+[ext_resource type="Texture2D" uid="uid://b7hd4qfssf3p" path="res://match/portrait/pixelportrait_bloodhound.png" id="2_mrtxv"]
+[ext_resource type="Texture2D" uid="uid://0uenh8mxncyq" path="res://match/card/cost.png" id="3_ci2vw"]
+[ext_resource type="FontFile" uid="uid://dpq6fp6gls8cw" path="res://ui/Marksman.ttf" id="4_nuk78"]
+[ext_resource type="Texture2D" uid="uid://dgmw2t1mv2hcm" path="res://match/ability/pixelability_sacrificial.png" id="6_o3wb0"]
+[ext_resource type="Texture2D" uid="uid://c1ijlkj06nmkh" path="res://match/ability/pixelability_sentry.png" id="7_t2qci"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ny77b"]
+font = ExtResource("4_nuk78")
+font_size = 24
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_bsd6f"]
+font = ExtResource("4_nuk78")
+font_size = 24
+font_color = Color(0, 0, 0, 1)
+
+[node name="card" type="Sprite2D"]
+texture_filter = 1
+texture = ExtResource("1_wr2i5")
+centered = false
+script = ExtResource("2_ffojd")
+
+[node name="portrait" type="Sprite2D" parent="."]
+position = Vector2(42, 30)
+scale = Vector2(2, 2)
+texture = ExtResource("2_mrtxv")
+
+[node name="cost" type="Sprite2D" parent="."]
+position = Vector2(32, 0)
+scale = Vector2(2, 2)
+texture = ExtResource("3_ci2vw")
+centered = false
+hframes = 13
+vframes = 2
+
+[node name="power" type="Label" parent="."]
+offset_left = 3.0
+offset_top = 93.0
+offset_right = 70.0
+offset_bottom = 119.0
+text = "0"
+label_settings = SubResource("LabelSettings_ny77b")
+
+[node name="health" type="Label" parent="."]
+offset_left = 15.0
+offset_top = 93.0
+offset_right = 82.0
+offset_bottom = 116.0
+text = "0"
+label_settings = SubResource("LabelSettings_bsd6f")
+horizontal_alignment = 2
+
+[node name="abilities" type="HBoxContainer" parent="."]
+offset_left = 22.0
+offset_top = 60.0
+offset_right = 62.0
+offset_bottom = 100.0
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="1" type="Control" parent="abilities"]
+layout_mode = 2
+
+[node name="icon" type="Sprite2D" parent="abilities/1"]
+position = Vector2(0, 23)
+scale = Vector2(2, 2)
+texture = ExtResource("6_o3wb0")
+
+[node name="2" type="Control" parent="abilities"]
+layout_mode = 2
+
+[node name="icon" type="Sprite2D" parent="abilities/2"]
+position = Vector2(0, 23)
+scale = Vector2(2, 2)
+texture = ExtResource("7_t2qci")

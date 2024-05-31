@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://6e6tdn2shn"]
+
+[ext_resource type="Script" path="res://match/data/card_data.gd" id="1_r8vk6"]
+[ext_resource type="Texture2D" uid="uid://c2akw132jvsx5" path="res://match/portrait/pixelportrait_squirrel.png" id="1_sdwre"]
+
+[resource]
+script = ExtResource("1_r8vk6")
+portrait = ExtResource("1_sdwre")
+cost_type = 0
+cost_amount = 0
+power = 0
+health = 1
