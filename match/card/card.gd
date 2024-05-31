@@ -152,9 +152,10 @@ func animate_presummon_process(delta):
         traveled -= distance_remaining
     position += traveled * position.direction_to(target_position)
 
-func animate_sacrifice():
-    sacrifice_marker.visible = true
+func animate_death(is_sacrifice = false):
     var tween = get_tree().create_tween()
+    if is_sacrifice:
+        sacrifice_marker.visible = true
     tween.tween_interval(0.25)
-    tween.tween_property(self, "modulate", Color(modulate.r, modulate.g, modulate.b, 0), 0.25)
+    tween.tween_property(self, "modulate", Color(modulate.r, modulate.g, modulate.b, 0), 0.1)
     await tween.finished

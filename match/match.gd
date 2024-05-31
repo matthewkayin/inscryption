@@ -14,6 +14,9 @@ extends Node2D
 @onready var opponent_cardslots = $opponent_cardslots.get_children()
 @onready var bell = $bell
 @onready var attack_animation = $attack_animation
+@onready var bone_counter_label = $bone_counter/value
+@onready var player_candles = $player_candles
+@onready var opponent_candles = $opponent_candles
 var blood_counter_sprites = []
 
 enum State {
@@ -42,6 +45,7 @@ var state = State.WAIT
 var player_hand = []
 var player_board = [null, null, null, null]
 var player_score = 0
+var player_bone_count = 0
 var opponent_board = [null, null, null, null]
 var opponent_score = 0
 
@@ -111,6 +115,9 @@ func ui_update_blood_counter():
             blood_counter_sprites[i].frame_coords.x = 1
         else:
             blood_counter_sprites[i].frame_coords.x = 0
+
+func ui_update_bone_counter():
+    bone_counter_label.text = "x" + str(player_bone_count)
 
 # BOARD
 
@@ -266,9 +273,7 @@ func player_summoning_process():
                 state = State.WAIT
                 director.set_cursor(director.CursorType.POINTER)
                 card_hover.close()
-                await player_board[hovered_cardslot_index].animate_sacrifice()
-                player_board[hovered_cardslot_index].queue_free()
-                player_board[hovered_cardslot_index] = null
+                await card_death(Turn.PLAYER, hovered_cardslot_index, true)
                 summoning_blood_count += 1
                 summoning_cost_met = summoning_blood_count >= summoning_card.data.cost_amount
                 ui_update_blood_counter()
@@ -299,6 +304,7 @@ func combat_round(turn: Turn):
     var lane_indices = range(0, 4) if turn == Turn.PLAYER else range(3, -1, -1)
     var attacker_board = player_board if turn == Turn.PLAYER else opponent_board
     var defender_board = opponent_board if turn == Turn.PLAYER else player_board
+    var opponent_turn = Turn.OPPONENT if turn == Turn.PLAYER else Turn.PLAYER
 
     var combat_damage = 0
     for lane_index in lane_indices:
@@ -308,19 +314,49 @@ func combat_round(turn: Turn):
             continue
         if attacker.power == 0:
             continue
-        combat_damage = combat_damage + (await combat_do_attack(attacker, defender))
+        combat_damage = combat_damage + (await combat_do_attack(turn, attacker, defender))
+        if defender != null and defender.health == 0:
+            await card_death(opponent_turn, lane_index)
     
     # Update score
     for i in range(0, combat_damage):
+        # Increment score
         if turn == Turn.PLAYER:
             player_score += 1
         else:
             opponent_score += 1
+
+        # Update scale
         score_scale.display_scores(opponent_score, player_score)
+
+        # Delay for suspense
         var tween = get_tree().create_tween()
         tween.tween_interval(0.1)
         await tween.finished
-        # var score = clamp(player_score - opponent_score, -5, 5)
+
+    # Check if a candle is to be snuffed
+    var score = min(abs(player_score - opponent_score), score_scale.SCORE_LIMIT)
+    if score == score_scale.SCORE_LIMIT:
+        # Delay for suspense
+        var tween3 = get_tree().create_tween()
+        tween3.tween_interval(1.0)
+        await tween3.finished
+
+        # Snuff the candle
+        if turn == Turn.PLAYER:
+            opponent_candles.snuff_candle()
+        else:
+            player_candles.snuff_candle()
+        
+        # Delay for suspense
+        var tween2 = get_tree().create_tween()
+        tween2.tween_interval(0.25)
+        await tween2.finished
+
+        # Reset the scale
+        player_score = 0
+        opponent_score = 0
+        score_scale.display_scores(0, 0)
 
 func combat_attack_animation_play(at_position: Vector2):
     attack_animation.position = at_position
@@ -333,20 +369,22 @@ func combat_attack_animation_play(at_position: Vector2):
     attack_animation.visible = false
     attack_animation.modulate.a = 1.0
 
-func combat_do_attack(attacker: Card, defender: Card):
+func combat_do_attack(turn: Turn, attacker: Card, defender: Card):
     var attacker_position = attacker.position
+    # attacker_direction flips attack direction when the opponent is attacking
+    var attacker_direction = 1 if turn == Turn.PLAYER else -1
     var added_score = 0
 
     # Attacker lunge
     var attack_tween = get_tree().create_tween()
-    attack_tween.tween_property(attacker, "position", attacker_position + Vector2(0, 4), 0.1)
-    attack_tween.tween_property(attacker, "position", attacker_position + Vector2(0, -18), 0.25)
+    attack_tween.tween_property(attacker, "position", attacker_position + Vector2(0, 4 * attacker_direction), 0.1)
+    attack_tween.tween_property(attacker, "position", attacker_position + Vector2(0, -18 * attacker_direction), 0.25)
     await attack_tween.finished
 
     # Attacker return
     var return_tween = get_tree().create_tween()
     return_tween.tween_property(attacker, "position", attacker_position, 0.125)
-    return_tween.tween_property(attacker, "position", attacker_position + Vector2(0, -8), 0.125)
+    return_tween.tween_property(attacker, "position", attacker_position + Vector2(0, -8 * attacker_direction), 0.125)
     return_tween.tween_property(attacker, "position", attacker_position, 0.125)
 
     # Update health
@@ -373,3 +411,13 @@ func combat_do_attack(attacker: Card, defender: Card):
         await defender_tween.finished
 
     return added_score
+
+func card_death(turn: Turn, index: int, is_sacrifice = false):
+    var board = player_board if turn == Turn.PLAYER else opponent_board
+    var card = board[index] 
+    await card.animate_death(is_sacrifice)
+    card.queue_free()
+    board[index] = null
+    if turn == Turn.PLAYER:
+        player_bone_count += 1
+        ui_update_bone_counter()

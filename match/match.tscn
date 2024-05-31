@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://bt552mpt071ds"]
+[gd_scene load_steps=38 format=3 uid="uid://bt552mpt071ds"]
 
 [ext_resource type="Texture2D" uid="uid://c5ct1qkw40xcv" path="res://match/gbc_cardslots_nature.png" id="1_655ic"]
 [ext_resource type="Script" path="res://match/match.gd" id="1_ldl7k"]
@@ -13,17 +13,14 @@
 [ext_resource type="Texture2D" uid="uid://dt0k78efplx2s" path="res://match/bone_icon.png" id="8_wdy8x"]
 [ext_resource type="Texture2D" uid="uid://ba8sxm3cmprxk" path="res://match/frame.png" id="11_j4jf2"]
 [ext_resource type="Texture2D" uid="uid://c1ijlkj06nmkh" path="res://match/ability/pixelability_sentry.png" id="12_3akrn"]
+[ext_resource type="Script" path="res://match/candles.gd" id="12_ifxcr"]
 [ext_resource type="Shader" path="res://match/card/card_hover.gdshader" id="16_tyn71"]
 [ext_resource type="Texture2D" uid="uid://cg8oku6y325xm" path="res://match/deckicon.png" id="17_j5wjk"]
 [ext_resource type="Texture2D" uid="uid://cvjwxhl58bep" path="res://match/card/card_hover.png" id="17_r61ia"]
 [ext_resource type="Texture2D" uid="uid://bsq150quekq58" path="res://match/deckicon_squirrel.png" id="18_7eevt"]
 [ext_resource type="Script" path="res://match/card/hover.gd" id="18_kjm2g"]
 [ext_resource type="Texture2D" uid="uid://1gdhsmcy6dk4" path="res://match/attack_animation.png" id="19_cn0ye"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_g8paj"]
-line_spacing = -4.0
-font = ExtResource("8_olekn")
-font_color = Color(0, 0, 0, 1)
+[ext_resource type="Texture2D" uid="uid://cbaoi7pj2e1p3" path="res://match/candle.png" id="20_ato6r"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_njcht"]
 font = ExtResource("8_olekn")
@@ -38,6 +35,80 @@ font_color = Color(0.843137, 0.886275, 0.639216, 1)
 outline_size = 2
 outline_color = Color(0.00784314, 0.0392157, 0.0666667, 1)
 shadow_size = 0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v6hum"]
+atlas = ExtResource("20_ato6r")
+region = Rect2(0, 0, 21, 26)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_grklc"]
+atlas = ExtResource("20_ato6r")
+region = Rect2(21, 0, 21, 26)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e436k"]
+atlas = ExtResource("20_ato6r")
+region = Rect2(0, 26, 21, 26)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_24yie"]
+atlas = ExtResource("20_ato6r")
+region = Rect2(21, 26, 21, 26)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_80eke"]
+atlas = ExtResource("20_ato6r")
+region = Rect2(42, 26, 21, 26)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lr5sq"]
+atlas = ExtResource("20_ato6r")
+region = Rect2(63, 26, 21, 26)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cqvne"]
+atlas = ExtResource("20_ato6r")
+region = Rect2(84, 26, 21, 26)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tfd8u"]
+atlas = ExtResource("20_ato6r")
+region = Rect2(84, 26, 21, 26)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_om6a7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v6hum")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_grklc")
+}],
+"loop": true,
+"name": &"default",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e436k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_24yie")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_80eke")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lr5sq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cqvne")
+}],
+"loop": false,
+"name": &"snuff",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tfd8u")
+}],
+"loop": true,
+"name": &"snuffed",
+"speed": 5.0
+}]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ie3c2"]
 shader = ExtResource("16_tyn71")
@@ -65,6 +136,11 @@ animations = [{
 "speed": 6.0
 }]
 
+[sub_resource type="LabelSettings" id="LabelSettings_g8paj"]
+line_spacing = -4.0
+font = ExtResource("8_olekn")
+font_color = Color(0, 0, 0, 1)
+
 [node name="match" type="Node2D"]
 texture_filter = 1
 script = ExtResource("1_ldl7k")
@@ -73,43 +149,6 @@ script = ExtResource("1_ldl7k")
 scale = Vector2(2, 2)
 texture = ExtResource("2_ybiry")
 centered = false
-
-[node name="rulebook" type="NinePatchRect" parent="."]
-visible = false
-offset_left = 31.0
-offset_top = 2.0
-offset_right = 320.0
-offset_bottom = 39.0
-scale = Vector2(2, 2)
-texture = ExtResource("11_j4jf2")
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8
-
-[node name="name" type="Label" parent="rulebook"]
-layout_mode = 0
-offset_left = 44.5
-offset_top = 1.0
-offset_right = 119.5
-offset_bottom = 24.0
-text = "MIGHTY LEAP"
-label_settings = SubResource("LabelSettings_g8paj")
-
-[node name="desc" type="Label" parent="rulebook"]
-layout_mode = 0
-offset_left = 45.0
-offset_top = 11.5
-offset_right = 313.0
-offset_bottom = 34.5
-text = "This card will block creatures bearing
-the airborne sigil"
-label_settings = SubResource("LabelSettings_g8paj")
-
-[node name="icon" type="Sprite2D" parent="rulebook"]
-position = Vector2(23.5, 18.5)
-scale = Vector2(2, 2)
-texture = ExtResource("12_3akrn")
 
 [node name="opponent_cardslots" type="HBoxContainer" parent="."]
 offset_left = 289.0
@@ -196,9 +235,9 @@ hframes = 2
 [node name="blood_counter" type="HBoxContainer" parent="."]
 layout_direction = 3
 offset_left = -240.0
-offset_top = 89.0
+offset_top = 33.0
 offset_right = -200.0
-offset_bottom = 129.0
+offset_bottom = 73.0
 scale = Vector2(2, 2)
 theme_override_constants/separation = 9
 
@@ -242,9 +281,9 @@ hframes = 2
 layout_mode = 3
 anchors_preset = 0
 offset_left = 31.0
-offset_top = 87.0
+offset_top = 31.0
 offset_right = 71.0
-offset_bottom = 127.0
+offset_bottom = 71.0
 
 [node name="icon" type="Sprite2D" parent="bone_counter"]
 scale = Vector2(2, 2)
@@ -262,7 +301,7 @@ text = "x0"
 label_settings = SubResource("LabelSettings_njcht")
 
 [node name="bell" type="Sprite2D" parent="."]
-position = Vector2(122, 153)
+position = Vector2(122, 97)
 scale = Vector2(2, 2)
 texture = ExtResource("3_162f3")
 hframes = 4
@@ -304,6 +343,49 @@ offset_bottom = 26.0
 text = "10"
 label_settings = SubResource("LabelSettings_8wfxc")
 horizontal_alignment = 1
+
+[node name="player_candles" type="Node2D" parent="."]
+position = Vector2(14, 297)
+script = ExtResource("12_ifxcr")
+
+[node name="1" type="AnimatedSprite2D" parent="player_candles"]
+position = Vector2(27, -127)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_om6a7")
+
+[node name="2" type="AnimatedSprite2D" parent="player_candles"]
+position = Vector2(45, -132)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_om6a7")
+
+[node name="3" type="AnimatedSprite2D" parent="player_candles"]
+visible = false
+position = Vector2(63, -124)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_om6a7")
+
+[node name="opponent_candles" type="Node2D" parent="."]
+position = Vector2(137, 297)
+script = ExtResource("12_ifxcr")
+
+[node name="3" type="AnimatedSprite2D" parent="opponent_candles"]
+visible = false
+position = Vector2(27, -124)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_om6a7")
+flip_h = true
+
+[node name="2" type="AnimatedSprite2D" parent="opponent_candles"]
+position = Vector2(45, -132)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_om6a7")
+flip_h = true
+
+[node name="1" type="AnimatedSprite2D" parent="opponent_candles"]
+position = Vector2(63, -127)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_om6a7")
+flip_h = true
 
 [node name="hand_area" type="ColorRect" parent="."]
 offset_top = 326.0
@@ -373,3 +455,40 @@ scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_tlxm8")
 frame = 1
 frame_progress = 1.0
+
+[node name="rulebook" type="NinePatchRect" parent="."]
+visible = false
+offset_left = 31.0
+offset_top = 355.0
+offset_right = 320.0
+offset_bottom = 399.0
+scale = Vector2(2, 2)
+texture = ExtResource("11_j4jf2")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="rulebook"]
+layout_mode = 0
+offset_left = 44.5
+offset_top = 0.5
+offset_right = 119.5
+offset_bottom = 23.5
+text = "MIGHTY LEAP"
+label_settings = SubResource("LabelSettings_g8paj")
+
+[node name="desc" type="Label" parent="rulebook"]
+layout_mode = 0
+offset_left = 45.0
+offset_top = 11.5
+offset_right = 313.0
+offset_bottom = 34.5
+text = "This card will block creatures bearing
+the airborne sigil"
+label_settings = SubResource("LabelSettings_g8paj")
+
+[node name="icon" type="Sprite2D" parent="rulebook"]
+position = Vector2(23.5, 22)
+scale = Vector2(2, 2)
+texture = ExtResource("12_3akrn")
