@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cf48owaanrt2j"]
+
+[ext_resource type="Texture2D" uid="uid://bxggjxbkgmvrk" path="res://match/card/pixel_cardback.png" id="1_rc1cv"]
+
+[node name="opponent_card" type="Sprite2D"]
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("1_rc1cv")

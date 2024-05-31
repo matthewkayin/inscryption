@@ -46,6 +46,7 @@ var player_hand = []
 var player_board = [null, null, null, null]
 var player_score = 0
 var player_bone_count = 0
+var opponent_hand = []
 var opponent_board = [null, null, null, null]
 var opponent_score = 0
 
@@ -59,19 +60,34 @@ func _ready():
     bell.frame_coords.x = int(BellState.DISABLED)
     score_scale.display_scores(0, 0)
 
-    for i in range(0, 4):
+    for i in range(0, 2):
         await hand_add_card(Card.CardName.SQUIRREL)
+    await hand_add_card(Card.CardName.STOAT)
+    await hand_add_card(Card.CardName.BULLFROG)
     state = State.PLAYER_TURN
 
     board_add_card(Turn.PLAYER, 1, Card.CardName.STOAT)
     board_add_card(Turn.OPPONENT, 1, Card.CardName.BULLFROG)
+
+    var test = card_scene.instantiate()
+    test.card_init(Card.CardName.STOAT, true)
+    add_child(test)
+    test.position = Vector2(100, 100)
+    var tween = get_tree().create_tween()
+    tween.tween_interval(1.0)
+    await tween.finished
+    await test.card_flip(Card.FlipTo.FRONT)
+    var tween2 = get_tree().create_tween()
+    tween2.tween_interval(1.0)
+    await tween2.finished
+    await test.card_flip(Card.FlipTo.BACK)
 
 func _process(_delta):
     if state == State.WAIT:
         return
     if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
         state = State.WAIT
-        await hand_add_card(Card.CardName.SQUIRREL)
+        await opponent_hand_add_card()
         state = State.PLAYER_TURN
         return
     if rulebook.visible:
@@ -124,6 +140,39 @@ func hand_add_card(card_name: Card.CardName):
     player_hand.append(card_instance)
 
     await hand_update_positions()
+
+func opponent_hand_add_card():
+    const CARD_SPAWN_POS = Vector2(681, -24)
+
+    var opponent_card = card_scene.instantiate()
+    opponent_card.card_init(Card.CardName.SQUIRREL, true)
+    add_child(opponent_card)
+    opponent_card.position = CARD_SPAWN_POS
+    opponent_hand.append(opponent_card)
+
+    await opponent_hand_update_positions()
+
+func opponent_hand_update_positions():
+    const HAND_CENTER = Vector2(426, -24)
+    const HAND_UPDATE_DURATION = 0.25
+
+    if opponent_hand.size() == 0:
+        return
+    if opponent_hand.size() == 1:
+        var tween1 = get_tree().create_tween()
+        tween1.parallel().tween_property(opponent_hand[0], "position", HAND_CENTER, HAND_UPDATE_DURATION)
+        await tween1.finished
+        return
+    
+    var hand_area_size = min(276.0, opponent_hand.size() * (0.5 * Card.CARD_SIZE.x))
+    var HAND_CARD_PADDING = hand_area_size / (opponent_hand.size() - 1)
+    var hand_area_start = HAND_CENTER.x - (hand_area_size * 0.5)
+
+    var tween = get_tree().create_tween()
+    for i in range(0, opponent_hand.size()):
+        var card_x = hand_area_start + (i * HAND_CARD_PADDING)
+        tween.parallel().tween_property(opponent_hand[i], "position", Vector2(card_x, HAND_CENTER.y), HAND_UPDATE_DURATION)
+    await tween.finished
 
 # UI
 

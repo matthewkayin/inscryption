@@ -12,11 +12,20 @@ enum State {
     ANIMATE_PRESUMMON
 }
 
+enum FlipTo {
+    FRONT,
+    BACK,
+    SUBMERGE
+}
+
 const LOW_HEALTH_COLOR = Color(0x8e1533ff)
 const CARD_SIZE = Vector2(82, 112)
 const ABILITY_ICON_SIZE = Vector2(34, 34)
 
 # onready
+var card_blank 
+var card_back 
+
 var portrait 
 var cost_sprite 
 var power_label 
@@ -49,7 +58,10 @@ var animate_presummon_index = 0
 func _ready():
     pass 
 
-func card_init(card_name: CardName):
+func card_init(card_name: CardName, face_down = false):
+    card_blank = load("res://match/card/pixel_card_empty.png")
+    card_back = load("res://match/card/pixel_cardback.png")
+
     # get handles to all card members
     portrait = $portrait
     cost_sprite = $cost
@@ -68,6 +80,14 @@ func card_init(card_name: CardName):
     health_label.label_settings.font_size = shared_label_settings.font_size
     health_label.label_settings.font_color = shared_label_settings.font_color
 
+    card_set_name(card_name)
+
+    if face_down:
+        for child in get_children():
+            child.visible = false
+        texture = card_back
+
+func card_set_name(card_name: CardName):
     # load the card data
     data = load("res://match/data/card/" + CardName.keys()[card_name].to_lower() + ".tres")
 
@@ -159,3 +179,25 @@ func animate_death(is_sacrifice = false):
     tween.tween_interval(0.25)
     tween.tween_property(self, "modulate", Color(modulate.r, modulate.g, modulate.b, 0), 0.1)
     await tween.finished
+
+func card_flip(flip_to: FlipTo):
+    var old_position = position
+
+    var tween = get_tree().create_tween()
+    tween.tween_property(self, "position", position + Vector2(-16, 16), 0.125)
+    tween.tween_interval(0.125)
+    tween.tween_property(self, "scale", Vector2(0, 1), 0.05)
+    await tween.finished
+
+    var children_should_be_visible = flip_to == FlipTo.FRONT
+    for child in get_children():
+        child.visible = children_should_be_visible
+    if flip_to == FlipTo.FRONT:
+        texture = card_blank
+    else:
+        texture = card_back
+
+    var tween2 = get_tree().create_tween()
+    tween2.tween_property(self, "scale", Vector2(1, 1), 0.05)
+    tween2.tween_property(self, "position", old_position, 0.125)
+    await tween2.finished
