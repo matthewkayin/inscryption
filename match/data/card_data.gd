@@ -12,3 +12,5 @@ enum CostType {
 @export var cost_amount: int = 0
 @export var power: int = 0
 @export var health: int = 0
+@export var ability1: Ability = null
+@export var ability2: Ability = null

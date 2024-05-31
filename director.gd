@@ -5,9 +5,13 @@ extends Node
 
 enum CursorType {
     POINTER,
-    HAND
+    HAND,
+    RULEBOOK,
+    KNIFE,
+    DROP
 }
 
+var current_cursor = null
 var mouse_cursors = {}
 
 func _ready():
@@ -17,6 +21,9 @@ func _ready():
     set_cursor(CursorType.POINTER)
 
 func set_cursor(cursor_type: CursorType):
+    if current_cursor == cursor_type:
+        return
+    current_cursor = cursor_type
     Input.set_custom_mouse_cursor(mouse_cursors[int(cursor_type)])
 
 func start_match():
