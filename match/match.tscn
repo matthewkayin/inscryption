@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://bt552mpt071ds"]
+[gd_scene load_steps=27 format=3 uid="uid://bt552mpt071ds"]
 
 [ext_resource type="Texture2D" uid="uid://c5ct1qkw40xcv" path="res://match/gbc_cardslots_nature.png" id="1_655ic"]
 [ext_resource type="Script" path="res://match/match.gd" id="1_ldl7k"]
@@ -18,6 +18,7 @@
 [ext_resource type="Texture2D" uid="uid://cvjwxhl58bep" path="res://match/card/card_hover.png" id="17_r61ia"]
 [ext_resource type="Texture2D" uid="uid://bsq150quekq58" path="res://match/deckicon_squirrel.png" id="18_7eevt"]
 [ext_resource type="Script" path="res://match/card/hover.gd" id="18_kjm2g"]
+[ext_resource type="Texture2D" uid="uid://1gdhsmcy6dk4" path="res://match/attack_animation.png" id="19_cn0ye"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_g8paj"]
 line_spacing = -4.0
@@ -41,6 +42,28 @@ shadow_size = 0
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ie3c2"]
 shader = ExtResource("16_tyn71")
 shader_parameter/offset = 0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jo1yo"]
+atlas = ExtResource("19_cn0ye")
+region = Rect2(0, 0, 41, 55)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qfoce"]
+atlas = ExtResource("19_cn0ye")
+region = Rect2(41, 0, 41, 55)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tlxm8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jo1yo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qfoce")
+}],
+"loop": false,
+"name": &"default",
+"speed": 6.0
+}]
 
 [node name="match" type="Node2D"]
 texture_filter = 1
@@ -89,10 +112,10 @@ scale = Vector2(2, 2)
 texture = ExtResource("12_3akrn")
 
 [node name="opponent_cardslots" type="HBoxContainer" parent="."]
-offset_left = 248.0
-offset_top = 78.0
-offset_right = 524.0
-offset_bottom = 118.0
+offset_left = 289.0
+offset_top = 134.0
+offset_right = 565.0
+offset_bottom = 174.0
 theme_override_constants/separation = 92
 
 [node name="1" type="Control" parent="opponent_cardslots"]
@@ -101,7 +124,6 @@ layout_mode = 2
 [node name="sprite" type="Sprite2D" parent="opponent_cardslots/1"]
 scale = Vector2(2, 2)
 texture = ExtResource("1_655ic")
-centered = false
 hframes = 2
 
 [node name="2" type="Control" parent="opponent_cardslots"]
@@ -110,7 +132,6 @@ layout_mode = 2
 [node name="sprite" type="Sprite2D" parent="opponent_cardslots/2"]
 scale = Vector2(2, 2)
 texture = ExtResource("1_655ic")
-centered = false
 hframes = 2
 
 [node name="3" type="Control" parent="opponent_cardslots"]
@@ -119,7 +140,6 @@ layout_mode = 2
 [node name="sprite" type="Sprite2D" parent="opponent_cardslots/3"]
 scale = Vector2(2, 2)
 texture = ExtResource("1_655ic")
-centered = false
 hframes = 2
 
 [node name="4" type="Control" parent="opponent_cardslots"]
@@ -128,14 +148,13 @@ layout_mode = 2
 [node name="sprite" type="Sprite2D" parent="opponent_cardslots/4"]
 scale = Vector2(2, 2)
 texture = ExtResource("1_655ic")
-centered = false
 hframes = 2
 
 [node name="player_cardslots" type="HBoxContainer" parent="."]
-offset_left = 248.0
-offset_top = 201.0
-offset_right = 548.0
-offset_bottom = 241.0
+offset_left = 289.0
+offset_top = 257.0
+offset_right = 589.0
+offset_bottom = 297.0
 theme_override_constants/separation = 92
 
 [node name="1" type="Control" parent="player_cardslots"]
@@ -144,7 +163,6 @@ layout_mode = 2
 [node name="sprite" type="Sprite2D" parent="player_cardslots/1"]
 scale = Vector2(2, 2)
 texture = ExtResource("1_655ic")
-centered = false
 flip_v = true
 hframes = 2
 
@@ -154,7 +172,6 @@ layout_mode = 2
 [node name="sprite" type="Sprite2D" parent="player_cardslots/2"]
 scale = Vector2(2, 2)
 texture = ExtResource("1_655ic")
-centered = false
 flip_v = true
 hframes = 2
 
@@ -164,7 +181,6 @@ layout_mode = 2
 [node name="sprite" type="Sprite2D" parent="player_cardslots/3"]
 scale = Vector2(2, 2)
 texture = ExtResource("1_655ic")
-centered = false
 flip_v = true
 hframes = 2
 
@@ -174,7 +190,6 @@ layout_mode = 2
 [node name="sprite" type="Sprite2D" parent="player_cardslots/4"]
 scale = Vector2(2, 2)
 texture = ExtResource("1_655ic")
-centered = false
 flip_v = true
 hframes = 2
 
@@ -251,6 +266,7 @@ position = Vector2(122, 153)
 scale = Vector2(2, 2)
 texture = ExtResource("3_162f3")
 hframes = 4
+frame = 3
 
 [node name="scale" type="Sprite2D" parent="."]
 position = Vector2(120, 264)
@@ -341,11 +357,19 @@ text = "x20"
 label_settings = SubResource("LabelSettings_njcht")
 
 [node name="card_hover" type="Sprite2D" parent="."]
+visible = false
 material = SubResource("ShaderMaterial_ie3c2")
 position = Vector2(-4, -4)
 scale = Vector2(2, 2)
 texture = ExtResource("17_r61ia")
-centered = false
 script = ExtResource("18_kjm2g")
 
 [node name="timer" type="Timer" parent="card_hover"]
+
+[node name="attack_animation" type="AnimatedSprite2D" parent="."]
+visible = false
+z_index = 1
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_tlxm8")
+frame = 1
+frame_progress = 1.0

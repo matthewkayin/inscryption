@@ -14,7 +14,7 @@ font = ExtResource("4_nuk78")
 font_size = 24
 font_color = Color(0, 0, 0, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_bsd6f"]
+[sub_resource type="LabelSettings" id="LabelSettings_urqdm"]
 font = ExtResource("4_nuk78")
 font_size = 24
 font_color = Color(0, 0, 0, 1)
@@ -22,16 +22,15 @@ font_color = Color(0, 0, 0, 1)
 [node name="card" type="Sprite2D"]
 texture_filter = 1
 texture = ExtResource("1_wr2i5")
-centered = false
 script = ExtResource("2_ffojd")
 
 [node name="portrait" type="Sprite2D" parent="."]
-position = Vector2(42, 30)
+position = Vector2(0, -26)
 scale = Vector2(2, 2)
 texture = ExtResource("2_mrtxv")
 
 [node name="cost" type="Sprite2D" parent="."]
-position = Vector2(32, 0)
+position = Vector2(-10, -56)
 scale = Vector2(2, 2)
 texture = ExtResource("3_ci2vw")
 centered = false
@@ -39,27 +38,27 @@ hframes = 13
 vframes = 2
 
 [node name="power" type="Label" parent="."]
-offset_left = 3.0
-offset_top = 93.0
-offset_right = 70.0
-offset_bottom = 119.0
+offset_left = -39.0
+offset_top = 37.0
+offset_right = 28.0
+offset_bottom = 63.0
 text = "0"
 label_settings = SubResource("LabelSettings_ny77b")
 
 [node name="health" type="Label" parent="."]
-offset_left = 15.0
-offset_top = 93.0
-offset_right = 82.0
-offset_bottom = 116.0
+offset_left = -27.0
+offset_top = 37.0
+offset_right = 40.0
+offset_bottom = 60.0
 text = "0"
-label_settings = SubResource("LabelSettings_bsd6f")
+label_settings = SubResource("LabelSettings_urqdm")
 horizontal_alignment = 2
 
 [node name="abilities" type="HBoxContainer" parent="."]
-offset_left = 22.0
-offset_top = 60.0
-offset_right = 62.0
-offset_bottom = 100.0
+offset_left = -20.0
+offset_top = 4.0
+offset_right = 20.0
+offset_bottom = 44.0
 theme_override_constants/separation = 40
 alignment = 1
 
@@ -83,4 +82,11 @@ texture = ExtResource("7_t2qci")
 visible = false
 scale = Vector2(2, 2)
 texture = ExtResource("8_x13jc")
-centered = false
+
+[node name="dim" type="ColorRect" parent="."]
+visible = false
+offset_left = -42.0
+offset_top = -56.0
+offset_right = 42.0
+offset_bottom = 56.0
+color = Color(0.00784314, 0.0392157, 0.0666667, 0.501961)

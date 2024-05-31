@@ -23,6 +23,7 @@ var power_label
 var health_label
 var abilities 
 @onready var sacrifice_marker = $sacrifice
+@onready var dim = $dim
 
 # stats
 var power: int
@@ -55,6 +56,17 @@ func card_init(card_name: CardName):
     power_label = $power
     health_label = $health
     abilities = $abilities.get_children()
+
+    # create copies of label settings
+    var shared_label_settings = power_label.label_settings
+    power_label.label_settings = LabelSettings.new()
+    power_label.label_settings.font = shared_label_settings.font
+    power_label.label_settings.font_size = shared_label_settings.font_size
+    power_label.label_settings.font_color = shared_label_settings.font_color
+    health_label.label_settings = LabelSettings.new()
+    health_label.label_settings.font = shared_label_settings.font
+    health_label.label_settings.font_size = shared_label_settings.font_size
+    health_label.label_settings.font_color = shared_label_settings.font_color
 
     # load the card data
     data = load("res://match/data/card/" + CardName.keys()[card_name].to_lower() + ".tres")
@@ -100,7 +112,7 @@ func card_refresh():
     health_label.text = str(health)
 
 func has_point(point: Vector2):
-    return Rect2(position, CARD_SIZE).has_point(point)
+    return Rect2(position - (CARD_SIZE * 0.5), CARD_SIZE).has_point(point)
 
 func get_hovered_ability(point: Vector2):
     for i in range(0, 2):

@@ -12,7 +12,7 @@ func _ready():
 func display_scores(opponent_score, player_score):
     player_score_label.text = str(player_score)
     opponent_score_label.text = str(opponent_score)
-    var score = clamp(player_score - opponent_score, -10, 10)
-    rod.rotation_degrees = 15.0 * (score / 10.0)
-    player_platform.position.y = score
+    var score = clamp(player_score - opponent_score, -5, 5)
+    rod.rotation_degrees = 15.0 * (score / 5.0)
+    player_platform.position.y = score * 2.0
     opponent_platform.position.y = -player_platform.position.y
