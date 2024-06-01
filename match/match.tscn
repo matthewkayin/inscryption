@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://bt552mpt071ds"]
+[gd_scene load_steps=39 format=3 uid="uid://bt552mpt071ds"]
 
 [ext_resource type="Texture2D" uid="uid://c5ct1qkw40xcv" path="res://match/gbc_cardslots_nature.png" id="1_655ic"]
 [ext_resource type="Script" path="res://match/match.gd" id="1_ldl7k"]
@@ -21,6 +21,7 @@
 [ext_resource type="Script" path="res://match/card/hover.gd" id="18_kjm2g"]
 [ext_resource type="Texture2D" uid="uid://1gdhsmcy6dk4" path="res://match/attack_animation.png" id="19_cn0ye"]
 [ext_resource type="Texture2D" uid="uid://cbaoi7pj2e1p3" path="res://match/candle.png" id="20_ato6r"]
+[ext_resource type="Script" path="res://match/popup.gd" id="22_bcbaa"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_njcht"]
 font = ExtResource("8_olekn")
@@ -458,7 +459,6 @@ frame = 1
 frame_progress = 1.0
 
 [node name="rulebook" type="NinePatchRect" parent="."]
-visible = false
 z_index = 2
 offset_left = 31.0
 offset_top = 379.0
@@ -494,3 +494,35 @@ label_settings = SubResource("LabelSettings_g8paj")
 position = Vector2(23.5, 22)
 scale = Vector2(2, 2)
 texture = ExtResource("12_3akrn")
+
+[node name="popup" type="NinePatchRect" parent="."]
+z_index = 2
+offset_left = 257.0
+offset_top = 143.0
+offset_right = 320.0
+offset_bottom = 161.0
+scale = Vector2(2, 2)
+texture = ExtResource("11_j4jf2")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+script = ExtResource("22_bcbaa")
+
+[node name="timer" type="Timer" parent="popup"]
+one_shot = true
+
+[node name="desc" type="Label" parent="popup"]
+layout_mode = 0
+offset_left = 4.5
+offset_top = 1.5
+offset_right = 272.5
+offset_bottom = 24.5
+text = "Not enough sacrifices available to summon."
+label_settings = SubResource("LabelSettings_g8paj")
+
+[node name="fade" type="ColorRect" parent="."]
+z_index = 5
+offset_right = 640.0
+offset_bottom = 480.0
+color = Color(0, 0, 0, 0)

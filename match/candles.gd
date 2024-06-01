@@ -9,12 +9,12 @@ func _ready():
         sprites.append(child)
         child.play("default")
 
-func candles_left():
+func no_candles_left():
     var candles_lit = 0
     for sprite in sprites:
         if sprite.animation == "default":
             candles_lit += 1
-    return candles_lit
+    return candles_lit == 0
 
 func snuff_candle():
     for i in range(sprites.size() - 1, -1, -1):

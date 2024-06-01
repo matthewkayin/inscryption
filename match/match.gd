@@ -1,5 +1,7 @@
 extends Node2D
 
+signal server_ready
+
 @onready var director = get_node("/root/Director")
 @onready var network = get_node("/root/Network")
 
@@ -22,6 +24,8 @@ extends Node2D
 @onready var deck_count_label = $deck/value
 @onready var squirrel_deck = $squirrel_deck
 @onready var squirrel_deck_count_label = $squirrel_deck/value
+@onready var popup = $popup
+@onready var fade = $fade
 var blood_counter_sprites = []
 
 enum State {
@@ -64,12 +68,21 @@ var summoning_blood_count = 0
 var network_action_queue = []
 var network_is_action_running = false
 
+var is_game_over = false
+var is_game_done = false
+var is_server_ready = false
+
+var skip_draw = true
+var skip_combat = false
+
 func _ready():
     # Setup
     for child in $blood_counter.get_children():
         blood_counter_sprites.push_back(child.get_child(0))
     bell.frame_coords.x = int(BellState.DISABLED)
     score_scale.display_scores(0, 0)
+    network.server_client_disconnected.connect(_on_opponent_disconnect)
+    network.client_server_disconnected.connect(_on_opponent_disconnect)
 
     # Init player deck
     for i in range(0, 10):
@@ -88,12 +101,40 @@ func _ready():
     if not network.network_is_connected():
         state = State.PLAYER_DRAW
     else:
-        if multiplayer.is_server():
-            state = State.PLAYER_DRAW
+        state = State.WAIT
+        if not multiplayer.is_server():
+            _on_client_ready.rpc_id(network.opponent_id)
         else:
-            state = State.WAIT
+            is_server_ready = true
+            server_ready.emit()
+
+@rpc("any_peer", "reliable")
+func _on_client_ready():
+    if not is_server_ready:
+        await server_ready
+    var server_goes_first = bool(randi_range(0, 1))
+    _on_server_declared_first_turn.rpc_id(network.opponent_id, server_goes_first)
+    state = State.PLAYER_DRAW if server_goes_first else State.WAIT
+    var message = "You go first." if server_goes_first else "Opponent goes first."
+    popup.open(message, 1.0)
+
+@rpc("any_peer", "reliable")
+func _on_server_declared_first_turn(server_goes_first):
+    state = State.WAIT if server_goes_first else State.PLAYER_DRAW
+    var message = "Opponent goes first" if server_goes_first else "You go first." 
+    popup.open(message, 1.0)
 
 func _process(_delta):
+    if is_game_done:
+        return
+    if is_game_over:
+        if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+            is_game_done = true
+            var tween = get_tree().create_tween()
+            tween.tween_property(fade, "color", Color(0, 0, 0, 1), 1.0)
+            await tween.finished
+            director.end_match()
+            return
     if state == State.WAIT or state == State.PLAYER_DRAW:
         player_hand_process()
     if state == State.WAIT:
@@ -247,6 +288,11 @@ func player_draw_process():
     const DECK_AREA_SIZE = Vector2(52, 34)
     const DECK_OFFSET = Vector2(-13, -17)
 
+    if skip_draw:
+        skip_draw = false
+        state = State.PLAYER_TURN
+        return
+
     if player_deck.size() == 0 and player_squirrel_deck_count == 0:
         state = State.WAIT
         if network.network_is_connected():
@@ -373,21 +419,36 @@ func player_turn_process():
                 summoning_cost_met = true
             else:
                 summoning_cost_met = false
+        # Show can't summon message
+        else:
+            var message = ""
+            if hovered_card.data.cost_type == CardData.CostType.BLOOD:
+                message = "You need more sacrifices to summon that."
+            popup.open(message, 1.0)
 
     var mouse_pos = get_viewport().get_mouse_position()
     if BELL_RECT.has_point(mouse_pos):
         if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-            # Ring the bell
+            # COMBAT PHASE
             state = State.WAIT
+
+            # Tell the opponent
             if network.network_is_connected():
                 _on_opponent_ring_bell.rpc_id(network.opponent_id)
+
+            # Ring the bell
             bell.frame_coords.x = int(BellState.PRESS)
             var tween = get_tree().create_tween()
             tween.tween_interval(0.2)
             await tween.finished
             bell.frame_coords.x = int(BellState.DISABLED)
+
+            # Do combat
             await combat_round(Turn.PLAYER)
+
+            # Yield the turn
             if network.network_is_connected():
+                popup.open("Opponent's turn.", 1.0)
                 _on_opponent_yield_turn.rpc_id(network.opponent_id)
             else:
                 state = State.PLAYER_TURN
@@ -491,6 +552,10 @@ func rulebook_process():
 # COMBAT
 
 func combat_round(turn: Turn):
+    if skip_combat:
+        skip_combat = false
+        return
+
     var lane_indices = range(0, 4) if turn == Turn.PLAYER else range(3, -1, -1)
     var attacker_board = player_board if turn == Turn.PLAYER else opponent_board
     var defender_board = opponent_board if turn == Turn.PLAYER else player_board
@@ -536,10 +601,8 @@ func check_if_candle_snuffed(turn: Turn):
         await tween3.finished
 
         # Snuff the candle
-        if turn == Turn.PLAYER:
-            opponent_candles.snuff_candle()
-        else:
-            player_candles.snuff_candle()
+        var candles = opponent_candles if turn == Turn.PLAYER else player_candles
+        candles.snuff_candle()
         
         # Delay for suspense
         var tween2 = get_tree().create_tween()
@@ -551,11 +614,17 @@ func check_if_candle_snuffed(turn: Turn):
         opponent_score = 0
         score_scale.display_scores(0, 0)
 
-        # Give the defeated the smoke
-        if turn == Turn.PLAYER:
-            await opponent_hand_add_card()
+        if candles.no_candles_left():
+            # End the game
+            var message = "You win!" if turn == Turn.PLAYER else "You lose."
+            popup.open(message)
+            set_game_over()
         else:
-            await hand_add_card(Card.CardName.THE_SMOKE)
+            # Give the defeated the smoke
+            if turn == Turn.PLAYER:
+                await opponent_hand_add_card()
+            else:
+                await hand_add_card(Card.CardName.THE_SMOKE)
 
 func combat_attack_animation_play(at_position: Vector2):
     attack_animation.position = at_position
@@ -652,6 +721,7 @@ func network_process():
         await combat_round(Turn.OPPONENT)
     elif action.type == NetworkActionType.YIELD:
         assert(network_action_queue.is_empty())
+        popup.open("Your turn.", 1.0)
         state = State.PLAYER_DRAW
     network_is_action_running = false
 
@@ -693,3 +763,11 @@ func _on_opponent_yield_turn():
     network_action_queue.push_back({
         "type": NetworkActionType.YIELD
     })
+
+func _on_opponent_disconnect():
+    popup.open("Your opponent disconnected.")
+    set_game_over()
+
+func set_game_over():
+    rulebook_close()
+    is_game_over = true
