@@ -94,11 +94,14 @@ func _ready():
             state = State.WAIT
 
 func _process(_delta):
+    if state == State.WAIT or state == State.PLAYER_DRAW:
+        player_hand_process()
     if state == State.WAIT:
         network_process()
-        return
     if rulebook.visible:
         rulebook_process()
+        return
+    if state == State.WAIT:
         return
     call(State.keys()[state].to_lower() + "_process")
 
@@ -262,7 +265,7 @@ func player_draw_process():
         state = State.PLAYER_TURN
         return
 
-    var cursor_type = director.CursorType.POINTER
+    var cursor_type = director.current_cursor
     var mouse_pos = get_viewport().get_mouse_position()
 
     var drawn_card = null
@@ -290,7 +293,7 @@ func player_draw_process():
 
 # PLAYER TURN
 
-func player_turn_process():
+func player_hand_process():
     var cursor_type = director.CursorType.POINTER
 
     var mouse_pos = get_viewport().get_mouse_position()
@@ -302,7 +305,7 @@ func player_turn_process():
         if card.has_point(mouse_pos):
             # make sure that card hover is not already open on this card
             hovered_card = card
-            if not (card_hover.visible and card_hover.position == card.position): 
+            if state == State.PLAYER_TURN and not (card_hover.visible and card_hover.position == card.position): 
                 card_hover.open(card.position)
             break
 
@@ -336,8 +339,14 @@ func player_turn_process():
     if hovered_ability != Ability.AbilityName.NONE and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
         card_hover.close()
         rulebook_open(hovered_ability)
-        return
-    
+        return null
+
+    director.set_cursor(cursor_type)
+    return hovered_card
+
+func player_turn_process():
+    var hovered_card = player_hand_process()
+
     if hovered_card != null and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
         # Check if we can summon this card
         var can_summon = false
@@ -365,6 +374,7 @@ func player_turn_process():
             else:
                 summoning_cost_met = false
 
+    var mouse_pos = get_viewport().get_mouse_position()
     if BELL_RECT.has_point(mouse_pos):
         if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
             # Ring the bell
@@ -386,8 +396,6 @@ func player_turn_process():
             bell.frame_coords.x = int(BellState.HOVER)
     else:
         bell.frame_coords.x = int(BellState.READY)
-
-    director.set_cursor(cursor_type)
 
 # PLAYER SUMMONING
 
