@@ -24,6 +24,9 @@ func _ready():
     multiplayer.connection_failed.connect(_client_on_connection_fail)
     multiplayer.server_disconnected.connect(_client_on_server_disconnected)
 
+func network_is_connected():
+    return opponent_id != -1
+
 func network_disconnect():
     if opponent_id != -1:
         if multiplayer.is_server():

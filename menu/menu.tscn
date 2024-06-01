@@ -118,7 +118,6 @@ theme_override_font_sizes/font_size = 48
 text = "JOIN"
 
 [node name="host_cluster" type="Control" parent="."]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -148,9 +147,9 @@ text = "CANCEL"
 [node name="yes_button" type="Button" parent="host_cluster"]
 visible = false
 offset_left = 220.0
-offset_top = 261.0
+offset_top = 325.0
 offset_right = 301.0
-offset_bottom = 307.0
+offset_bottom = 371.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("1_h3v4o")
@@ -160,9 +159,9 @@ text = "YES"
 [node name="no_button" type="Button" parent="host_cluster"]
 visible = false
 offset_left = 349.0
-offset_top = 261.0
+offset_top = 325.0
 offset_right = 430.0
-offset_bottom = 307.0
+offset_bottom = 371.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("1_h3v4o")
@@ -170,7 +169,6 @@ theme_override_font_sizes/font_size = 48
 text = "NO"
 
 [node name="join_cluster" type="Control" parent="."]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -251,6 +249,7 @@ theme_override_font_sizes/font_size = 48
 text = "CANCEL"
 
 [node name="lobby_cluster" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0

@@ -1,6 +1,7 @@
 extends Node2D
 
 @onready var director = get_node("/root/Director")
+@onready var network = get_node("/root/Network")
 
 @onready var card_scene = preload("res://match/card/card.tscn")
 
@@ -60,26 +61,41 @@ var summoning_card = null
 var summoning_cost_met = false
 var summoning_blood_count = 0
 
+var network_action_queue = []
+var network_is_action_running = false
+
 func _ready():
+    # Setup
     for child in $blood_counter.get_children():
         blood_counter_sprites.push_back(child.get_child(0))
     bell.frame_coords.x = int(BellState.DISABLED)
     score_scale.display_scores(0, 0)
 
+    # Init player deck
     for i in range(0, 10):
         player_deck.append(Card.CardName.STOAT)
     ui_update_deck_counters()
 
+    # Init opponent hand
     for i in range(0, 4):
         opponent_hand_add_card()
+    # Init player hand
     for i in range(0, 2):
         await hand_add_card(Card.CardName.SQUIRREL)
     await hand_add_card(Card.CardName.STOAT)
     await hand_add_card(Card.CardName.BULLFROG)
-    state = State.PLAYER_DRAW
+
+    if not network.network_is_connected():
+        state = State.PLAYER_DRAW
+    else:
+        if multiplayer.is_server():
+            state = State.PLAYER_DRAW
+        else:
+            state = State.WAIT
 
 func _process(_delta):
     if state == State.WAIT:
+        network_process()
         return
     if rulebook.visible:
         rulebook_process()
@@ -209,6 +225,19 @@ func opponent_board_play_card(index: int, card_name: Card.CardName):
     opponent_board[index] = card
     await opponent_hand_update_positions()
 
+func board_kill_card(turn: Turn, index: int, is_sacrifice = false):
+    var board = player_board if turn == Turn.PLAYER else opponent_board
+    var card = board[index] 
+    await card.animate_death(is_sacrifice)
+    board[index] = null
+    if turn == Turn.PLAYER:
+        if card.has_ability(Ability.AbilityName.BONE_KING):
+            player_bone_count += 4
+        else:
+            player_bone_count += 1
+        ui_update_bone_counter()
+    card.queue_free()
+
 # PLAYER DRAW
 
 func player_draw_process():
@@ -217,6 +246,8 @@ func player_draw_process():
 
     if player_deck.size() == 0 and player_squirrel_deck_count == 0:
         state = State.WAIT
+        if network.network_is_connected():
+            _on_opponent_cannot_draw_card.rpc_id(network.opponent_id)
         opponent_score += 1
 
         # Update scale
@@ -248,6 +279,8 @@ func player_draw_process():
             player_squirrel_deck_count -= 1
 
     if drawn_card != null:
+        if network.network_is_connected():
+            _on_opponent_draw_card.rpc_id(network.opponent_id)
         state = State.WAIT
         ui_update_deck_counters()
         await hand_add_card(drawn_card)
@@ -336,13 +369,18 @@ func player_turn_process():
         if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
             # Ring the bell
             state = State.WAIT
+            if network.network_is_connected():
+                _on_opponent_ring_bell.rpc_id(network.opponent_id)
             bell.frame_coords.x = int(BellState.PRESS)
             var tween = get_tree().create_tween()
             tween.tween_interval(0.2)
             await tween.finished
             bell.frame_coords.x = int(BellState.DISABLED)
             await combat_round(Turn.PLAYER)
-            state = State.PLAYER_TURN
+            if network.network_is_connected():
+                _on_opponent_yield_turn.rpc_id(network.opponent_id)
+            else:
+                state = State.PLAYER_TURN
             return
         else:
             bell.frame_coords.x = int(BellState.HOVER)
@@ -386,6 +424,8 @@ func player_summoning_process():
             if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
                 # SUMMON
                 state = State.WAIT
+                if network.network_is_connected():
+                    _on_opponent_place_card.rpc_id(network.opponent_id, hovered_cardslot_index, summoning_card.card_name)
                 director.set_cursor(director.CursorType.POINTER)
                 card_hover.close()
                 summoning_card.animate_presummon_end()
@@ -410,9 +450,11 @@ func player_summoning_process():
             if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
                 # PERFORM SACRIFICE
                 state = State.WAIT
+                if network.network_is_connected():
+                    _on_opponent_sacrifice_card.rpc_id(network.opponent_id, hovered_cardslot_index)
                 director.set_cursor(director.CursorType.POINTER)
                 card_hover.close()
-                await card_death(Turn.PLAYER, hovered_cardslot_index, true)
+                await board_kill_card(Turn.PLAYER, hovered_cardslot_index, true)
                 summoning_blood_count += 1
                 summoning_cost_met = summoning_blood_count >= summoning_card.data.cost_amount
                 ui_update_blood_counter()
@@ -456,7 +498,7 @@ func combat_round(turn: Turn):
             continue
         combat_damage = combat_damage + (await combat_do_attack(turn, attacker, defender))
         if defender != null and defender.health == 0:
-            await card_death(opponent_turn, lane_index)
+            await board_kill_card(opponent_turn, lane_index)
     
     # Update score
     for i in range(0, combat_damage):
@@ -561,15 +603,85 @@ func combat_do_attack(turn: Turn, attacker: Card, defender: Card):
 
     return added_score
 
-func card_death(turn: Turn, index: int, is_sacrifice = false):
-    var board = player_board if turn == Turn.PLAYER else opponent_board
-    var card = board[index] 
-    await card.animate_death(is_sacrifice)
-    board[index] = null
-    if turn == Turn.PLAYER:
-        if card.has_ability(Ability.AbilityName.BONE_KING):
-            player_bone_count += 4
-        else:
-            player_bone_count += 1
-        ui_update_bone_counter()
-    card.queue_free()
+# RPC
+
+enum NetworkActionType {
+    DRAW,
+    NO_DRAW,
+    SACRIFICE,
+    SUMMON,
+    BELL,
+    YIELD
+}
+
+func network_process():
+    if network_is_action_running:
+        return
+    if network_action_queue.is_empty():
+        return
+
+    var action = network_action_queue.pop_front()
+    network_is_action_running = true
+    if action.type == NetworkActionType.DRAW:
+        await opponent_hand_add_card()
+    elif action.type == NetworkActionType.NO_DRAW:
+        player_score += 1
+
+        # Update scale
+        score_scale.display_scores(opponent_score, player_score)
+
+        # Delay for suspense
+        var tween = get_tree().create_tween()
+        tween.tween_interval(0.1)
+        await tween.finished
+
+        await check_if_candle_snuffed(Turn.OPPONENT)
+    elif action.type == NetworkActionType.SACRIFICE:
+        await board_kill_card(Turn.OPPONENT, 3 - action.index, true)
+    elif action.type == NetworkActionType.SUMMON:
+        await opponent_board_play_card(3 - action.index, action.card_name)
+    elif action.type == NetworkActionType.BELL:
+        await combat_round(Turn.OPPONENT)
+    elif action.type == NetworkActionType.YIELD:
+        assert(network_action_queue.is_empty())
+        state = State.PLAYER_DRAW
+    network_is_action_running = false
+
+@rpc("any_peer", "reliable")
+func _on_opponent_draw_card():
+    network_action_queue.push_back({
+        "type": NetworkActionType.DRAW
+    })
+
+@rpc("any_peer", "reliable")
+func _on_opponent_cannot_draw_card():
+    network_action_queue.push_back({
+        "type": NetworkActionType.NO_DRAW
+    })
+
+@rpc("any_peer", "reliable")
+func _on_opponent_sacrifice_card(index: int):
+    network_action_queue.push_back({
+        "type": NetworkActionType.SACRIFICE,
+        "index": index
+    })
+
+@rpc("any_peer", "reliable")
+func _on_opponent_place_card(index: int, card_name: Card.CardName):
+    network_action_queue.push_back({
+        "type": NetworkActionType.SUMMON,
+        "index": index,
+        "card_name": card_name
+    })
+
+@rpc("any_peer", "reliable")
+func _on_opponent_ring_bell():
+    network_action_queue.push_back({
+        "type": NetworkActionType.BELL
+    })
+
+@rpc("any_peer", "reliable")
+func _on_opponent_yield_turn():
+    network_action_queue.push_back({
+        "type": NetworkActionType.YIELD
+    })

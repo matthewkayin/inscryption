@@ -36,6 +36,7 @@ var abilities
 @onready var dim = $dim
 
 # stats
+var card_name: CardName
 var power: int
 var health: int
 var data: CardData
@@ -61,7 +62,8 @@ var animate_presummon_index = 0
 func _ready():
     pass 
 
-func card_init(card_name: CardName, face_down = false):
+func card_init(p_card_name: CardName, face_down = false):
+    card_name = p_card_name
     card_blank = load("res://match/card/pixel_card_empty.png")
     card_back = load("res://match/card/pixel_cardback.png")
 
@@ -91,7 +93,8 @@ func card_init(card_name: CardName, face_down = false):
             child.visible = false
         texture = card_back
 
-func card_set_name(card_name: CardName):
+func card_set_name(p_card_name: CardName):
+    card_name = p_card_name
     # load the card data
     data = load("res://match/data/card/" + CardName.keys()[card_name].to_lower() + ".tres")
     if data.ability1 != Ability.AbilityName.NONE:
@@ -132,6 +135,7 @@ func card_refresh():
         cost_sprite.frame_coords.x = data.cost_amount - 1
 
     # Set ability sprites
+    $abilities.visible = true
     abilities[0].visible = false
     abilities[1].visible = false
     if data.ability1 != Ability.AbilityName.NONE:
