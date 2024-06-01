@@ -17,6 +17,10 @@ extends Node2D
 @onready var bone_counter_label = $bone_counter/value
 @onready var player_candles = $player_candles
 @onready var opponent_candles = $opponent_candles
+@onready var deck = $deck
+@onready var deck_count_label = $deck/value
+@onready var squirrel_deck = $squirrel_deck
+@onready var squirrel_deck_count_label = $squirrel_deck/value
 var blood_counter_sprites = []
 
 enum State {
@@ -46,6 +50,8 @@ var player_hand = []
 var player_board = [null, null, null, null]
 var player_score = 0
 var player_bone_count = 0
+var player_deck = []
+var player_squirrel_deck_count = 20
 var opponent_hand = []
 var opponent_board = [null, null, null, null]
 var opponent_score = 0
@@ -60,13 +66,17 @@ func _ready():
     bell.frame_coords.x = int(BellState.DISABLED)
     score_scale.display_scores(0, 0)
 
+    for i in range(0, 10):
+        player_deck.append(Card.CardName.STOAT)
+    ui_update_deck_counters()
+
     for i in range(0, 4):
         opponent_hand_add_card()
     for i in range(0, 2):
         await hand_add_card(Card.CardName.SQUIRREL)
     await hand_add_card(Card.CardName.STOAT)
     await hand_add_card(Card.CardName.BULLFROG)
-    state = State.PLAYER_TURN
+    state = State.PLAYER_DRAW
 
 func _process(_delta):
     if state == State.WAIT:
@@ -167,6 +177,10 @@ func ui_update_blood_counter():
 func ui_update_bone_counter():
     bone_counter_label.text = "x" + str(player_bone_count)
 
+func ui_update_deck_counters():
+    deck_count_label.text = "x" + str(player_deck.size())
+    squirrel_deck_count_label.text = "x" + str(player_squirrel_deck_count)
+
 # BOARD
 
 func board_add_card(which: Turn, index: int, card_name: Card.CardName):
@@ -198,7 +212,48 @@ func opponent_board_play_card(index: int, card_name: Card.CardName):
 # PLAYER DRAW
 
 func player_draw_process():
-    pass
+    const DECK_AREA_SIZE = Vector2(52, 34)
+    const DECK_OFFSET = Vector2(-13, -17)
+
+    if player_deck.size() == 0 and player_squirrel_deck_count == 0:
+        state = State.WAIT
+        opponent_score += 1
+
+        # Update scale
+        score_scale.display_scores(opponent_score, player_score)
+
+        # Delay for suspense
+        var tween = get_tree().create_tween()
+        tween.tween_interval(0.1)
+        await tween.finished
+
+        await check_if_candle_snuffed(Turn.OPPONENT)
+        state = State.PLAYER_TURN
+        return
+
+    var cursor_type = director.CursorType.POINTER
+    var mouse_pos = get_viewport().get_mouse_position()
+
+    var drawn_card = null
+    var DECK_RECT = Rect2(deck.position + DECK_OFFSET, DECK_AREA_SIZE)
+    if player_deck.size() != 0 and DECK_RECT.has_point(mouse_pos):
+        cursor_type = director.CursorType.HAND
+        if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+            drawn_card = player_deck.pop_back()
+    var SQUIRREL_DECK_RECT = Rect2(squirrel_deck.position + DECK_OFFSET, DECK_AREA_SIZE)
+    if player_squirrel_deck_count != 0 and SQUIRREL_DECK_RECT.has_point(mouse_pos):
+        cursor_type = director.CursorType.HAND
+        if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+            drawn_card = Card.CardName.SQUIRREL
+            player_squirrel_deck_count -= 1
+
+    if drawn_card != null:
+        state = State.WAIT
+        ui_update_deck_counters()
+        await hand_add_card(drawn_card)
+        state = State.PLAYER_TURN
+
+    director.set_cursor(cursor_type)
 
 # PLAYER TURN
 
@@ -419,6 +474,9 @@ func combat_round(turn: Turn):
         tween.tween_interval(0.1)
         await tween.finished
 
+    await check_if_candle_snuffed(turn)
+
+func check_if_candle_snuffed(turn: Turn):
     # Check if a candle is to be snuffed
     var score = min(abs(player_score - opponent_score), score_scale.SCORE_LIMIT)
     if score == score_scale.SCORE_LIMIT:
