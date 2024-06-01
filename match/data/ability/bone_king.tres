@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Ability" load_steps=3 format=3 uid="uid://b1ajnj8aj6w72"]
+
+[ext_resource type="Texture2D" uid="uid://4q73bcufbbnl" path="res://match/ability/pixelability_quadruplebones.png" id="1_2iqi6"]
+[ext_resource type="Script" path="res://match/data/ability.gd" id="2_5ihai"]
+
+[resource]
+script = ExtResource("2_5ihai")
+name = "BONE KING"
+icon = ExtResource("1_2iqi6")
+description = "When this card dies, 4 bones are 
+awarded instead of 1."

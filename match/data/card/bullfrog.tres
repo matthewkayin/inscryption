@@ -1,8 +1,7 @@
-[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3 uid="uid://dbbwt4fkjj8k2"]
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://dbbwt4fkjj8k2"]
 
 [ext_resource type="Script" path="res://match/data/card_data.gd" id="1_6tbvs"]
 [ext_resource type="Texture2D" uid="uid://b4nqxghog2eoy" path="res://match/portrait/pixelportrait_bullfrog.png" id="1_ana6s"]
-[ext_resource type="Resource" uid="uid://dkjt3koymcd74" path="res://match/data/ability/mighty_leap.tres" id="1_g7rks"]
 
 [resource]
 script = ExtResource("1_6tbvs")
@@ -11,4 +10,5 @@ cost_type = 1
 cost_amount = 1
 power = 1
 health = 3
-ability1 = ExtResource("1_g7rks")
+ability1 = 2
+ability2 = 0

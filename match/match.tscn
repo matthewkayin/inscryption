@@ -486,8 +486,8 @@ offset_left = 45.0
 offset_top = 11.5
 offset_right = 313.0
 offset_bottom = 34.5
-text = "This card will block creatures bearing
-the airborne sigil"
+text = "This card blocks opposing Airborne 
+creatures."
 label_settings = SubResource("LabelSettings_g8paj")
 
 [node name="icon" type="Sprite2D" parent="rulebook"]

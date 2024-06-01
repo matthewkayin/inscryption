@@ -4,7 +4,8 @@ class_name Card
 enum CardName {
     SQUIRREL,
     STOAT,
-    BULLFROG
+    BULLFROG,
+    THE_SMOKE
 }
 
 enum State {
@@ -38,6 +39,8 @@ var abilities
 var power: int
 var health: int
 var data: CardData
+var data_ability1: Ability = null
+var data_ability2: Ability = null
 
 # behavior
 var state = State.NONE
@@ -81,6 +84,7 @@ func card_init(card_name: CardName, face_down = false):
     health_label.label_settings.font_color = shared_label_settings.font_color
 
     card_set_name(card_name)
+    card_refresh()
 
     if face_down:
         for child in get_children():
@@ -90,10 +94,31 @@ func card_init(card_name: CardName, face_down = false):
 func card_set_name(card_name: CardName):
     # load the card data
     data = load("res://match/data/card/" + CardName.keys()[card_name].to_lower() + ".tres")
+    if data.ability1 != Ability.AbilityName.NONE:
+        data_ability1 = load("res://match/data/ability/" + Ability.AbilityName.keys()[data.ability1].to_lower() + ".tres")
+    if data.ability2 != Ability.AbilityName.NONE:
+        data_ability2 = load("res://match/data/ability/" + Ability.AbilityName.keys()[data.ability2].to_lower() + ".tres")
 
     portrait.texture = data.portrait
     power = data.power
     health = data.health
+
+func card_refresh():
+    # Power
+    if power != data.power:
+        power_label.label_settings.font_color = LOW_HEALTH_COLOR
+    else:
+        power_label.label_settings.font_color = Color.BLACK
+    power_label.text = str(power)
+    power_label.visible = true
+
+    # Health
+    if health != data.health:
+        health_label.label_settings.font_color = LOW_HEALTH_COLOR
+    else:
+        health_label.label_settings.font_color = Color.BLACK
+    health_label.text = str(health)
+    health_label.visible = true
 
     # Set cost sprite
     if data.cost_type == CardData.CostType.NONE:
@@ -109,27 +134,14 @@ func card_set_name(card_name: CardName):
     # Set ability sprites
     abilities[0].visible = false
     abilities[1].visible = false
-    if data.ability1 != null:
-        abilities[0].get_node("icon").texture = data.ability1.icon
+    if data.ability1 != Ability.AbilityName.NONE:
+        abilities[0].get_node("icon").texture = data_ability1.icon
         abilities[0].visible = true
-    if data.ability2 != null:
-        abilities[1].get_node("icon").texture = data.ability2.icon
+    if data.ability2 != Ability.AbilityName.NONE:
+        abilities[1].get_node("icon").texture = data_ability2.icon
         abilities[1].visible = true
 
-    card_refresh()
-
-func card_refresh():
-    if power != data.power:
-        power_label.label_settings.font_color = LOW_HEALTH_COLOR
-    else:
-        power_label.label_settings.font_color = Color.BLACK
-    power_label.text = str(power)
-
-    if health != data.health:
-        health_label.label_settings.font_color = LOW_HEALTH_COLOR
-    else:
-        health_label.label_settings.font_color = Color.BLACK
-    health_label.text = str(health)
+    portrait.visible = true
 
 func has_point(point: Vector2):
     return Rect2(position - (CARD_SIZE * 0.5), CARD_SIZE).has_point(point)
@@ -144,7 +156,10 @@ func get_hovered_ability(point: Vector2):
                 return data.ability1
             if i == 1:
                 return data.ability2
-    return null
+    return Ability.AbilityName.NONE
+
+func has_ability(ability_name: Ability.AbilityName):
+    return data.ability1 == ability_name or data.ability2 == ability_name
 
 func _process(delta):
     if state == State.ANIMATE_PRESUMMON:
@@ -183,16 +198,16 @@ func animate_death(is_sacrifice = false):
 func card_flip(flip_to: FlipTo):
     var old_position = position
 
+    z_index = 1
+
     var tween = get_tree().create_tween()
     tween.tween_property(self, "position", position + Vector2(-16, 16), 0.125)
     tween.tween_interval(0.125)
     tween.tween_property(self, "scale", Vector2(0, 1), 0.05)
     await tween.finished
 
-    var children_should_be_visible = flip_to == FlipTo.FRONT
-    for child in get_children():
-        child.visible = children_should_be_visible
     if flip_to == FlipTo.FRONT:
+        card_refresh()
         texture = card_blank
     else:
         texture = card_back
@@ -201,3 +216,5 @@ func card_flip(flip_to: FlipTo):
     tween2.tween_property(self, "scale", Vector2(1, 1), 0.05)
     tween2.tween_property(self, "position", old_position, 0.125)
     await tween2.finished
+
+    z_index = 0

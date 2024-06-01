@@ -7,5 +7,5 @@
 script = ExtResource("1_swqea")
 name = "MIGHTY LEAP"
 icon = ExtResource("1_cxu5t")
-description = "This card will block creatures bearing
-the airborne sigil"
+description = "This card blocks opposing Airborne 
+creatures."

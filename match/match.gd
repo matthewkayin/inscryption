@@ -60,35 +60,16 @@ func _ready():
     bell.frame_coords.x = int(BellState.DISABLED)
     score_scale.display_scores(0, 0)
 
+    for i in range(0, 4):
+        opponent_hand_add_card()
     for i in range(0, 2):
         await hand_add_card(Card.CardName.SQUIRREL)
     await hand_add_card(Card.CardName.STOAT)
     await hand_add_card(Card.CardName.BULLFROG)
     state = State.PLAYER_TURN
 
-    board_add_card(Turn.PLAYER, 1, Card.CardName.STOAT)
-    board_add_card(Turn.OPPONENT, 1, Card.CardName.BULLFROG)
-
-    var test = card_scene.instantiate()
-    test.card_init(Card.CardName.STOAT, true)
-    add_child(test)
-    test.position = Vector2(100, 100)
-    var tween = get_tree().create_tween()
-    tween.tween_interval(1.0)
-    await tween.finished
-    await test.card_flip(Card.FlipTo.FRONT)
-    var tween2 = get_tree().create_tween()
-    tween2.tween_interval(1.0)
-    await tween2.finished
-    await test.card_flip(Card.FlipTo.BACK)
-
 func _process(_delta):
     if state == State.WAIT:
-        return
-    if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-        state = State.WAIT
-        await opponent_hand_add_card()
-        state = State.PLAYER_TURN
         return
     if rulebook.visible:
         rulebook_process()
@@ -199,6 +180,21 @@ func board_add_card(which: Turn, index: int, card_name: Card.CardName):
         card_instance.position = opponent_cardslots[index].global_position
         opponent_board[index] = card_instance
 
+func opponent_board_play_card(index: int, card_name: Card.CardName):
+    var card = opponent_hand[opponent_hand.size() - 1]
+    card.z_index = 1
+
+    var tween = get_tree().create_tween()
+    tween.tween_property(card, "position", opponent_cardslots[index].global_position, 0.25)
+    card.card_set_name(card_name)
+    await tween.finished
+    await card.card_flip(Card.FlipTo.FRONT)
+    card.z_index = 0
+
+    opponent_hand.erase(card)
+    opponent_board[index] = card
+    await opponent_hand_update_positions()
+
 # PLAYER DRAW
 
 func player_draw_process():
@@ -228,7 +224,7 @@ func player_turn_process():
         card_hover.close()
 
     # Check if we're hovering over a sigil
-    var hovered_ability = null
+    var hovered_ability = Ability.AbilityName.NONE
     if hovered_card != null:
         hovered_ability = hovered_card.get_hovered_ability(mouse_pos)
     else:
@@ -238,7 +234,7 @@ func player_turn_process():
             if Rect2(cardslot.global_position - (Card.CARD_SIZE * 0.5), Card.CARD_SIZE).has_point(mouse_pos) and player_board[i] != null:
                 hovered_ability = player_board[i].get_hovered_ability(mouse_pos)
                 break
-        if hovered_ability == null:
+        if hovered_ability == Ability.AbilityName.NONE:
             # Check sigil hover on opponent board
             for i in range(0, opponent_cardslots.size()):
                 var cardslot = opponent_cardslots[i]
@@ -246,10 +242,10 @@ func player_turn_process():
                     hovered_ability = opponent_board[i].get_hovered_ability(mouse_pos)
                     break
 
-    if hovered_ability != null:
+    if hovered_ability != Ability.AbilityName.NONE:
         cursor_type = director.CursorType.RULEBOOK
 
-    if hovered_ability != null and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+    if hovered_ability != Ability.AbilityName.NONE and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
         card_hover.close()
         rulebook_open(hovered_ability)
         return
@@ -372,10 +368,11 @@ func player_summoning_process():
 
 # RULEBOOK
 
-func rulebook_open(ability):
-    rulebook_name_label.text = ability.name
-    rulebook_desc_label.text = ability.description
-    rulebook_icon.texture = ability.icon
+func rulebook_open(ability_name: Ability.AbilityName):
+    var ability_data = load("res://match/data/ability/" + Ability.AbilityName.keys()[ability_name].to_lower() + ".tres")
+    rulebook_name_label.text = Ability.AbilityName.keys()[ability_name].replace("_", " ")
+    rulebook_desc_label.text = ability_data.description
+    rulebook_icon.texture = ability_data.icon
     rulebook.visible = true
 
 func rulebook_close():
@@ -446,6 +443,12 @@ func combat_round(turn: Turn):
         opponent_score = 0
         score_scale.display_scores(0, 0)
 
+        # Give the defeated the smoke
+        if turn == Turn.PLAYER:
+            await opponent_hand_add_card()
+        else:
+            await hand_add_card(Card.CardName.THE_SMOKE)
+
 func combat_attack_animation_play(at_position: Vector2):
     attack_animation.position = at_position
     attack_animation.visible = true
@@ -504,8 +507,11 @@ func card_death(turn: Turn, index: int, is_sacrifice = false):
     var board = player_board if turn == Turn.PLAYER else opponent_board
     var card = board[index] 
     await card.animate_death(is_sacrifice)
-    card.queue_free()
     board[index] = null
     if turn == Turn.PLAYER:
-        player_bone_count += 1
+        if card.has_ability(Ability.AbilityName.BONE_KING):
+            player_bone_count += 4
+        else:
+            player_bone_count += 1
         ui_update_bone_counter()
+    card.queue_free()
