@@ -17,6 +17,7 @@ extends Node2D
 @onready var card_area_page_right = $card_area/page_right
 
 const LIBRARY_EXCLUDE = [
+    Card.CardName.SQUIRREL,
     Card.CardName.THE_SMOKE
 ]
 const CARD_AREA_PAGE_SIZE = 8
@@ -55,11 +56,32 @@ func open():
                 should_exclude = true
                 break
         if should_exclude:
-            break
+            continue
         library.push_back({
             "card_name": card_index,
             "quantity": CARD_DUPLICATE_LIMIT
         })
+
+    deck = []
+    for card in director.player_deck:
+        for library_card in library:
+            if library_card.card_name == card:
+                library_card.quantity -= 1
+                break
+        var card_entered = false
+        for existing_card in deck:
+            if existing_card.card_name == card:
+                existing_card.quantity += 1
+                card_entered = true
+        if not card_entered:
+            var data = Card.load_data(card)
+            deck.push_back({
+                "card_name": card,
+                "quantity": 1,
+                "data": data,
+                "data_ability1": Ability.load_data(data.ability1),
+                "data_ability2": Ability.load_data(data.ability1)
+            })
 
     CARD_AREA_LAST_PAGE = int(float(library.size()) / float(CARD_AREA_PAGE_SIZE))
     card_area_refresh()
@@ -71,6 +93,7 @@ func open():
     visible = true
 
 func close():
+    _on_save_pressed()
     deck = []
     visible = false
 

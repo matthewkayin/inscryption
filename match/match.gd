@@ -537,7 +537,7 @@ func player_summoning_process():
 # RULEBOOK
 
 func rulebook_open(ability_name: Ability.AbilityName):
-    var ability_data = load("res://match/data/ability/" + Ability.AbilityName.keys()[ability_name].to_lower() + ".tres")
+    var ability_data = Ability.load_data(ability_name)
     rulebook_name_label.text = Ability.AbilityName.keys()[ability_name].capitalize()
     rulebook_desc_label.text = ability_data.description
     rulebook_icon.texture = ability_data.icon

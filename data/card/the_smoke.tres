@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://d3c3436xdjx07"]
 
-[ext_resource type="Script" path="res://match/data/card_data.gd" id="1_r4gaq"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_r4gaq"]
 [ext_resource type="Texture2D" uid="uid://bhv40eck0k4en" path="res://match/portrait/pixelportrait_thesmoke.png" id="2_rl206"]
 
 [resource]

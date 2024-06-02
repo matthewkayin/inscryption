@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://dbbwt4fkjj8k2"]
 
-[ext_resource type="Script" path="res://match/data/card_data.gd" id="1_6tbvs"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_6tbvs"]
 [ext_resource type="Texture2D" uid="uid://b4nqxghog2eoy" path="res://match/portrait/pixelportrait_bullfrog.png" id="1_ana6s"]
 
 [resource]

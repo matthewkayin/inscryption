@@ -91,25 +91,30 @@ offset_left = 69.0
 offset_top = 76.0
 offset_right = 339.0
 offset_bottom = 116.0
+mouse_filter = 2
 theme_override_constants/separation = 90
 
 [node name="1" type="Control" parent="card_area/card_row1"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="card" parent="card_area/card_row1/1" instance=ExtResource("3_g3rxl")]
 
 [node name="2" type="Control" parent="card_area/card_row1"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="card" parent="card_area/card_row1/2" instance=ExtResource("3_g3rxl")]
 
 [node name="3" type="Control" parent="card_area/card_row1"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="card" parent="card_area/card_row1/3" instance=ExtResource("3_g3rxl")]
 
 [node name="4" type="Control" parent="card_area/card_row1"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="card" parent="card_area/card_row1/4" instance=ExtResource("3_g3rxl")]
 
@@ -119,25 +124,30 @@ offset_left = 69.0
 offset_top = 196.0
 offset_right = 339.0
 offset_bottom = 236.0
+mouse_filter = 2
 theme_override_constants/separation = 90
 
 [node name="1" type="Control" parent="card_area/card_row2"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="card" parent="card_area/card_row2/1" instance=ExtResource("3_g3rxl")]
 
 [node name="2" type="Control" parent="card_area/card_row2"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="card" parent="card_area/card_row2/2" instance=ExtResource("3_g3rxl")]
 
 [node name="3" type="Control" parent="card_area/card_row2"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="card" parent="card_area/card_row2/3" instance=ExtResource("3_g3rxl")]
 
 [node name="4" type="Control" parent="card_area/card_row2"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="card" parent="card_area/card_row2/4" instance=ExtResource("3_g3rxl")]
 

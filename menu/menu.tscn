@@ -4,8 +4,8 @@
 [ext_resource type="FontFile" uid="uid://dpq6fp6gls8cw" path="res://ui/Marksman.ttf" id="1_h3v4o"]
 [ext_resource type="Shader" path="res://tv.gdshader" id="3_sgn10"]
 [ext_resource type="Texture2D" uid="uid://bvk0ohc7fd3me" path="res://menu/goobert.png" id="4_cbtlr"]
+[ext_resource type="PackedScene" uid="uid://byd1ebrm0dlya" path="res://data/card/library.tscn" id="5_0p5c6"]
 [ext_resource type="Texture2D" uid="uid://2xdkmxx21ax1" path="res://library/library_button.png" id="5_8yjkw"]
-[ext_resource type="PackedScene" uid="uid://byd1ebrm0dlya" path="res://match/data/card/library.tscn" id="5_t1ecu"]
 [ext_resource type="Script" path="res://menu/library_button.gd" id="7_yrp07"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_4q6e8"]
@@ -120,8 +120,8 @@ offset_left = 301.0
 offset_top = 325.0
 offset_right = 393.0
 offset_bottom = 371.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0.00784314, 0.0392157, 0.0666667, 1)
+theme_override_colors/font_focus_color = Color(0.00784314, 0.0392157, 0.0666667, 1)
 theme_override_fonts/font = ExtResource("1_h3v4o")
 theme_override_font_sizes/font_size = 48
 text = "HOST"
@@ -132,8 +132,8 @@ offset_left = 409.0
 offset_top = 325.0
 offset_right = 501.0
 offset_bottom = 371.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0.00784314, 0.0392157, 0.0666667, 1)
+theme_override_colors/font_focus_color = Color(0.00784314, 0.0392157, 0.0666667, 1)
 theme_override_fonts/font = ExtResource("1_h3v4o")
 theme_override_font_sizes/font_size = 48
 text = "JOIN"
@@ -323,9 +323,10 @@ label_settings = SubResource("LabelSettings_vc6rj")
 material = SubResource("ShaderMaterial_uvxoy")
 offset_right = 640.0
 offset_bottom = 480.0
+mouse_filter = 2
 color = Color(0, 0, 0, 0.101961)
 
-[node name="library" parent="." instance=ExtResource("5_t1ecu")]
+[node name="library" parent="." instance=ExtResource("5_0p5c6")]
 visible = false
 
 [node name="library_button" type="Sprite2D" parent="."]

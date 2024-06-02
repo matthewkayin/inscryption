@@ -62,6 +62,9 @@ var animate_presummon_index = 0
 func _ready():
     pass 
 
+static func load_data(p_card_name: CardName):
+    return load("res://data/card/" + CardName.keys()[p_card_name].to_lower() + ".tres")
+
 func card_init(p_card_name: CardName, face_down = false):
     card_name = p_card_name
     card_blank = load("res://match/card/pixel_card_empty.png")
@@ -96,11 +99,9 @@ func card_init(p_card_name: CardName, face_down = false):
 func card_set_name(p_card_name: CardName):
     card_name = p_card_name
     # load the card data
-    data = load("res://match/data/card/" + CardName.keys()[card_name].to_lower() + ".tres")
-    if data.ability1 != Ability.AbilityName.NONE:
-        data_ability1 = load("res://match/data/ability/" + Ability.AbilityName.keys()[data.ability1].to_lower() + ".tres")
-    if data.ability2 != Ability.AbilityName.NONE:
-        data_ability2 = load("res://match/data/ability/" + Ability.AbilityName.keys()[data.ability2].to_lower() + ".tres")
+    data = Card.load_data(card_name)
+    data_ability1 = Ability.load_data(data.ability1)
+    data_ability2 = Ability.load_data(data.ability2)
 
     portrait.texture = data.portrait
     power = data.power
