@@ -4,7 +4,9 @@ class_name Ability
 enum AbilityName {
     NONE,
     BONE_KING,
-    MIGHTY_LEAP
+    MIGHTY_LEAP,
+    AIRBORNE,
+    EVOLVE
 }
 
 @export var icon: Texture2D

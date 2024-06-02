@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://ncx7l0uh1oaw"]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_3b8mk"]
+[ext_resource type="Texture2D" uid="uid://cjad70sd04xay" path="res://match/portrait/pixelportrait_ravenegg.png" id="1_4jxpd"]
+
+[resource]
+script = ExtResource("1_3b8mk")
+portrait = ExtResource("1_4jxpd")
+cost_type = 1
+cost_amount = 1
+power = 0
+health = 2
+ability1 = 4
+ability2 = 0

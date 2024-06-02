@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://c84ek8pxmnqa4"]
+
+[ext_resource type="Texture2D" uid="uid://c12y4ndrjopci" path="res://match/portrait/pixelportrait_raven.png" id="1_ahsio"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_i4ilk"]
+
+[resource]
+script = ExtResource("1_i4ilk")
+portrait = ExtResource("1_ahsio")
+cost_type = 1
+cost_amount = 2
+power = 2
+health = 3
+ability1 = 3
+ability2 = 0

@@ -90,6 +90,7 @@ func _ready():
     score_scale.display_scores(0, 0)
     network.server_client_disconnected.connect(_on_opponent_disconnect)
     network.client_server_disconnected.connect(_on_opponent_disconnect)
+    rulebook_close()
 
     # Init player deck
     # for i in range(0, 10):
@@ -104,10 +105,8 @@ func _ready():
     # Init player hand
     for i in range(0, 2):
         await hand_add_card(Card.CardName.SQUIRREL)
-    await hand_add_card(Card.CardName.STOAT)
+    await hand_add_card(Card.CardName.RAVEN)
     await hand_add_card(Card.CardName.BULLFROG)
-
-    await opponent_board_play_card(0, Card.CardName.SQUIRREL)
 
     if not network.network_is_connected():
         state = State.PLAYER_DRAW
@@ -587,6 +586,8 @@ func combat_round(turn: Turn):
             continue
         if attacker.power == 0:
             continue
+        if defender != null and attacker.has_ability(Ability.AbilityName.AIRBORNE) and not defender.has_ability(Ability.AbilityName.MIGHTY_LEAP):
+            defender = null
         combat_damage = combat_damage + (await combat_do_attack(turn, attacker, defender))
         if defender != null and defender.health == 0:
             await board_kill_card(opponent_turn, lane_index)
@@ -608,6 +609,14 @@ func combat_round(turn: Turn):
         await tween.finished
 
     await check_if_candle_snuffed(turn)
+    if is_game_over:
+        return
+
+    for card in defender_board:
+        if card == null:
+            continue
+        if card.has_ability(Ability.AbilityName.EVOLVE):
+            await card.evolve()
 
 func check_if_candle_snuffed(turn: Turn):
     # Check if a candle is to be snuffed

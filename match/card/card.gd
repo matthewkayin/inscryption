@@ -5,7 +5,13 @@ enum CardName {
     SQUIRREL,
     STOAT,
     BULLFROG,
-    THE_SMOKE
+    THE_SMOKE,
+    RAVEN,
+    RAVEN_EGG
+}
+
+const EVOLVES_INTO = {
+    CardName.RAVEN_EGG: CardName.RAVEN
 }
 
 enum State {
@@ -223,3 +229,17 @@ func card_flip(flip_to: FlipTo):
     await tween2.finished
 
     z_index = 0
+
+func evolve():
+    var tween = get_tree().create_tween()
+    tween.tween_property(self, "scale", Vector2(0, 1), 0.05)
+    await tween.finished
+
+    var damage_taken = data.health - health
+    card_set_name(EVOLVES_INTO[card_name])
+    health -= damage_taken
+    card_refresh()
+
+    var tween2 = get_tree().create_tween()
+    tween2.tween_property(self, "scale", Vector2(1, 1), 0.05)
+    await tween2.finished

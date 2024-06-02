@@ -534,7 +534,6 @@ frame = 1
 frame_progress = 1.0
 
 [node name="rulebook" type="NinePatchRect" parent="."]
-visible = false
 z_index = 2
 offset_left = 31.0
 offset_top = 379.0
@@ -562,8 +561,8 @@ offset_left = 45.0
 offset_top = 11.5
 offset_right = 313.0
 offset_bottom = 34.5
-text = "This card blocks opposing Airborne 
-creatures."
+text = "After surviving for 1 turn, this card 
+grows into a stronger form."
 label_settings = SubResource("LabelSettings_g8paj")
 
 [node name="icon" type="Sprite2D" parent="rulebook"]
