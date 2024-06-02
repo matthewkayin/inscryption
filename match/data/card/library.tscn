@@ -1,0 +1,693 @@
+[gd_scene load_steps=25 format=3 uid="uid://byd1ebrm0dlya"]
+
+[ext_resource type="Script" path="res://library/library.gd" id="1_fjw3g"]
+[ext_resource type="Texture2D" uid="uid://phfrv0iph8x0" path="res://library/frame_x2.png" id="1_r5q4s"]
+[ext_resource type="Texture2D" uid="uid://da6uguwk4m7r3" path="res://library/page_button.png" id="2_lk6r3"]
+[ext_resource type="PackedScene" uid="uid://copua4ifcsdp8" path="res://match/card/card.tscn" id="3_g3rxl"]
+[ext_resource type="FontFile" uid="uid://dpq6fp6gls8cw" path="res://ui/Marksman.ttf" id="4_fdc8b"]
+[ext_resource type="Script" path="res://library/button.gd" id="4_meyqv"]
+[ext_resource type="Texture2D" uid="uid://0uenh8mxncyq" path="res://match/card/cost.png" id="5_7ikvx"]
+[ext_resource type="Texture2D" uid="uid://c1ijlkj06nmkh" path="res://match/ability/pixelability_sentry.png" id="6_m7cq8"]
+[ext_resource type="Texture2D" uid="uid://b6nw55f3vb4fo" path="res://library/trash.png" id="7_h1lmh"]
+[ext_resource type="Texture2D" uid="uid://2a7lkv8ya8ks" path="res://library/frame.png" id="8_5psnm"]
+[ext_resource type="Texture2D" uid="uid://brj4mmoh2oa7u" path="res://library/save.png" id="8_vwm7o"]
+[ext_resource type="Texture2D" uid="uid://cvyetqb8gfvo5" path="res://library/scroll_button.png" id="11_cturg"]
+[ext_resource type="Texture2D" uid="uid://b6d8b4s2sbmvk" path="res://library/scroll_button_down.png" id="12_myrde"]
+[ext_resource type="Shader" path="res://match/card/card_hover.gdshader" id="14_bem23"]
+[ext_resource type="Texture2D" uid="uid://cvjwxhl58bep" path="res://match/card/card_hover.png" id="15_ces0n"]
+[ext_resource type="Script" path="res://match/card/hover.gd" id="16_itjph"]
+[ext_resource type="Texture2D" uid="uid://ddqwf5xmedyhb" path="res://library/decklist_card_border.png" id="17_bvovv"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_y74jx"]
+font = ExtResource("4_fdc8b")
+font_size = 32
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_8lu3w"]
+line_spacing = -4.0
+font = ExtResource("4_fdc8b")
+font_size = 24
+font_color = Color(0.00784314, 0.0392157, 0.0666667, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_knjqu"]
+font = ExtResource("4_fdc8b")
+font_size = 36
+font_color = Color(0.00784314, 0.0392157, 0.0666667, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_rwln5"]
+font = ExtResource("4_fdc8b")
+font_size = 32
+font_color = Color(0.00784314, 0.0392157, 0.0666667, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_sfku2"]
+font = ExtResource("4_fdc8b")
+font_color = Color(0.843137, 0.886275, 0.639216, 1)
+outline_size = 4
+outline_color = Color(0.00784314, 0.0392157, 0.0666667, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wk4pw"]
+shader = ExtResource("14_bem23")
+shader_parameter/offset = 0
+shader_parameter/border_color = Color(0.00784314, 0.0392157, 0.0666667, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n7y02"]
+shader = ExtResource("14_bem23")
+shader_parameter/offset = 0
+shader_parameter/border_color = Color(0.00784314, 0.0392157, 0.0666667, 1)
+
+[node name="library" type="Node2D"]
+texture_filter = 1
+script = ExtResource("1_fjw3g")
+
+[node name="card_area" type="NinePatchRect" parent="."]
+offset_left = 20.0
+offset_top = 12.0
+offset_right = 428.0
+offset_bottom = 284.0
+texture = ExtResource("1_r5q4s")
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="page_left" type="Sprite2D" parent="card_area"]
+position = Vector2(4, 136)
+scale = Vector2(2, 2)
+texture = ExtResource("2_lk6r3")
+hframes = 3
+script = ExtResource("4_meyqv")
+
+[node name="page_right" type="Sprite2D" parent="card_area"]
+position = Vector2(404, 136)
+scale = Vector2(2, 2)
+texture = ExtResource("2_lk6r3")
+flip_h = true
+hframes = 3
+script = ExtResource("4_meyqv")
+
+[node name="card_row1" type="HBoxContainer" parent="card_area"]
+layout_mode = 0
+offset_left = 69.0
+offset_top = 76.0
+offset_right = 339.0
+offset_bottom = 116.0
+theme_override_constants/separation = 90
+
+[node name="1" type="Control" parent="card_area/card_row1"]
+layout_mode = 2
+
+[node name="card" parent="card_area/card_row1/1" instance=ExtResource("3_g3rxl")]
+
+[node name="2" type="Control" parent="card_area/card_row1"]
+layout_mode = 2
+
+[node name="card" parent="card_area/card_row1/2" instance=ExtResource("3_g3rxl")]
+
+[node name="3" type="Control" parent="card_area/card_row1"]
+layout_mode = 2
+
+[node name="card" parent="card_area/card_row1/3" instance=ExtResource("3_g3rxl")]
+
+[node name="4" type="Control" parent="card_area/card_row1"]
+layout_mode = 2
+
+[node name="card" parent="card_area/card_row1/4" instance=ExtResource("3_g3rxl")]
+
+[node name="card_row2" type="HBoxContainer" parent="card_area"]
+layout_mode = 0
+offset_left = 69.0
+offset_top = 196.0
+offset_right = 339.0
+offset_bottom = 236.0
+theme_override_constants/separation = 90
+
+[node name="1" type="Control" parent="card_area/card_row2"]
+layout_mode = 2
+
+[node name="card" parent="card_area/card_row2/1" instance=ExtResource("3_g3rxl")]
+
+[node name="2" type="Control" parent="card_area/card_row2"]
+layout_mode = 2
+
+[node name="card" parent="card_area/card_row2/2" instance=ExtResource("3_g3rxl")]
+
+[node name="3" type="Control" parent="card_area/card_row2"]
+layout_mode = 2
+
+[node name="card" parent="card_area/card_row2/3" instance=ExtResource("3_g3rxl")]
+
+[node name="4" type="Control" parent="card_area/card_row2"]
+layout_mode = 2
+
+[node name="card" parent="card_area/card_row2/4" instance=ExtResource("3_g3rxl")]
+
+[node name="rulebook" type="NinePatchRect" parent="."]
+offset_left = 20.0
+offset_top = 292.0
+offset_right = 428.0
+offset_bottom = 469.0
+texture = ExtResource("1_r5q4s")
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="name" type="Label" parent="rulebook"]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 4.0
+offset_right = 102.0
+offset_bottom = 30.0
+text = "Moleman"
+label_settings = SubResource("LabelSettings_y74jx")
+
+[node name="cost" type="Sprite2D" parent="rulebook"]
+position = Vector2(350, 4)
+scale = Vector2(2, 2)
+texture = ExtResource("5_7ikvx")
+centered = false
+hframes = 13
+vframes = 2
+
+[node name="border" type="ColorRect" parent="rulebook"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 34.0
+offset_right = 406.0
+offset_bottom = 37.0
+color = Color(0.00784314, 0.0392157, 0.0666667, 1)
+
+[node name="border2" type="ColorRect" parent="rulebook"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 150.0
+offset_right = 406.0
+offset_bottom = 153.0
+color = Color(0.00784314, 0.0392157, 0.0666667, 1)
+
+[node name="ability1" type="Control" parent="rulebook"]
+anchors_preset = 0
+offset_left = 2.0
+offset_top = 45.0
+offset_right = 42.0
+offset_bottom = 85.0
+
+[node name="name" type="Label" parent="rulebook/ability1"]
+layout_mode = 0
+offset_left = 45.0
+offset_top = -6.0
+offset_right = 402.0
+offset_bottom = 43.0
+text = "Mighty Leap"
+label_settings = SubResource("LabelSettings_8lu3w")
+
+[node name="desc" type="Label" parent="rulebook/ability1"]
+layout_mode = 0
+offset_left = 45.0
+offset_top = 12.0
+offset_right = 402.0
+offset_bottom = 61.0
+text = "This card will move to block any empty
+space that is attacked by an enemy."
+label_settings = SubResource("LabelSettings_8lu3w")
+
+[node name="icon" type="Sprite2D" parent="rulebook/ability1"]
+position = Vector2(23.5, 22)
+scale = Vector2(2, 2)
+texture = ExtResource("6_m7cq8")
+
+[node name="ability2" type="Control" parent="rulebook"]
+anchors_preset = 0
+offset_left = 2.0
+offset_top = 100.0
+offset_right = 42.0
+offset_bottom = 140.0
+
+[node name="name" type="Label" parent="rulebook/ability2"]
+layout_mode = 0
+offset_left = 45.0
+offset_top = -6.0
+offset_right = 402.0
+offset_bottom = 43.0
+text = "MIGHTY LEAP"
+label_settings = SubResource("LabelSettings_8lu3w")
+
+[node name="desc" type="Label" parent="rulebook/ability2"]
+layout_mode = 0
+offset_left = 45.0
+offset_top = 12.0
+offset_right = 402.0
+offset_bottom = 61.0
+text = "This card will move to block any empty
+space that is attacked by an enemy."
+label_settings = SubResource("LabelSettings_8lu3w")
+
+[node name="icon" type="Sprite2D" parent="rulebook/ability2"]
+position = Vector2(23.5, 22)
+scale = Vector2(2, 2)
+texture = ExtResource("6_m7cq8")
+
+[node name="power" type="Label" parent="rulebook"]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 147.0
+offset_right = 102.0
+offset_bottom = 173.0
+text = "0"
+label_settings = SubResource("LabelSettings_y74jx")
+
+[node name="health" type="Label" parent="rulebook"]
+layout_mode = 0
+offset_left = 308.0
+offset_top = 147.0
+offset_right = 404.0
+offset_bottom = 173.0
+text = "0"
+label_settings = SubResource("LabelSettings_y74jx")
+horizontal_alignment = 2
+
+[node name="trash_button" type="Sprite2D" parent="."]
+position = Vector2(465, 30)
+scale = Vector2(2, 2)
+texture = ExtResource("7_h1lmh")
+hframes = 3
+script = ExtResource("4_meyqv")
+
+[node name="save_button" type="Sprite2D" parent="."]
+position = Vector2(509, 30)
+scale = Vector2(2, 2)
+texture = ExtResource("8_vwm7o")
+hframes = 3
+script = ExtResource("4_meyqv")
+
+[node name="size_tab" type="NinePatchRect" parent="."]
+offset_left = 447.0
+offset_top = 52.0
+offset_right = 527.0
+offset_bottom = 88.0
+texture = ExtResource("1_r5q4s")
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="label" type="Label" parent="size_tab"]
+layout_mode = 0
+offset_left = 6.0
+offset_top = -1.0
+offset_right = 76.0
+offset_bottom = 28.0
+text = "20/20"
+label_settings = SubResource("LabelSettings_knjqu")
+horizontal_alignment = 1
+
+[node name="decklist" type="NinePatchRect" parent="."]
+offset_left = 447.0
+offset_top = 102.0
+offset_right = 636.0
+offset_bottom = 469.0
+texture = ExtResource("1_r5q4s")
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="cards" type="Control" parent="decklist"]
+anchors_preset = 0
+offset_top = 4.0
+offset_right = 40.0
+offset_bottom = 44.0
+
+[node name="2" type="NinePatchRect" parent="decklist/cards"]
+layout_mode = 2
+offset_left = 6.0
+offset_top = 16.0
+offset_right = 182.0
+offset_bottom = 42.0
+texture = ExtResource("8_5psnm")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="decklist/cards/2"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = -3.0
+offset_right = 180.0
+offset_bottom = 23.0
+text = "Mole Man"
+label_settings = SubResource("LabelSettings_rwln5")
+
+[node name="quantity" type="Label" parent="decklist/cards/2"]
+layout_mode = 0
+offset_left = 153.0
+offset_top = -4.0
+offset_right = 193.0
+offset_bottom = 19.0
+scale = Vector2(2, 2)
+text = "x2"
+label_settings = SubResource("LabelSettings_sfku2")
+
+[node name="3" type="NinePatchRect" parent="decklist/cards"]
+layout_mode = 2
+offset_left = 6.0
+offset_top = 46.0
+offset_right = 182.0
+offset_bottom = 72.0
+texture = ExtResource("8_5psnm")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="decklist/cards/3"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = -3.0
+offset_right = 180.0
+offset_bottom = 23.0
+text = "Mole Man"
+label_settings = SubResource("LabelSettings_rwln5")
+
+[node name="quantity" type="Label" parent="decklist/cards/3"]
+layout_mode = 0
+offset_left = 153.0
+offset_top = -4.0
+offset_right = 193.0
+offset_bottom = 19.0
+scale = Vector2(2, 2)
+text = "x2"
+label_settings = SubResource("LabelSettings_sfku2")
+
+[node name="4" type="NinePatchRect" parent="decklist/cards"]
+layout_mode = 2
+offset_left = 6.0
+offset_top = 76.0
+offset_right = 182.0
+offset_bottom = 102.0
+texture = ExtResource("8_5psnm")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="decklist/cards/4"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = -3.0
+offset_right = 180.0
+offset_bottom = 23.0
+text = "Mole Man"
+label_settings = SubResource("LabelSettings_rwln5")
+
+[node name="quantity" type="Label" parent="decklist/cards/4"]
+layout_mode = 0
+offset_left = 153.0
+offset_top = -4.0
+offset_right = 193.0
+offset_bottom = 19.0
+scale = Vector2(2, 2)
+text = "x2"
+label_settings = SubResource("LabelSettings_sfku2")
+
+[node name="5" type="NinePatchRect" parent="decklist/cards"]
+layout_mode = 2
+offset_left = 6.0
+offset_top = 106.0
+offset_right = 182.0
+offset_bottom = 132.0
+texture = ExtResource("8_5psnm")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="decklist/cards/5"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = -3.0
+offset_right = 180.0
+offset_bottom = 23.0
+text = "Mole Man"
+label_settings = SubResource("LabelSettings_rwln5")
+
+[node name="quantity" type="Label" parent="decklist/cards/5"]
+layout_mode = 0
+offset_left = 153.0
+offset_top = -4.0
+offset_right = 193.0
+offset_bottom = 19.0
+scale = Vector2(2, 2)
+text = "x2"
+label_settings = SubResource("LabelSettings_sfku2")
+
+[node name="6" type="NinePatchRect" parent="decklist/cards"]
+layout_mode = 2
+offset_left = 6.0
+offset_top = 136.0
+offset_right = 182.0
+offset_bottom = 162.0
+texture = ExtResource("8_5psnm")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="decklist/cards/6"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = -3.0
+offset_right = 180.0
+offset_bottom = 23.0
+text = "Mole Man"
+label_settings = SubResource("LabelSettings_rwln5")
+
+[node name="quantity" type="Label" parent="decklist/cards/6"]
+layout_mode = 0
+offset_left = 153.0
+offset_top = -4.0
+offset_right = 193.0
+offset_bottom = 19.0
+scale = Vector2(2, 2)
+text = "x2"
+label_settings = SubResource("LabelSettings_sfku2")
+
+[node name="7" type="NinePatchRect" parent="decklist/cards"]
+layout_mode = 2
+offset_left = 6.0
+offset_top = 166.0
+offset_right = 182.0
+offset_bottom = 192.0
+texture = ExtResource("8_5psnm")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="decklist/cards/7"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = -3.0
+offset_right = 180.0
+offset_bottom = 23.0
+text = "Mole Man"
+label_settings = SubResource("LabelSettings_rwln5")
+
+[node name="quantity" type="Label" parent="decklist/cards/7"]
+layout_mode = 0
+offset_left = 153.0
+offset_top = -4.0
+offset_right = 193.0
+offset_bottom = 19.0
+scale = Vector2(2, 2)
+text = "x2"
+label_settings = SubResource("LabelSettings_sfku2")
+
+[node name="8" type="NinePatchRect" parent="decklist/cards"]
+layout_mode = 2
+offset_left = 6.0
+offset_top = 196.0
+offset_right = 182.0
+offset_bottom = 222.0
+texture = ExtResource("8_5psnm")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="decklist/cards/8"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = -3.0
+offset_right = 180.0
+offset_bottom = 23.0
+text = "Mole Man"
+label_settings = SubResource("LabelSettings_rwln5")
+
+[node name="quantity" type="Label" parent="decklist/cards/8"]
+layout_mode = 0
+offset_left = 153.0
+offset_top = -4.0
+offset_right = 193.0
+offset_bottom = 19.0
+scale = Vector2(2, 2)
+text = "x2"
+label_settings = SubResource("LabelSettings_sfku2")
+
+[node name="9" type="NinePatchRect" parent="decklist/cards"]
+layout_mode = 2
+offset_left = 6.0
+offset_top = 226.0
+offset_right = 182.0
+offset_bottom = 252.0
+texture = ExtResource("8_5psnm")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="decklist/cards/9"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = -3.0
+offset_right = 180.0
+offset_bottom = 23.0
+text = "Mole Man"
+label_settings = SubResource("LabelSettings_rwln5")
+
+[node name="quantity" type="Label" parent="decklist/cards/9"]
+layout_mode = 0
+offset_left = 153.0
+offset_top = -4.0
+offset_right = 193.0
+offset_bottom = 19.0
+scale = Vector2(2, 2)
+text = "x2"
+label_settings = SubResource("LabelSettings_sfku2")
+
+[node name="10" type="NinePatchRect" parent="decklist/cards"]
+layout_mode = 2
+offset_left = 6.0
+offset_top = 256.0
+offset_right = 182.0
+offset_bottom = 282.0
+texture = ExtResource("8_5psnm")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="decklist/cards/10"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = -3.0
+offset_right = 180.0
+offset_bottom = 23.0
+text = "Mole Man"
+label_settings = SubResource("LabelSettings_rwln5")
+
+[node name="quantity" type="Label" parent="decklist/cards/10"]
+layout_mode = 0
+offset_left = 153.0
+offset_top = -4.0
+offset_right = 193.0
+offset_bottom = 19.0
+scale = Vector2(2, 2)
+text = "x2"
+label_settings = SubResource("LabelSettings_sfku2")
+
+[node name="11" type="NinePatchRect" parent="decklist/cards"]
+layout_mode = 2
+offset_left = 6.0
+offset_top = 286.0
+offset_right = 182.0
+offset_bottom = 312.0
+texture = ExtResource("8_5psnm")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="decklist/cards/11"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = -3.0
+offset_right = 180.0
+offset_bottom = 23.0
+text = "Mole Man"
+label_settings = SubResource("LabelSettings_rwln5")
+
+[node name="quantity" type="Label" parent="decklist/cards/11"]
+layout_mode = 0
+offset_left = 153.0
+offset_top = -4.0
+offset_right = 193.0
+offset_bottom = 19.0
+scale = Vector2(2, 2)
+text = "x2"
+label_settings = SubResource("LabelSettings_sfku2")
+
+[node name="12" type="NinePatchRect" parent="decklist/cards"]
+layout_mode = 2
+offset_left = 6.0
+offset_top = 316.0
+offset_right = 182.0
+offset_bottom = 342.0
+texture = ExtResource("8_5psnm")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="decklist/cards/12"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = -3.0
+offset_right = 180.0
+offset_bottom = 23.0
+text = "Mole Man"
+label_settings = SubResource("LabelSettings_rwln5")
+
+[node name="quantity" type="Label" parent="decklist/cards/12"]
+layout_mode = 0
+offset_left = 153.0
+offset_top = -4.0
+offset_right = 193.0
+offset_bottom = 19.0
+scale = Vector2(2, 2)
+text = "x2"
+label_settings = SubResource("LabelSettings_sfku2")
+
+[node name="scroll_up_button" type="Sprite2D" parent="decklist"]
+position = Vector2(94, 4)
+texture = ExtResource("11_cturg")
+hframes = 3
+script = ExtResource("4_meyqv")
+
+[node name="scroll_down_button" type="Sprite2D" parent="decklist"]
+position = Vector2(94, 362)
+texture = ExtResource("12_myrde")
+hframes = 3
+script = ExtResource("4_meyqv")
+
+[node name="card_hover" type="Sprite2D" parent="."]
+visible = false
+z_index = 1
+material = SubResource("ShaderMaterial_wk4pw")
+position = Vector2(-4, -4)
+scale = Vector2(2, 2)
+texture = ExtResource("15_ces0n")
+script = ExtResource("16_itjph")
+
+[node name="timer" type="Timer" parent="card_hover"]
+
+[node name="decklist_card_hover" type="Sprite2D" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_n7y02")
+scale = Vector2(2, 2)
+texture = ExtResource("17_bvovv")
+centered = false
+script = ExtResource("16_itjph")
+
+[node name="timer" type="Timer" parent="decklist_card_hover"]

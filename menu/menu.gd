@@ -36,9 +36,9 @@ var client_ready = false
 
 func _ready():
     if OS.has_feature("windows") and OS.has_environment("COMPUTERNAME"):
-        local_ip = IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")), 1)
+        local_ip = IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")), IP.TYPE_IPV4)
     if (OS.has_feature("x11") or OS.has_feature("OSX")) and OS.has_environment("HOSTNAME"):
-        local_ip = IP.resolve_hostname(str(OS.get_environment("HOSTNAME")), 1)
+        local_ip = IP.resolve_hostname(str(OS.get_environment("HOSTNAME")), IP.TYPE_IPV4)
 
     # Main cluster
     host_button.pressed.connect(_on_host_button_pressed)

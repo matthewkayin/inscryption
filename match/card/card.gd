@@ -148,7 +148,7 @@ func card_refresh():
     portrait.visible = true
 
 func has_point(point: Vector2):
-    return Rect2(position - (CARD_SIZE * 0.5), CARD_SIZE).has_point(point)
+    return Rect2(global_position - (CARD_SIZE * 0.5), CARD_SIZE).has_point(point)
 
 func get_hovered_ability(point: Vector2):
     for i in range(0, 2):

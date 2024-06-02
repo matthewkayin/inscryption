@@ -1,6 +1,7 @@
 shader_type canvas_item;
 
 uniform int offset: hint_range(0, 5) = 0;
+uniform vec4 border_color: source_color;
 
 void fragment() {
 	vec2 coords = UV * (1.0 / TEXTURE_PIXEL_SIZE);
@@ -10,7 +11,7 @@ void fragment() {
     float hidden = min(float(index % 4), 1.0);
     hidden = min(float((index + 1) % 4), hidden);
     vec4 sampled = texture(TEXTURE, UV);
-    COLOR = mix(sampled, vec4(0.0, 0.0, 0.0, 0.0), 1.0 - hidden);
+    COLOR = mix(vec4(border_color.r, border_color.g, border_color.b, sampled.a), vec4(0.0, 0.0, 0.0, 0.0), 1.0 - hidden);
 }
 
 //void light() {

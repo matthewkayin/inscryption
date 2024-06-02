@@ -1,5 +1,6 @@
-[gd_scene load_steps=39 format=3 uid="uid://bt552mpt071ds"]
+[gd_scene load_steps=42 format=3 uid="uid://bt552mpt071ds"]
 
+[ext_resource type="Shader" path="res://tv.gdshader" id="1_11f21"]
 [ext_resource type="Texture2D" uid="uid://c5ct1qkw40xcv" path="res://match/gbc_cardslots_nature.png" id="1_655ic"]
 [ext_resource type="Script" path="res://match/match.gd" id="1_ldl7k"]
 [ext_resource type="Texture2D" uid="uid://b0n7yg4w1v1uy" path="res://match/board_small.png" id="2_ybiry"]
@@ -21,6 +22,7 @@
 [ext_resource type="Script" path="res://match/card/hover.gd" id="18_kjm2g"]
 [ext_resource type="Texture2D" uid="uid://1gdhsmcy6dk4" path="res://match/attack_animation.png" id="19_cn0ye"]
 [ext_resource type="Texture2D" uid="uid://cbaoi7pj2e1p3" path="res://match/candle.png" id="20_ato6r"]
+[ext_resource type="Texture2D" uid="uid://2a7lkv8ya8ks" path="res://library/frame.png" id="20_atvo1"]
 [ext_resource type="Script" path="res://match/popup.gd" id="22_bcbaa"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_njcht"]
@@ -114,6 +116,7 @@ animations = [{
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ie3c2"]
 shader = ExtResource("16_tyn71")
 shader_parameter/offset = 0
+shader_parameter/border_color = Color(0.843137, 0.886275, 0.639216, 1)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jo1yo"]
 atlas = ExtResource("19_cn0ye")
@@ -141,6 +144,9 @@ animations = [{
 line_spacing = -4.0
 font = ExtResource("8_olekn")
 font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bh64l"]
+shader = ExtResource("1_11f21")
 
 [node name="match" type="Node2D"]
 texture_filter = 1
@@ -459,13 +465,14 @@ frame = 1
 frame_progress = 1.0
 
 [node name="rulebook" type="NinePatchRect" parent="."]
+visible = false
 z_index = 2
 offset_left = 31.0
 offset_top = 379.0
 offset_right = 320.0
 offset_bottom = 423.0
 scale = Vector2(2, 2)
-texture = ExtResource("11_j4jf2")
+texture = ExtResource("20_atvo1")
 patch_margin_left = 8
 patch_margin_top = 8
 patch_margin_right = 8
@@ -526,3 +533,9 @@ z_index = 5
 offset_right = 640.0
 offset_bottom = 480.0
 color = Color(0, 0, 0, 0)
+
+[node name="tv_filter" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_bh64l")
+offset_right = 640.0
+offset_bottom = 480.0
+color = Color(0, 0, 0, 0.101961)

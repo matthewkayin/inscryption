@@ -18,10 +18,12 @@ var menu_instance = null
 var match_instance = null
 var root
 
+var player_deck = []
+
 func _ready():
     # init cursors
     for i in range(0, CursorType.keys().size()):
-        mouse_cursors[i] = load("res://ui/cursor/" + CursorType.keys()[i] + ".png")
+        mouse_cursors[i] = load("res://ui/cursor/" + CursorType.keys()[i].to_lower() + ".png")
     set_cursor(CursorType.POINTER)
     root = get_parent()
 

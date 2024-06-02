@@ -85,8 +85,10 @@ func _ready():
     network.client_server_disconnected.connect(_on_opponent_disconnect)
 
     # Init player deck
-    for i in range(0, 10):
-        player_deck.append(Card.CardName.STOAT)
+    # for i in range(0, 10):
+        #player_deck.append(Card.CardName.STOAT)
+    for card in director.player_deck:
+        player_deck.push_back(card) 
     ui_update_deck_counters()
 
     # Init opponent hand
@@ -128,7 +130,7 @@ func _process(_delta):
     if is_game_done:
         return
     if is_game_over:
-        if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+        if Input.is_action_just_pressed("mouse_button_left"):
             is_game_done = true
             var tween = get_tree().create_tween()
             tween.tween_property(fade, "color", Color(0, 0, 0, 1), 1.0)
@@ -318,12 +320,12 @@ func player_draw_process():
     var DECK_RECT = Rect2(deck.position + DECK_OFFSET, DECK_AREA_SIZE)
     if player_deck.size() != 0 and DECK_RECT.has_point(mouse_pos):
         cursor_type = director.CursorType.HAND
-        if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+        if Input.is_action_just_pressed("mouse_button_left"):
             drawn_card = player_deck.pop_back()
     var SQUIRREL_DECK_RECT = Rect2(squirrel_deck.position + DECK_OFFSET, DECK_AREA_SIZE)
     if player_squirrel_deck_count != 0 and SQUIRREL_DECK_RECT.has_point(mouse_pos):
         cursor_type = director.CursorType.HAND
-        if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+        if Input.is_action_just_pressed("mouse_button_left"):
             drawn_card = Card.CardName.SQUIRREL
             player_squirrel_deck_count -= 1
 
@@ -382,7 +384,7 @@ func player_hand_process():
     if hovered_ability != Ability.AbilityName.NONE:
         cursor_type = director.CursorType.RULEBOOK
 
-    if hovered_ability != Ability.AbilityName.NONE and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+    if hovered_ability != Ability.AbilityName.NONE and Input.is_action_just_pressed("mouse_button_right"):
         card_hover.close()
         rulebook_open(hovered_ability)
         return null
@@ -393,7 +395,7 @@ func player_hand_process():
 func player_turn_process():
     var hovered_card = player_hand_process()
 
-    if hovered_card != null and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+    if hovered_card != null and Input.is_action_just_pressed("mouse_button_left"):
         # Check if we can summon this card
         var can_summon = false
         if hovered_card.data.cost_type == CardData.CostType.NONE:
@@ -428,7 +430,7 @@ func player_turn_process():
 
     var mouse_pos = get_viewport().get_mouse_position()
     if BELL_RECT.has_point(mouse_pos):
-        if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+        if Input.is_action_just_pressed("mouse_button_left"):
             # COMBAT PHASE
             state = State.WAIT
 
@@ -490,7 +492,7 @@ func player_summoning_process():
     if summoning_cost_met:
         if hovered_cardslot != null:
             cursor_type = director.CursorType.DROP
-            if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+            if Input.is_action_just_pressed("mouse_button_left"):
                 # SUMMON
                 state = State.WAIT
                 if network.network_is_connected():
@@ -516,7 +518,7 @@ func player_summoning_process():
     elif summoning_card.data.cost_type == CardData.CostType.BLOOD:
         if hovered_cardslot != null:
             cursor_type = director.CursorType.KNIFE
-            if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+            if Input.is_action_just_pressed("mouse_button_left"):
                 # PERFORM SACRIFICE
                 state = State.WAIT
                 if network.network_is_connected():
@@ -536,7 +538,7 @@ func player_summoning_process():
 
 func rulebook_open(ability_name: Ability.AbilityName):
     var ability_data = load("res://match/data/ability/" + Ability.AbilityName.keys()[ability_name].to_lower() + ".tres")
-    rulebook_name_label.text = Ability.AbilityName.keys()[ability_name].replace("_", " ")
+    rulebook_name_label.text = Ability.AbilityName.keys()[ability_name].capitalize()
     rulebook_desc_label.text = ability_data.description
     rulebook_icon.texture = ability_data.icon
     rulebook.visible = true
@@ -546,7 +548,7 @@ func rulebook_close():
 
 func rulebook_process():
     director.set_cursor(director.CursorType.POINTER)
-    if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+    if Input.is_action_just_pressed("mouse_button_left"):
         rulebook_close()
 
 # COMBAT
