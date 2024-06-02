@@ -1,6 +1,8 @@
 extends Sprite2D
 
 @onready var library = get_node("../library")
+@onready var sfx_ok = get_node("../sfx/ok")
+@onready var sfx_back = get_node("../sfx/back")
 
 var button_rect: Rect2
 var is_tweening = false
@@ -20,6 +22,11 @@ func _process(_delta):
     var mouse_pos = get_viewport().get_mouse_position()
     if button_rect.has_point(mouse_pos):
         if Input.is_action_just_pressed("mouse_button_left"):
+            if not library.visible:
+                sfx_ok.play()
+            else:
+                sfx_back.play()
+
             is_tweening = true
 
             var tween = get_tree().create_tween()

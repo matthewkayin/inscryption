@@ -27,6 +27,13 @@ signal server_ready
 @onready var popup = $popup
 @onready var fade = $fade
 var blood_counter_sprites = []
+@onready var sfx_sacrifice = $sfx/sacrifice
+@onready var sfx_death = $sfx/death
+@onready var sfx_win = $sfx/win
+@onready var sfx_scale = $sfx/scale
+@onready var sfx_attack = $sfx/attack
+@onready var sfx_crunch = $sfx/crunch
+@onready var sfx_blip = $sfx/blip
 
 enum State {
     WAIT,
@@ -99,6 +106,8 @@ func _ready():
         await hand_add_card(Card.CardName.SQUIRREL)
     await hand_add_card(Card.CardName.STOAT)
     await hand_add_card(Card.CardName.BULLFROG)
+
+    await opponent_board_play_card(0, Card.CardName.SQUIRREL)
 
     if not network.network_is_connected():
         state = State.PLAYER_DRAW
@@ -265,6 +274,7 @@ func opponent_board_play_card(index: int, card_name: Card.CardName):
     card.card_set_name(card_name)
     await tween.finished
     await card.card_flip(Card.FlipTo.FRONT)
+    sfx_crunch.play()
     card.z_index = 0
 
     opponent_hand.erase(card)
@@ -274,6 +284,10 @@ func opponent_board_play_card(index: int, card_name: Card.CardName):
 func board_kill_card(turn: Turn, index: int, is_sacrifice = false):
     var board = player_board if turn == Turn.PLAYER else opponent_board
     var card = board[index] 
+    if is_sacrifice:
+        sfx_sacrifice.play()
+    else:
+        sfx_death.play()
     await card.animate_death(is_sacrifice)
     board[index] = null
     if turn == Turn.PLAYER:
@@ -439,6 +453,7 @@ func player_turn_process():
                 _on_opponent_ring_bell.rpc_id(network.opponent_id)
 
             # Ring the bell
+            sfx_blip.play()
             bell.frame_coords.x = int(BellState.PRESS)
             var tween = get_tree().create_tween()
             tween.tween_interval(0.2)
@@ -504,6 +519,7 @@ func player_summoning_process():
                 var tween = get_tree().create_tween()
                 tween.tween_property(summoning_card, "position", hovered_cardslot.global_position, 0.25)
                 await tween.finished
+                sfx_crunch.play()
                 summoning_card.z_index = 0
                 # Swap the card out of player hand and onto the board
                 player_hand.erase(summoning_card)
@@ -611,17 +627,19 @@ func check_if_candle_snuffed(turn: Turn):
         tween2.tween_interval(0.25)
         await tween2.finished
 
-        # Reset the scale
-        player_score = 0
-        opponent_score = 0
-        score_scale.display_scores(0, 0)
-
         if candles.no_candles_left():
             # End the game
+            sfx_win.play()
             var message = "You win!" if turn == Turn.PLAYER else "You lose."
             popup.open(message)
             set_game_over()
         else:
+            # Reset the scale
+            sfx_scale.play()
+            player_score = 0
+            opponent_score = 0
+            score_scale.display_scores(0, 0)
+
             # Give the defeated the smoke
             if turn == Turn.PLAYER:
                 await opponent_hand_add_card()
@@ -632,6 +650,7 @@ func combat_attack_animation_play(at_position: Vector2):
     attack_animation.position = at_position
     attack_animation.visible = true
     attack_animation.play()
+    sfx_attack.play()
     await attack_animation.animation_finished
     var fade_tween = get_tree().create_tween()
     fade_tween.tween_property(attack_animation, "modulate", Color(attack_animation.modulate.r, attack_animation.modulate.g, attack_animation.modulate.b, 0.0), 0.1)

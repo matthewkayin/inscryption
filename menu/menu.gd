@@ -31,6 +31,9 @@ extends Node2D
 @onready var lobby_back_button = $lobby_cluster/back_button
 @onready var lobby_status = $lobby_cluster/status
 
+@onready var sfx_ok = $sfx/ok
+@onready var sfx_back = $sfx/back
+
 var local_ip: String
 var client_ready = false
 
@@ -104,6 +107,7 @@ func main_show_warning(text):
 func _on_host_button_pressed():
     if not main_cluster.visible:
         return
+    sfx_ok.play()
     if name_edit.text == "":
         main_show_warning("Please enter a name.")
         return
@@ -114,6 +118,7 @@ func _on_host_button_pressed():
 func _on_join_button_pressed():
     if not main_cluster.visible:
         return
+    sfx_ok.play()
     if name_edit.text == "":
         main_show_warning("Please enter a name.")
         return
@@ -125,6 +130,7 @@ func _on_join_button_pressed():
 func _on_host_back_button_pressed():
     if not visible:
         return
+    sfx_back.play()
     network.network_disconnect()
     open_main_cluster()
 
@@ -149,9 +155,11 @@ func _host_on_client_disconnected():
 
 func _on_host_yes_button_pressed():
     _on_host_accept_reject_joiner.rpc_id(network.opponent_id, true)
+    sfx_ok.play()
     open_lobby_cluster()
 
 func _on_host_no_button_pressed():
+    sfx_back.play()
     _on_host_accept_reject_joiner.rpc_id(network.opponent_id, false)
 
 # JOIN CLUSTER
@@ -180,18 +188,21 @@ func open_join_cluster():
 func _on_join_back_button_pressed():
     if not join_back_button.visible:
         return 
+    sfx_back.play()
     network.network_disconnect()
     open_main_cluster()
 
 func _on_join_connect_back_button_pressed():
     if not join_connect_back_button.visible:
         return 
+    sfx_back.play()
     network.network_disconnect()
     open_join_cluster()
 
 func _on_join_connect_button_pressed():
     if not join_connect_button.visible:
         return
+    sfx_ok.play()
     if not ip_edit.text.is_valid_ip_address():
         show_join_warning("Invalid IP address.")
         return
@@ -255,6 +266,7 @@ func _lobby_on_server_disconnected():
     main_show_warning("Your opponent left the lobby.")
 
 func _on_lobby_start_button_pressed():
+    sfx_ok.play()
     if multiplayer.is_server():
         if not client_ready:
             return
@@ -266,6 +278,7 @@ func _on_lobby_start_button_pressed():
         lobby_update_status()
 
 func _on_lobby_back_button_pressed():
+    sfx_back.play()
     network.network_disconnect()
     open_main_cluster()
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://bt552mpt071ds"]
+[gd_scene load_steps=55 format=3 uid="uid://bt552mpt071ds"]
 
 [ext_resource type="Shader" path="res://tv.gdshader" id="1_11f21"]
 [ext_resource type="Texture2D" uid="uid://c5ct1qkw40xcv" path="res://match/gbc_cardslots_nature.png" id="1_655ic"]
@@ -6,10 +6,12 @@
 [ext_resource type="Texture2D" uid="uid://b0n7yg4w1v1uy" path="res://match/board_small.png" id="2_ybiry"]
 [ext_resource type="Texture2D" uid="uid://ca8ivso5gmwmn" path="res://match/button.png" id="3_162f3"]
 [ext_resource type="Texture2D" uid="uid://ng3gsgyqcykf" path="res://match/scale/scale_stand.png" id="5_mnc3l"]
+[ext_resource type="AudioStream" uid="uid://bbjbmqlwyu4ba" path="res://sfx/crunch_blip.wav" id="6_d0uu0"]
 [ext_resource type="Texture2D" uid="uid://b05sqlc4d5r3s" path="res://match/scale/scale_rod.png" id="6_eyq27"]
 [ext_resource type="Script" path="res://match/scale/scale.gd" id="7_3qqth"]
 [ext_resource type="Texture2D" uid="uid://brvl286gtr4a6" path="res://match/scale/scale_platform.png" id="7_mhr4x"]
 [ext_resource type="Texture2D" uid="uid://bjnw87y4wq0ef" path="res://match/blood_icon.png" id="7_oyw5s"]
+[ext_resource type="AudioStream" uid="uid://cv1mboi0h4ay7" path="res://sfx/plainBlip2.wav" id="7_q1yv2"]
 [ext_resource type="FontFile" uid="uid://dpq6fp6gls8cw" path="res://ui/Marksman.ttf" id="8_olekn"]
 [ext_resource type="Texture2D" uid="uid://dt0k78efplx2s" path="res://match/bone_icon.png" id="8_wdy8x"]
 [ext_resource type="Texture2D" uid="uid://ba8sxm3cmprxk" path="res://match/frame.png" id="11_j4jf2"]
@@ -17,13 +19,18 @@
 [ext_resource type="Script" path="res://match/candles.gd" id="12_ifxcr"]
 [ext_resource type="Shader" path="res://match/card/card_hover.gdshader" id="16_tyn71"]
 [ext_resource type="Texture2D" uid="uid://cg8oku6y325xm" path="res://match/deckicon.png" id="17_j5wjk"]
-[ext_resource type="Texture2D" uid="uid://cvjwxhl58bep" path="res://match/card/card_hover.png" id="17_r61ia"]
+[ext_resource type="Texture2D" uid="uid://yhbffw5ifap2" path="res://ui/card_hover.png" id="17_jbrna"]
 [ext_resource type="Texture2D" uid="uid://bsq150quekq58" path="res://match/deckicon_squirrel.png" id="18_7eevt"]
 [ext_resource type="Script" path="res://match/card/hover.gd" id="18_kjm2g"]
 [ext_resource type="Texture2D" uid="uid://1gdhsmcy6dk4" path="res://match/attack_animation.png" id="19_cn0ye"]
 [ext_resource type="Texture2D" uid="uid://cbaoi7pj2e1p3" path="res://match/candle.png" id="20_ato6r"]
 [ext_resource type="Texture2D" uid="uid://2a7lkv8ya8ks" path="res://library/frame.png" id="20_atvo1"]
 [ext_resource type="Script" path="res://match/popup.gd" id="22_bcbaa"]
+[ext_resource type="AudioStream" uid="uid://0iaxefntm0w2" path="res://sfx/pixel_card_sacrifice.wav" id="25_bjf7b"]
+[ext_resource type="AudioStream" uid="uid://dv2l8dh1qhg5e" path="res://sfx/pixel_card_death.wav" id="26_t8ca8"]
+[ext_resource type="AudioStream" uid="uid://4l0yuolhwowj" path="res://sfx/gbc_battle_win.wav" id="27_2tqoa"]
+[ext_resource type="AudioStream" uid="uid://c6gdoo4rj0u5d" path="res://sfx/crunch_short#2.wav" id="28_6b7wk"]
+[ext_resource type="AudioStream" uid="uid://b4qfqf17lnowx" path="res://sfx/pixel_card_attack_nature.wav" id="29_2soej"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_njcht"]
 font = ExtResource("8_olekn")
@@ -113,10 +120,52 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ie3c2"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ypbnl"]
 shader = ExtResource("16_tyn71")
-shader_parameter/offset = 0
 shader_parameter/border_color = Color(0.843137, 0.886275, 0.639216, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mm4b2"]
+atlas = ExtResource("17_jbrna")
+region = Rect2(0, 0, 46, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l3oj5"]
+atlas = ExtResource("17_jbrna")
+region = Rect2(46, 0, 46, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gjtnb"]
+atlas = ExtResource("17_jbrna")
+region = Rect2(92, 0, 46, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pf8rx"]
+atlas = ExtResource("17_jbrna")
+region = Rect2(138, 0, 46, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ndiis"]
+atlas = ExtResource("17_jbrna")
+region = Rect2(184, 0, 46, 60)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1aq1u"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mm4b2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l3oj5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gjtnb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pf8rx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ndiis")
+}],
+"loop": true,
+"name": &"default",
+"speed": 12.0
+}]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jo1yo"]
 atlas = ExtResource("19_cn0ye")
@@ -151,6 +200,29 @@ shader = ExtResource("1_11f21")
 [node name="match" type="Node2D"]
 texture_filter = 1
 script = ExtResource("1_ldl7k")
+
+[node name="sfx" type="Node" parent="."]
+
+[node name="sacrifice" type="AudioStreamPlayer" parent="sfx"]
+stream = ExtResource("25_bjf7b")
+
+[node name="death" type="AudioStreamPlayer" parent="sfx"]
+stream = ExtResource("26_t8ca8")
+
+[node name="win" type="AudioStreamPlayer" parent="sfx"]
+stream = ExtResource("27_2tqoa")
+
+[node name="scale" type="AudioStreamPlayer" parent="sfx"]
+stream = ExtResource("28_6b7wk")
+
+[node name="crunch" type="AudioStreamPlayer" parent="sfx"]
+stream = ExtResource("6_d0uu0")
+
+[node name="blip" type="AudioStreamPlayer" parent="sfx"]
+stream = ExtResource("7_q1yv2")
+
+[node name="attack" type="AudioStreamPlayer" parent="sfx"]
+stream = ExtResource("29_2soej")
 
 [node name="bg" type="Sprite2D" parent="."]
 scale = Vector2(2, 2)
@@ -445,16 +517,13 @@ scale = Vector2(2, 2)
 text = "x20"
 label_settings = SubResource("LabelSettings_njcht")
 
-[node name="card_hover" type="Sprite2D" parent="."]
-visible = false
+[node name="card_hover" type="AnimatedSprite2D" parent="."]
 z_index = 1
-material = SubResource("ShaderMaterial_ie3c2")
+material = SubResource("ShaderMaterial_ypbnl")
 position = Vector2(-4, -4)
 scale = Vector2(2, 2)
-texture = ExtResource("17_r61ia")
+sprite_frames = SubResource("SpriteFrames_1aq1u")
 script = ExtResource("18_kjm2g")
-
-[node name="timer" type="Timer" parent="card_hover"]
 
 [node name="attack_animation" type="AnimatedSprite2D" parent="."]
 visible = false

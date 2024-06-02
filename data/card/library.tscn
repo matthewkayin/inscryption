@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://byd1ebrm0dlya"]
+[gd_scene load_steps=37 format=3 uid="uid://byd1ebrm0dlya"]
 
 [ext_resource type="Script" path="res://library/library.gd" id="1_fjw3g"]
 [ext_resource type="Texture2D" uid="uid://phfrv0iph8x0" path="res://library/frame_x2.png" id="1_r5q4s"]
@@ -14,9 +14,9 @@
 [ext_resource type="Texture2D" uid="uid://cvyetqb8gfvo5" path="res://library/scroll_button.png" id="11_cturg"]
 [ext_resource type="Texture2D" uid="uid://b6d8b4s2sbmvk" path="res://library/scroll_button_down.png" id="12_myrde"]
 [ext_resource type="Shader" path="res://match/card/card_hover.gdshader" id="14_bem23"]
-[ext_resource type="Texture2D" uid="uid://cvjwxhl58bep" path="res://match/card/card_hover.png" id="15_ces0n"]
+[ext_resource type="Texture2D" uid="uid://yhbffw5ifap2" path="res://ui/card_hover.png" id="15_edtfv"]
 [ext_resource type="Script" path="res://match/card/hover.gd" id="16_itjph"]
-[ext_resource type="Texture2D" uid="uid://ddqwf5xmedyhb" path="res://library/decklist_card_border.png" id="17_bvovv"]
+[ext_resource type="Texture2D" uid="uid://bfnq8w2qor6lq" path="res://ui/hover_small_wide.png" id="17_15fl8"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_y74jx"]
 font = ExtResource("4_fdc8b")
@@ -47,13 +47,97 @@ outline_color = Color(0.00784314, 0.0392157, 0.0666667, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_wk4pw"]
 shader = ExtResource("14_bem23")
-shader_parameter/offset = 0
 shader_parameter/border_color = Color(0.00784314, 0.0392157, 0.0666667, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mm4b2"]
+atlas = ExtResource("15_edtfv")
+region = Rect2(0, 0, 46, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l3oj5"]
+atlas = ExtResource("15_edtfv")
+region = Rect2(46, 0, 46, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gjtnb"]
+atlas = ExtResource("15_edtfv")
+region = Rect2(92, 0, 46, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pf8rx"]
+atlas = ExtResource("15_edtfv")
+region = Rect2(138, 0, 46, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ndiis"]
+atlas = ExtResource("15_edtfv")
+region = Rect2(184, 0, 46, 60)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hcbc6"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mm4b2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l3oj5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gjtnb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pf8rx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ndiis")
+}],
+"loop": true,
+"name": &"default",
+"speed": 12.0
+}]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_n7y02"]
 shader = ExtResource("14_bem23")
-shader_parameter/offset = 0
 shader_parameter/border_color = Color(0.00784314, 0.0392157, 0.0666667, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b44yx"]
+atlas = ExtResource("17_15fl8")
+region = Rect2(0, 0, 92, 17)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jybx6"]
+atlas = ExtResource("17_15fl8")
+region = Rect2(92, 0, 92, 17)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j0cb8"]
+atlas = ExtResource("17_15fl8")
+region = Rect2(184, 0, 92, 17)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rvyou"]
+atlas = ExtResource("17_15fl8")
+region = Rect2(276, 0, 92, 17)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2a7ay"]
+atlas = ExtResource("17_15fl8")
+region = Rect2(368, 0, 92, 17)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tgled"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b44yx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jybx6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j0cb8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rvyou")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2a7ay")
+}],
+"loop": true,
+"name": &"default",
+"speed": 12.0
+}]
 
 [node name="library" type="Node2D"]
 texture_filter = 1
@@ -681,22 +765,20 @@ texture = ExtResource("12_myrde")
 hframes = 3
 script = ExtResource("4_meyqv")
 
-[node name="card_hover" type="Sprite2D" parent="."]
-visible = false
+[node name="card_hover" type="AnimatedSprite2D" parent="."]
 z_index = 1
 material = SubResource("ShaderMaterial_wk4pw")
 position = Vector2(-4, -4)
 scale = Vector2(2, 2)
-texture = ExtResource("15_ces0n")
+sprite_frames = SubResource("SpriteFrames_hcbc6")
+frame_progress = 0.679822
 script = ExtResource("16_itjph")
 
-[node name="timer" type="Timer" parent="card_hover"]
-
-[node name="decklist_card_hover" type="Sprite2D" parent="."]
+[node name="decklist_card_hover" type="AnimatedSprite2D" parent="."]
 visible = false
 material = SubResource("ShaderMaterial_n7y02")
 scale = Vector2(2, 2)
-texture = ExtResource("17_bvovv")
+sprite_frames = SubResource("SpriteFrames_tgled")
 centered = false
 script = ExtResource("16_itjph")
 
