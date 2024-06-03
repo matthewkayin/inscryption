@@ -79,7 +79,7 @@ var is_game_over = false
 var is_game_done = false
 var is_server_ready = false
 
-var skip_draw = true
+var skip_draw = false
 var skip_combat = false
 
 func _ready():
@@ -93,16 +93,23 @@ func _ready():
     rulebook_close()
 
     # Init player deck
+    var deck_unshuffled = []
     for card in director.player_deck:
-        player_deck.push_back(card) 
-    ui_update_deck_counters()
+        deck_unshuffled.push_back(card) 
+    while not deck_unshuffled.is_empty():
+        player_deck.push_back(deck_unshuffled.pop_at(randi_range(0, deck_unshuffled.size() - 1)))
 
     # Init opponent hand
     for i in range(0, 4):
         opponent_hand_add_card()
     # Init player hand
-    for i in range(0, 4):
-        await hand_add_card(Card.SQUIRREL)
+    await hand_add_card(Card.SQUIRREL)
+    for i in range(0, 3):
+        if player_deck.is_empty():
+            break
+        await hand_add_card(player_deck.pop_front())
+
+    ui_update_deck_counters()
 
     if not network.network_is_connected():
         state = State.PLAYER_DRAW
@@ -122,12 +129,14 @@ func _on_client_ready():
     _on_server_declared_first_turn.rpc_id(network.opponent_id, server_goes_first)
     state = State.PLAYER_DRAW if server_goes_first else State.WAIT
     var message = "You go first." if server_goes_first else "Opponent goes first."
+    skip_draw = server_goes_first
     popup.open(message, 1.0)
 
 @rpc("any_peer", "reliable")
 func _on_server_declared_first_turn(server_goes_first):
     state = State.WAIT if server_goes_first else State.PLAYER_DRAW
     var message = "Opponent goes first" if server_goes_first else "You go first." 
+    skip_draw = not server_goes_first
     popup.open(message, 1.0)
 
 func _process(_delta):
@@ -304,6 +313,9 @@ func player_draw_process():
         state = State.PLAYER_TURN
         return
 
+    if not popup.visible:
+        popup.open("Draw a card.")
+
     if player_deck.size() == 0 and player_squirrel_deck_count == 0:
         state = State.WAIT
         if network.network_is_connected():
@@ -339,6 +351,7 @@ func player_draw_process():
             player_squirrel_deck_count -= 1
 
     if drawn_card != null:
+        popup.close()
         if network.network_is_connected():
             _on_opponent_draw_card.rpc_id(network.opponent_id)
         state = State.WAIT

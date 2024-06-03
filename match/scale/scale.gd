@@ -6,7 +6,7 @@ extends Sprite2D
 @onready var opponent_platform = $opponent_platform
 @onready var opponent_score_label = $opponent_platform/score
 
-const SCORE_LIMIT = 10.0
+const SCORE_LIMIT = 5.0
 const PLATFORM_DROP_DISTANCE = 10.0
 
 func _ready():

@@ -25,12 +25,13 @@ func _ready():
 
     var card_paths = []
     var card_dir = DirAccess.open(CARD_DATA_BASE_PATH)
-    if card_dir:
-        card_dir.list_dir_begin()
-        var filename = card_dir.get_next()
-        while filename != "":
-            card_paths.push_back(filename)
-            filename = card_dir.get_next()
+    assert(card_dir)
+    card_dir.list_dir_begin()
+    var filename = card_dir.get_next()
+    while filename != "":
+        card_paths.push_back(filename)
+        filename = card_dir.get_next()
+
     card_paths.sort()
     for path in card_paths:
         var data = load(CARD_DATA_BASE_PATH + "/" + path)
