@@ -116,10 +116,7 @@ func card_refresh():
         cost_sprite.visible = false
     else:
         cost_sprite.visible = true
-        if data.cost_type == CardData.CostType.BLOOD:
-            cost_sprite.frame_coords.y = 0
-        elif data.cost_type == CardData.CostType.BLOOD:
-            cost_sprite.frame_coords.y = 1
+        cost_sprite.frame_coords.y = int(data.cost_type) - 1
         cost_sprite.frame_coords.x = data.cost_amount - 1
 
     # Set ability sprites

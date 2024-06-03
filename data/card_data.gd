@@ -16,3 +16,4 @@ enum CostType {
 @export var ability1: Ability.Name = Ability.Name.NONE
 @export var ability2: Ability.Name = Ability.Name.NONE
 @export var evolves_into: CardData = null
+@export var exclude_from_library: bool = false

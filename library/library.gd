@@ -44,14 +44,9 @@ func _ready():
     card_area_page_right.pressed.connect(_on_page_right_pressed)
 
 func open():
-    var LIBRARY_EXCLUDE = [
-        Card.SQUIRREL,
-        Card.THE_SMOKE
-    ]
-
     library = {}
     for card_id in range(0, Card.DATA.size()):
-        if LIBRARY_EXCLUDE.has(card_id):
+        if Card.DATA[card_id].exclude_from_library:
             continue
         library[card_id] = CARD_DUPLICATE_LIMIT
 

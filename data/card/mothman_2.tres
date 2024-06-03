@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3 uid="uid://ono348wetlii"]
+
+[ext_resource type="Resource" uid="uid://dmmq5xfftfdo8" path="res://data/card/mothman_3.tres" id="1_2pkln"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_3tjy3"]
+[ext_resource type="Texture2D" uid="uid://buycty4kumkqi" path="res://match/portrait/pixelportrait_mothman_2.png" id="2_fl12o"]
+
+[resource]
+script = ExtResource("2_3tjy3")
+name = "Strange Pupa"
+portrait = ExtResource("2_fl12o")
+cost_type = 1
+cost_amount = 1
+power = 0
+health = 3
+ability1 = 4
+ability2 = 0
+evolves_into = ExtResource("1_2pkln")
+exclude_from_library = true

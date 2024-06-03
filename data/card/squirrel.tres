@@ -13,3 +13,4 @@ power = 0
 health = 1
 ability1 = 0
 ability2 = 0
+exclude_from_library = true

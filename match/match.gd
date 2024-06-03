@@ -430,6 +430,8 @@ func player_turn_process():
                 blood_available += 1
             if blood_available >= hovered_card.data.cost_amount:
                 can_summon = true
+        elif hovered_card.data.cost_type == CardData.CostType.BONE and player_bone_count >= hovered_card.data.cost_amount:
+            can_summon = true
 
         # Begin summoning
         if can_summon:
@@ -439,7 +441,7 @@ func player_turn_process():
             state = State.PLAYER_SUMMONING
 
             summoning_card = hovered_card
-            if summoning_card.data.cost_type == CardData.CostType.NONE:
+            if summoning_card.data.cost_type == CardData.CostType.NONE or summoning_card.data.cost_type == CardData.CostType.BONE:
                 summoning_cost_met = true
             else:
                 summoning_cost_met = false
@@ -448,6 +450,8 @@ func player_turn_process():
             var message = ""
             if hovered_card.data.cost_type == CardData.CostType.BLOOD:
                 message = "You need more sacrifices to summon that."
+            elif hovered_card.data.cost_type == CardData.CostType.BONE:
+                message = "You need more bones to summon that."
             popup.open(message, 1.0)
 
     var mouse_pos = get_viewport().get_mouse_position()
@@ -532,6 +536,9 @@ func player_summoning_process():
                 # Swap the card out of player hand and onto the board
                 player_hand.erase(summoning_card)
                 player_board[hovered_cardslot_index] = summoning_card
+                if summoning_card.data.cost_type == CardData.CostType.BONE:
+                    player_bone_count -= summoning_card.data.cost_amount
+                    ui_update_bone_counter()
                 summoning_card = null
                 summoning_blood_count = 0
                 ui_update_blood_counter()

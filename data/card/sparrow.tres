@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://cne2sjvikro2m"]
+
+[ext_resource type="Texture2D" uid="uid://dw1evlyhm8rkn" path="res://match/portrait/pixelportrait_sparrow.png" id="1_aevir"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_a83f4"]
+
+[resource]
+script = ExtResource("2_a83f4")
+name = "Sparrow"
+portrait = ExtResource("1_aevir")
+cost_type = 1
+cost_amount = 1
+power = 1
+health = 2
+ability1 = 3
+ability2 = 0

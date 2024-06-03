@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://bc18x4qrsdjxi"]
+
+[ext_resource type="Texture2D" uid="uid://5dpsuiqhxdvy" path="res://match/portrait/pixelportrait_vulture.png" id="1_gos7c"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_8oe1p"]
+
+[resource]
+script = ExtResource("2_8oe1p")
+name = "Turkey Vulture"
+portrait = ExtResource("1_gos7c")
+cost_type = 2
+cost_amount = 8
+power = 3
+health = 3
+ability1 = 3
+ability2 = 0

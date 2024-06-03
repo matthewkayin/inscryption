@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://cg3nwx8gqy6tq"]
+
+[ext_resource type="Texture2D" uid="uid://dgmv47ntbkns1" path="res://match/portrait/pixelportrait_bat.png" id="1_gfub2"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_jgger"]
+
+[resource]
+script = ExtResource("1_jgger")
+name = "Bat"
+portrait = ExtResource("1_gfub2")
+cost_type = 2
+cost_amount = 4
+power = 2
+health = 1
+ability1 = 3
+ability2 = 0
+exclude_from_library = false
