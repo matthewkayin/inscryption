@@ -233,16 +233,16 @@ func evolve():
     await tween2.finished
 
 func get_sprint_direction():
-    if data.ability1 == Ability.Name.SPRINTER:
+    if data.ability1 == Ability.Name.SPRINTER or data.ability1 == Ability.Name.HEFTY:
         return -1 if ability_icons[0].flip_h else 1
-    elif data.ability2 == Ability.Name.SPRINTER:
+    elif data.ability2 == Ability.Name.SPRINTER or data.ability2 == Ability.Name.HEFTY:
         return -1 if ability_icons[1].flip_h else 1
     else:
         return 1
 
 func set_sprint_direction(direction: int):
     portrait.flip_h = direction == -1
-    if data.ability1 == Ability.Name.SPRINTER:
+    if data.ability1 == Ability.Name.SPRINTER or data.ability1 == Ability.Name.HEFTY:
         ability_icons[0].flip_h = direction == -1
     else:
         ability_icons[1].flip_h = direction == -1

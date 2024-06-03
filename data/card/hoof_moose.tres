@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://bo1s2lkxf2an8"]
+
+[ext_resource type="Texture2D" uid="uid://76nw7x6fjvj7" path="res://match/portrait/pixelportrait_moose.png" id="1_i3va3"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_ldpig"]
+
+[resource]
+script = ExtResource("2_ldpig")
+name = "Moose Buck"
+portrait = ExtResource("1_i3va3")
+rarity = 1
+cost_type = 1
+cost_amount = 3
+power = 3
+health = 7
+ability1 = 10
+ability2 = 0

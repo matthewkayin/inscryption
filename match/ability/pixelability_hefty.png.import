@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cl5fktvm3cm2f"
-path="res://.godot/imported/pixelability_strafepush.png-1a9ea92c381651caa1bfa19daa5ff7e6.ctex"
+path="res://.godot/imported/pixelability_hefty.png-bbd25161215b369d66652f32c22a7537.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_strafepush.png"
-dest_files=["res://.godot/imported/pixelability_strafepush.png-1a9ea92c381651caa1bfa19daa5ff7e6.ctex"]
+source_file="res://match/ability/pixelability_hefty.png"
+dest_files=["res://.godot/imported/pixelability_hefty.png-bbd25161215b369d66652f32c22a7537.ctex"]
 
 [params]
 

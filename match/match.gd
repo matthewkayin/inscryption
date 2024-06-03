@@ -279,7 +279,7 @@ func opponent_board_play_card(index: int, card_id: int):
     tween.tween_property(card, "position", opponent_cardslots[index].global_position, 0.25)
     card.set_card_id(card_id)
     await tween.finished
-    if card.has_ability(Ability.Name.SPRINTER):
+    if card.has_ability(Ability.Name.SPRINTER) or card.has_ability(Ability.Name.HEFTY):
         card.set_sprint_direction(-1)
     await card.card_flip(Card.FlipTo.FRONT)
     sfx_crunch.play()
@@ -324,7 +324,7 @@ func board_kill_card(turn: Turn, index: int, is_sacrifice = false):
         else:
             player_bone_count += 1
         ui_update_bone_counter()
-    await on_card_died(turn, card, index)
+    await on_card_died(turn, card, index, is_sacrifice)
     card.queue_free()
 
 func board_compute_powers(which: Turn):
@@ -357,10 +357,10 @@ func on_card_played(by_who: Turn, _card: Card, index: int):
     board_compute_powers(Turn.PLAYER)
     board_compute_powers(Turn.OPPONENT)
 
-func on_card_died(who: Turn, card: Card, index: int):
+func on_card_died(who: Turn, card: Card, index: int, was_sacrifice = false):
     var board = player_board if who == Turn.PLAYER else opponent_board
 
-    if card.has_ability(Ability.Name.MANY_LIVES):
+    if was_sacrifice and card.has_ability(Ability.Name.MANY_LIVES):
         board_add_card(who, index, card.card_id)
         if board[index].sacrifice_count < CAT_LIVES:
             board[index].sacrifice_count = card.sacrifice_count + 1
@@ -377,7 +377,8 @@ func on_combat_over(who: Turn):
     var defender_board = opponent_board if who == Turn.PLAYER else player_board
 
     var skip_index = false
-    for board_index in range(0, attacker_board.size()):
+    var lane_indices = range(0, 4) if who == Turn.PLAYER else range(3, -1, -1)
+    for board_index in lane_indices:
         if skip_index:
             skip_index = false
             continue
@@ -385,18 +386,52 @@ func on_combat_over(who: Turn):
         if card == null:
             continue
         if card.has_ability(Ability.Name.SPRINTER):
+            # Determine if blocked
             var direction = card.get_sprint_direction()
             var next_index = board_index + direction
             var is_blocked = next_index < 0 or next_index >= attacker_board.size() or attacker_board[next_index] != null
+
+            # If so, flip direction
             if is_blocked:
                 card.set_sprint_direction(direction * -1)
+            # Otherwise, move one space
             else:
                 var tween = get_tree().create_tween()
                 tween.tween_property(card, "position", attacker_cardslots[next_index].global_position, 0.25)
                 await tween.finished
                 attacker_board[next_index] = card
                 attacker_board[board_index] = null
-                skip_index = true
+
+                # If we moved into the next index to be iterated over, skip that index
+                if (direction == 1 and who == Turn.PLAYER) or (direction == -1 and who == Turn.OPPONENT):
+                    skip_index = true
+        if card.has_ability(Ability.Name.HEFTY):
+            # Determine if blocked
+            var direction = card.get_sprint_direction()
+            var next_free_index = board_index
+            while next_free_index >= 0 and next_free_index < attacker_board.size() and attacker_board[next_free_index] != null:
+                next_free_index += direction
+            var is_blocked = next_free_index < 0 or next_free_index >= attacker_board.size()
+
+            # If so, flip direction
+            if is_blocked:
+                card.set_sprint_direction(direction * -1)
+            # Otherwise, move one space
+            else:
+                var tween = get_tree().create_tween()
+                # Start from the free space and move everyone over one at a time
+                var dest_index = next_free_index
+                while dest_index != board_index:
+                    var source_index = dest_index - direction
+                    tween.parallel().tween_property(attacker_board[source_index], "position", attacker_cardslots[dest_index].global_position, 0.25)
+                    attacker_board[dest_index] = attacker_board[source_index]
+
+                    dest_index = source_index
+                attacker_board[board_index] = null
+                await tween.finished
+                # If we moved into the next index to be iterated over, skip that index
+                if (direction == 1 and who == Turn.PLAYER) or (direction == -1 and who == Turn.OPPONENT):
+                    skip_index = true
     for card in defender_board:
         if card == null:
             continue

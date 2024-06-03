@@ -11,7 +11,8 @@ enum Name {
     LEADER,
     MANY_LIVES,
     WORTHY_SACRIFICE,
-    SPRINTER
+    SPRINTER,
+    HEFTY
 }
 
 const DESC = {
@@ -24,7 +25,8 @@ const DESC = {
     Name.LEADER: "Creatures adjacent to this card\ngain 1 power.",
     Name.MANY_LIVES: "When this card is sacrificed,\nit does not perish.",
     Name.WORTHY_SACRIFICE: "This card counts as 3 Blood rather\nthan 1 Blood when sacrificed.",
-    Name.SPRINTER: "At the end of the owner's turn, this\ncard moves in the sigil's direction."
+    Name.SPRINTER: "After owner's turn, this\ncard moves in the sigil's direction.",
+    Name.HEFTY: "After owner's turn, this and adjacent\ncards move in the sigil's direction."
 }
 
 static func name_str(ability_name: Name) -> String:
