@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3 uid="uid://b2b3d7htbiowg"]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_beno0"]
+[ext_resource type="Texture2D" uid="uid://bxhk4iupcgepq" path="res://match/portrait/pixelportrait_cat.png" id="1_bq13x"]
+[ext_resource type="Resource" uid="uid://i0ph03bj4j5b" path="res://data/card/misc_cat_undead.tres" id="1_f6tb2"]
+
+[resource]
+script = ExtResource("1_beno0")
+name = "Cat"
+portrait = ExtResource("1_bq13x")
+rarity = 1
+cost_type = 1
+cost_amount = 1
+power = 0
+health = 1
+ability1 = 7
+ability2 = 0
+evolves_into = ExtResource("1_f6tb2")

@@ -40,6 +40,7 @@ var data: CardData
 # behavior
 var card_id: int
 var state = State.NONE
+var sacrifice_count = 0
 
 var previous_position = null
 const ANIMATE_PRESUMMON_POSITION_OFFSETS = [

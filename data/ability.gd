@@ -8,7 +8,8 @@ enum Name {
     AIRBORNE,
     EVOLVE,
     GUARDIAN,
-    LEADER
+    LEADER,
+    MANY_LIVES
 }
 
 const DESC = {
@@ -18,7 +19,8 @@ const DESC = {
     Name.AIRBORNE: "This card ignores opposing creatures\nand attacks an opponent directly.",
     Name.EVOLVE: "After surviving for 1 turn, this card\ngrows into a stronger form.",
     Name.GUARDIAN: "When an opposing card is played, this\ncard moves into the opposite space.",
-    Name.LEADER: "Creatures adjacent to this card\ngain 1 power."
+    Name.LEADER: "Creatures adjacent to this card\ngain 1 power.",
+    Name.MANY_LIVES: "When this card is sacrificed,\nit does not perish."
 }
 
 static func name_str(ability_name: Name) -> String:

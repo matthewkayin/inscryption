@@ -54,6 +54,8 @@ enum Turn {
     OPPONENT
 }
 
+const CAT_LIVES = 9
+
 const BELL_SIZE = Vector2(182, 72)
 @onready var BELL_RECT = Rect2(bell.position - (BELL_SIZE * 0.5), BELL_SIZE)
 
@@ -353,7 +355,17 @@ func on_card_played(by_who: Turn, _card: Card, index: int):
     board_compute_powers(Turn.PLAYER)
     board_compute_powers(Turn.OPPONENT)
 
-func on_card_died(_who: Turn, _card: Card, _index: int):
+func on_card_died(who: Turn, card: Card, index: int):
+    var board = player_board if who == Turn.PLAYER else opponent_board
+
+    if card.has_ability(Ability.Name.MANY_LIVES):
+        board_add_card(who, index, card.card_id)
+        if board[index].sacrifice_count < CAT_LIVES:
+            board[index].sacrifice_count = card.sacrifice_count + 1
+            if board[index].sacrifice_count == CAT_LIVES:
+                if board[index].data.evolves_into != null:
+                    await board[index].evolve()
+
     board_compute_powers(Turn.PLAYER)
     board_compute_powers(Turn.OPPONENT)
 
@@ -488,6 +500,23 @@ func player_turn_process():
         elif hovered_card.data.cost_type == CardData.CostType.BONE and player_bone_count >= hovered_card.data.cost_amount:
             can_summon = true
 
+        # Check if there is space to summon this card
+        var is_board_space_available = false
+        for card in player_board:
+            # Empty spaces count can be summoned onto
+            if card == null:
+                is_board_space_available = true
+                break
+
+            var card_will_reoccupy_slot = false
+            if card.has_ability(Ability.Name.MANY_LIVES) and card.sacrifice_count < CAT_LIVES:
+                card_will_reoccupy_slot = true
+            if hovered_card.data.cost_type == CardData.CostType.BLOOD and not card_will_reoccupy_slot:
+                is_board_space_available = true
+                break
+        if not is_board_space_available:
+            can_summon = false
+
         # Begin summoning
         if can_summon:
             card_hover.close()
@@ -503,7 +532,9 @@ func player_turn_process():
         # Show can't summon message
         else:
             var message = ""
-            if hovered_card.data.cost_type == CardData.CostType.BLOOD:
+            if not is_board_space_available:
+                message = "You have nowhere to place that."
+            elif hovered_card.data.cost_type == CardData.CostType.BLOOD:
                 message = "You need more sacrifices to summon that."
             elif hovered_card.data.cost_type == CardData.CostType.BONE:
                 message = "You need more bones to summon that."

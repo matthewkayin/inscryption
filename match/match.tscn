@@ -561,8 +561,8 @@ offset_left = 45.0
 offset_top = 11.5
 offset_right = 313.0
 offset_bottom = 34.5
-text = "Creatures adjacent to this card
-gain 1 power."
+text = "When this card is sacrificed,
+it does not perish."
 label_settings = SubResource("LabelSettings_g8paj")
 
 [node name="icon" type="Sprite2D" parent="rulebook"]
@@ -605,7 +605,8 @@ color = Color(0, 0, 0, 0)
 
 [node name="tv_filter" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_bh64l")
-offset_right = 640.0
+offset_left = -312.0
+offset_right = 328.0
 offset_bottom = 480.0
 mouse_filter = 2
 color = Color(0, 0, 0, 0.101961)

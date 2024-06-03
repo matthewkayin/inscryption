@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dgmw2t1mv2hcm"
-path="res://.godot/imported/pixelability_sacrificial.png-573ecbac72a8c1629fd483c7736315d2.ctex"
+path="res://.godot/imported/pixelability_many_lives.png-260a9660c57442e73e567983d4f64042.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_sacrificial.png"
-dest_files=["res://.godot/imported/pixelability_sacrificial.png-573ecbac72a8c1629fd483c7736315d2.ctex"]
+source_file="res://match/ability/pixelability_many_lives.png"
+dest_files=["res://.godot/imported/pixelability_many_lives.png-260a9660c57442e73e567983d4f64042.ctex"]
 
 [params]
 
