@@ -1,10 +1,12 @@
-[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://ncx7l0uh1oaw"]
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3 uid="uid://ncx7l0uh1oaw"]
 
 [ext_resource type="Script" path="res://data/card_data.gd" id="1_3b8mk"]
 [ext_resource type="Texture2D" uid="uid://cjad70sd04xay" path="res://match/portrait/pixelportrait_ravenegg.png" id="1_4jxpd"]
+[ext_resource type="Resource" uid="uid://c84ek8pxmnqa4" path="res://data/card/raven.tres" id="1_sc8l6"]
 
 [resource]
 script = ExtResource("1_3b8mk")
+name = "Raven Egg"
 portrait = ExtResource("1_4jxpd")
 cost_type = 1
 cost_amount = 1
@@ -12,3 +14,4 @@ power = 0
 health = 2
 ability1 = 4
 ability2 = 0
+evolves_into = ExtResource("1_sc8l6")

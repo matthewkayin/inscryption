@@ -5,6 +5,7 @@
 
 [resource]
 script = ExtResource("1_6tbvs")
+name = "Bullfrog"
 portrait = ExtResource("1_ana6s")
 cost_type = 1
 cost_amount = 1

@@ -16,19 +16,15 @@ extends Node2D
 @onready var card_area_page_left = $card_area/page_left
 @onready var card_area_page_right = $card_area/page_right
 
-const LIBRARY_EXCLUDE = [
-    Card.CardName.SQUIRREL,
-    Card.CardName.THE_SMOKE
-]
 const CARD_AREA_PAGE_SIZE = 8
 var CARD_AREA_LAST_PAGE  
-var library = []
+var library = {}
 var card_area_cards = []
 var card_area_page_number = 0
 
 const MAX_DECK_SIZE = 20
 const CARD_DUPLICATE_LIMIT = 4
-var deck = []
+var deck = {}
 
 var decklist_scroll_offset = 0
 
@@ -38,7 +34,7 @@ func _ready():
     for card_control in card_area_row2.get_children():
         card_area_cards.push_back(card_control.get_child(0))
     for card in card_area_cards:
-        card.card_init(Card.CardName.SQUIRREL)
+        card.card_init(Card.SQUIRREL)
 
     decklist_scroll_up_button.pressed.connect(_on_scroll_up)
     decklist_scroll_down_button.pressed.connect(_on_scroll_down)
@@ -48,57 +44,57 @@ func _ready():
     card_area_page_right.pressed.connect(_on_page_right_pressed)
 
 func open():
-    library = []
-    for card_index in range(0, Card.CardName.keys().size()):
-        var should_exclude = false
-        for excluded_index in LIBRARY_EXCLUDE:
-            if card_index == int(excluded_index):
-                should_exclude = true
-                break
-        if should_exclude:
+    var LIBRARY_EXCLUDE = [
+        Card.SQUIRREL,
+        Card.THE_SMOKE
+    ]
+
+    library = {}
+    for card_id in range(0, Card.DATA.size()):
+        if LIBRARY_EXCLUDE.has(card_id):
             continue
-        library.push_back({
-            "card_name": card_index,
-            "quantity": CARD_DUPLICATE_LIMIT
-        })
+        library[card_id] = CARD_DUPLICATE_LIMIT
 
-    deck = []
-    for card in director.player_deck:
-        for library_card in library:
-            if library_card.card_name == card:
-                library_card.quantity -= 1
-                break
-        var card_entered = false
-        for existing_card in deck:
-            if existing_card.card_name == card:
-                existing_card.quantity += 1
-                card_entered = true
-        if not card_entered:
-            var data = Card.load_data(card)
-            deck.push_back({
-                "card_name": card,
-                "quantity": 1,
-                "data": data
-            })
+    deck = {}
+    for card_id in director.player_deck:
+        library[card_id] -= 1
+        if deck.has(card_id):
+            deck[card_id] += 1
+        else:
+            deck[card_id] = 1
 
-    CARD_AREA_LAST_PAGE = int(float(library.size()) / float(CARD_AREA_PAGE_SIZE))
+    CARD_AREA_LAST_PAGE = int(float(library.keys().size()) / float(CARD_AREA_PAGE_SIZE))
     card_area_refresh()
 
     decklist_scroll_offset = 0
     decklist_refresh()
 
     rulebook_close()
+
+    decklist_scroll_up_button.is_enabled = true
+    decklist_scroll_down_button.is_enabled = true
+    trash_button.is_enabled = true
+    save_button.is_enabled = true
+    card_area_page_left.is_enabled = true
+    card_area_page_right.is_enabled = true
+
     visible = true
 
 func close():
     _on_save_pressed()
-    deck = []
+    deck = {}
+    decklist_scroll_up_button.is_enabled = false
+    decklist_scroll_down_button.is_enabled = false
+    trash_button.is_enabled = false
+    save_button.is_enabled = false
+    card_area_page_left.is_enabled = false
+    card_area_page_right.is_enabled = false
     visible = false
 
 func deck_card_count():
     var count = 0
-    for card in deck:
-        count += card.quantity
+    for card_id in deck.keys():
+        count += deck[card_id]
     return count
 
 func _on_scroll_up():
@@ -115,9 +111,9 @@ func _on_trash_pressed():
 
 func _on_save_pressed():
     director.player_deck = []
-    for card in deck:
-        for i in range(0, card.quantity):
-            director.player_deck.push_back(card.card_name)
+    for card_id in deck.keys():
+        for i in range(0, deck[card_id]):
+            director.player_deck.push_back(card_id)
 
 func _on_page_left_pressed():
     card_area_page_number = max(card_area_page_number - 1, 0)
@@ -156,10 +152,13 @@ func _process(_delta):
         card_hover.close()
         rulebook_close()
     if hovered_card != null:
+        var library_card_index = (card_area_page_number * CARD_AREA_LAST_PAGE) + hovered_card_index
+        var card_id = library.keys()[library_card_index]
+
         # Show card hover
         if not card_hover.visible or (card_hover.visible and card_hover.position != hovered_card.global_position):
             card_hover.open(hovered_card.global_position)
-            rulebook_open(hovered_card)
+            rulebook_open(card_id)
 
         # On clicked Card Area card
         if Input.is_action_just_pressed("mouse_button_left"):
@@ -167,26 +166,18 @@ func _process(_delta):
             if deck_card_count() == MAX_DECK_SIZE:
                 return
             # Check if card already exists in deck
-            var card_entered_deck = false
-            for existing_card in deck:
-                if existing_card.card_name == hovered_card.card_name:
-                    # Don't add the card if we've hit the duplicate limit
-                    if existing_card.quantity == CARD_DUPLICATE_LIMIT:
-                        return
-                    # If it exists, increase the quantity
-                    existing_card.quantity += 1
-                    card_entered_deck = true
-            # If it does not exist, make a new entry in the decklist
-            if not card_entered_deck:
-                deck.push_back({
-                    "card_name": hovered_card.card_name,
-                    "quantity": 1,
-                    "data": hovered_card.data
-                })
+            var deck_has_card = deck.keys().has(card_id)
+            # Don't add the card if we've hit the duplicate limit
+            if deck_has_card and deck[card_id] == CARD_DUPLICATE_LIMIT:
+                return
+            # Add the card to the deck
+            if deck_has_card:
+                deck[card_id] += 1
+            else:
+                deck[card_id] = 1
             # Remove a copy of the card from the library
-            var library_index = (card_area_page_number * CARD_AREA_PAGE_SIZE) + hovered_card_index
-            library[library_index].quantity -= 1
-            if library[library_index].quantity == 0:
+            library[card_id] -= 1
+            if library[card_id] == 0:
                 hovered_card.dim.visible = true
             # Scroll to the bottom of the list
             decklist_scroll_offset = decklist_scroll_offset_max()
@@ -214,26 +205,25 @@ func _process(_delta):
         var decklist_card_hover_position = hovered_decklist_card.global_position - Vector2(4, 4)
         if not decklist_card_hover.visible or (decklist_card_hover.visible and decklist_card_hover.position != decklist_card_hover_position):
             decklist_card_hover.open(decklist_card_hover_position)
-            rulebook_open(deck[hovered_decklist_card_index + decklist_scroll_offset])
+            rulebook_open(deck.keys()[hovered_decklist_card_index + decklist_scroll_offset])
         if Input.is_action_just_pressed("mouse_button_left"):
             # Find the card in the deck
             var decklist_card_name = hovered_decklist_card.get_node("name").text
-            for card in deck:
-                var card_name_string = Card.CardName.keys()[card.card_name].capitalize()
-                if card_name_string == decklist_card_name:
-                    # Remove the card from the deck
-                    card.quantity -= 1
-                    if card.quantity == 0:
-                        deck.erase(card)
-                    # Add a copy of the card to the library
-                    for library_card in library:
-                        if library_card.card_name == card.card_name:
-                            library_card.quantity += 1
-                    # Scroll up a little if necessary
-                    decklist_scroll_offset = min(decklist_scroll_offset, decklist_scroll_offset_max())
-                    decklist_refresh()
-                    card_area_refresh()
+            var card_id
+            for deck_card_id in deck:
+                if Card.DATA[deck_card_id].name == decklist_card_name:
+                    card_id = deck_card_id
                     break
+            # Remove the card from the deck
+            deck[card_id] -= 1
+            if deck[card_id] == 0:
+                deck.erase(card_id)
+            # Add a copy of the card to the library
+            library[card_id] += 1
+            # Scroll up a little if necessary
+            decklist_scroll_offset = min(decklist_scroll_offset, decklist_scroll_offset_max())
+            decklist_refresh()
+            card_area_refresh()
         return
 
 # CARD AREA
@@ -245,11 +235,12 @@ func card_area_refresh():
     var base_card_index = card_area_page_number * CARD_AREA_PAGE_SIZE
     for i in range(0, CARD_AREA_PAGE_SIZE):
         var card = card_area_cards[i]
-        var card_index = base_card_index + i
-        if card_index < library.size():
-            card.card_set_name(library[card_index].card_name)
+        var library_card_index = base_card_index + i
+        if library_card_index < library.keys().size():
+            var card_id = library.keys()[library_card_index]
+            card.set_card_id(card_id)
             card.card_refresh()
-            card.dim.visible = library[card_index].quantity == 0
+            card.dim.visible = library[card_id] == 0
             card.visible = true
         else:
             card.visible = false
@@ -259,10 +250,7 @@ func card_area_refresh():
 @onready var decklist_size_label = $size_tab/label
 
 func decklist_scroll_offset_max():
-    if deck.size() > decklist_cards.size():
-        return deck.size() - decklist_cards.size()
-    else:
-        return 0
+    return max(deck.keys().size() - decklist_cards.size(), 0)
 
 func decklist_refresh():
     decklist_size_label.text = str(deck_card_count()) + "/" + str(MAX_DECK_SIZE)
@@ -272,13 +260,14 @@ func decklist_refresh():
     decklist_cards[0].visible = not decklist_scroll_up_button.visible
     for decklist_card_index in range(0, decklist_cards.size()):
         var card_index = decklist_card_index + decklist_scroll_offset
-        if card_index >= deck.size():
+        if card_index >= deck.keys().size():
             decklist_cards[decklist_card_index].visible = false
             continue
         decklist_cards[decklist_card_index].visible = true
-        decklist_cards[decklist_card_index].get_node("name").text = Card.CardName.keys()[deck[card_index].card_name].capitalize()
-        decklist_cards[decklist_card_index].get_node("quantity").text = "x" + str(deck[card_index].quantity)
-        decklist_cards[decklist_card_index].get_node("quantity").visible = deck[card_index].quantity > 1
+        var card_id = deck.keys()[card_index]
+        decklist_cards[decklist_card_index].get_node("name").text = Card.DATA[card_id].name
+        decklist_cards[decklist_card_index].get_node("quantity").text = "x" + str(deck[card_id])
+        decklist_cards[decklist_card_index].get_node("quantity").visible = deck[card_id] > 1
 
 # RULEBOOK
 
@@ -295,39 +284,40 @@ func decklist_refresh():
 @onready var rulebook_power = $rulebook/power
 @onready var rulebook_health = $rulebook/health
 
-func rulebook_open(card):
+func rulebook_open(card_id):
+    var data = Card.DATA[card_id]
     # Name
-    rulebook_name.text = Card.CardName.keys()[card.card_name].capitalize()
+    rulebook_name.text = data.name
 
     # Cost
-    if card.data.cost_type == CardData.CostType.NONE:
+    if data.cost_type == CardData.CostType.NONE:
         rulebook_cost.visible = false
     else:
         rulebook_cost.visible = true
-        rulebook_cost.frame_coords.y = int(card.data.cost_type) - 1
-        rulebook_cost.frame_coords.x = card.data.cost_amount - 1
+        rulebook_cost.frame_coords.y = int(data.cost_type) - 1
+        rulebook_cost.frame_coords.x = data.cost_amount - 1
 
     # Ability 1
-    if card.data.ability1 == Ability.Name.NONE:
+    if data.ability1 == Ability.Name.NONE:
         rulebook_ability1.visible = false
     else:
         rulebook_ability1.visible = true
-        rulebook_ability1_name.text = Ability.name_str(card.data.ability1)
-        rulebook_ability1_desc.text = Ability.DESC[card.data.ability1]
-        rulebook_ability1_icon.texture = Ability.load_icon(card.data.ability1)
+        rulebook_ability1_name.text = Ability.name_str(data.ability1)
+        rulebook_ability1_desc.text = Ability.DESC[data.ability1]
+        rulebook_ability1_icon.texture = Ability.load_icon(data.ability1)
 
     # Ability 2
-    if card.data.ability2 == Ability.Name.NONE:
+    if data.ability2 == Ability.Name.NONE:
         rulebook_ability2.visible = false
     else:
         rulebook_ability2.visible = true
-        rulebook_ability2_name.text = Ability.name_str(card.data.ability2)
-        rulebook_ability2_desc.text = Ability.DESC[card.data.ability2]
-        rulebook_ability2_icon.texture = Ability.load_icon(card.data.ability2)
+        rulebook_ability2_name.text = Ability.name_str(data.ability2)
+        rulebook_ability2_desc.text = Ability.DESC[data.ability2]
+        rulebook_ability2_icon.texture = Ability.load_icon(data.ability2)
 
     # Power and Health
-    rulebook_power.text = str(card.data.power)
-    rulebook_health.text = str(card.data.health)
+    rulebook_power.text = str(data.power)
+    rulebook_health.text = str(data.health)
 
 func rulebook_close():
     rulebook_name.text = ""

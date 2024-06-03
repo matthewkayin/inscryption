@@ -93,8 +93,6 @@ func _ready():
     rulebook_close()
 
     # Init player deck
-    # for i in range(0, 10):
-        #player_deck.append(Card.CardName.STOAT)
     for card in director.player_deck:
         player_deck.push_back(card) 
     ui_update_deck_counters()
@@ -103,10 +101,8 @@ func _ready():
     for i in range(0, 4):
         opponent_hand_add_card()
     # Init player hand
-    for i in range(0, 2):
-        await hand_add_card(Card.CardName.SQUIRREL)
-    await hand_add_card(Card.CardName.RAVEN)
-    await hand_add_card(Card.CardName.BULLFROG)
+    for i in range(0, 4):
+        await hand_add_card(Card.SQUIRREL)
 
     if not network.network_is_connected():
         state = State.PLAYER_DRAW
@@ -191,11 +187,11 @@ func hand_update_positions():
             tween.parallel().tween_property(player_hand[i], "position", Vector2(card_x, HAND_CENTER.y), HAND_UPDATE_DURATION)
     await tween.finished
 
-func hand_add_card(card_name: Card.CardName):
+func hand_add_card(card_id: int):
     const CARD_SPAWN_POS = Vector2(681, 407)
 
     var card_instance = card_scene.instantiate()
-    card_instance.card_init(card_name)
+    card_instance.card_init(card_id)
     add_child(card_instance)
     card_instance.position = CARD_SPAWN_POS
     player_hand.append(card_instance)
@@ -206,7 +202,7 @@ func opponent_hand_add_card():
     const CARD_SPAWN_POS = Vector2(681, -24)
 
     var opponent_card = card_scene.instantiate()
-    opponent_card.card_init(Card.CardName.SQUIRREL, true)
+    opponent_card.card_init(Card.SQUIRREL, true)
     add_child(opponent_card)
     opponent_card.position = CARD_SPAWN_POS
     opponent_hand.append(opponent_card)
@@ -253,9 +249,9 @@ func ui_update_deck_counters():
 
 # BOARD
 
-func board_add_card(which: Turn, index: int, card_name: Card.CardName):
+func board_add_card(which: Turn, index: int, card_id: int):
     var card_instance = card_scene.instantiate()
-    card_instance.card_init(card_name)
+    card_instance.card_init(card_id)
     add_child(card_instance)
     if which == Turn.PLAYER:
         card_instance.position = player_cardslots[index].global_position
@@ -264,13 +260,13 @@ func board_add_card(which: Turn, index: int, card_name: Card.CardName):
         card_instance.position = opponent_cardslots[index].global_position
         opponent_board[index] = card_instance
 
-func opponent_board_play_card(index: int, card_name: Card.CardName):
+func opponent_board_play_card(index: int, card_id: int):
     var card = opponent_hand[opponent_hand.size() - 1]
     card.z_index = 1
 
     var tween = get_tree().create_tween()
     tween.tween_property(card, "position", opponent_cardslots[index].global_position, 0.25)
-    card.card_set_name(card_name)
+    card.set_card_id(card_id)
     await tween.finished
     await card.card_flip(Card.FlipTo.FRONT)
     sfx_crunch.play()
@@ -339,7 +335,7 @@ func player_draw_process():
     if player_squirrel_deck_count != 0 and SQUIRREL_DECK_RECT.has_point(mouse_pos):
         cursor_type = director.CursorType.HAND
         if Input.is_action_just_pressed("mouse_button_left"):
-            drawn_card = Card.CardName.SQUIRREL
+            drawn_card = Card.SQUIRREL
             player_squirrel_deck_count -= 1
 
     if drawn_card != null:
@@ -510,7 +506,7 @@ func player_summoning_process():
                 # SUMMON
                 state = State.WAIT
                 if network.network_is_connected():
-                    _on_opponent_place_card.rpc_id(network.opponent_id, hovered_cardslot_index, summoning_card.card_name)
+                    _on_opponent_place_card.rpc_id(network.opponent_id, hovered_cardslot_index, summoning_card.card_id)
                 director.set_cursor(director.CursorType.POINTER)
                 card_hover.close()
                 summoning_card.animate_presummon_end()
@@ -652,7 +648,7 @@ func check_if_candle_snuffed(turn: Turn):
             if turn == Turn.PLAYER:
                 await opponent_hand_add_card()
             else:
-                await hand_add_card(Card.CardName.THE_SMOKE)
+                await hand_add_card(Card.THE_SMOKE)
 
 func combat_attack_animation_play(at_position: Vector2):
     attack_animation.position = at_position
@@ -745,7 +741,7 @@ func network_process():
     elif action.type == NetworkActionType.SACRIFICE:
         await board_kill_card(Turn.OPPONENT, 3 - action.index, true)
     elif action.type == NetworkActionType.SUMMON:
-        await opponent_board_play_card(3 - action.index, action.card_name)
+        await opponent_board_play_card(3 - action.index, action.card_id)
     elif action.type == NetworkActionType.BELL:
         await combat_round(Turn.OPPONENT)
     elif action.type == NetworkActionType.YIELD:
@@ -774,11 +770,11 @@ func _on_opponent_sacrifice_card(index: int):
     })
 
 @rpc("any_peer", "reliable")
-func _on_opponent_place_card(index: int, card_name: Card.CardName):
+func _on_opponent_place_card(index: int, card_id: int):
     network_action_queue.push_back({
         "type": NetworkActionType.SUMMON,
         "index": index,
-        "card_name": card_name
+        "card_id": card_id
     })
 
 @rpc("any_peer", "reliable")

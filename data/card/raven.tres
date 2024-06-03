@@ -5,6 +5,7 @@
 
 [resource]
 script = ExtResource("1_i4ilk")
+name = "Raven"
 portrait = ExtResource("1_ahsio")
 cost_type = 1
 cost_amount = 2

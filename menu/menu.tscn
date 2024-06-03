@@ -6,8 +6,8 @@
 [ext_resource type="AudioStream" uid="uid://c6gdoo4rj0u5d" path="res://sfx/crunch_short#2.wav" id="3_lyxv8"]
 [ext_resource type="Shader" path="res://tv.gdshader" id="3_sgn10"]
 [ext_resource type="Texture2D" uid="uid://bvk0ohc7fd3me" path="res://menu/goobert.png" id="4_cbtlr"]
-[ext_resource type="PackedScene" uid="uid://byd1ebrm0dlya" path="res://data/card/library.tscn" id="5_0p5c6"]
 [ext_resource type="Texture2D" uid="uid://2xdkmxx21ax1" path="res://library/library_button.png" id="5_8yjkw"]
+[ext_resource type="PackedScene" uid="uid://byd1ebrm0dlya" path="res://library/library.tscn" id="7_tkvqw"]
 [ext_resource type="Script" path="res://menu/library_button.gd" id="7_yrp07"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_4q6e8"]
@@ -336,7 +336,7 @@ offset_bottom = 480.0
 mouse_filter = 2
 color = Color(0, 0, 0, 0.101961)
 
-[node name="library" parent="." instance=ExtResource("5_0p5c6")]
+[node name="library" parent="." instance=ExtResource("7_tkvqw")]
 visible = false
 
 [node name="library_button" type="Sprite2D" parent="."]

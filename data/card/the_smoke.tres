@@ -5,6 +5,7 @@
 
 [resource]
 script = ExtResource("1_r4gaq")
+name = "The Smoke"
 portrait = ExtResource("2_rl206")
 cost_type = 0
 cost_amount = 0

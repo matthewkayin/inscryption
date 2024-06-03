@@ -3,12 +3,15 @@ extends Sprite2D
 signal pressed
 
 var button_rect: Rect2
+var is_enabled = false
 
 func _ready():
     var size = Vector2(int(texture.get_width() / 3.0) * scale.x, texture.get_height() * scale.y)
     button_rect = Rect2(global_position - (size * 0.5), size)
 
 func _process(_delta):
+    if not is_enabled:
+        return
     var mouse_pos = get_viewport().get_mouse_position()
     if button_rect.has_point(mouse_pos):
         if Input.is_action_just_pressed("mouse_button_left"):

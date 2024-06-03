@@ -1,18 +1,9 @@
 extends Sprite2D
 class_name Card
 
-enum CardName {
-    SQUIRREL,
-    STOAT,
-    BULLFROG,
-    THE_SMOKE,
-    RAVEN,
-    RAVEN_EGG
-}
-
-const EVOLVES_INTO = {
-    CardName.RAVEN_EGG: CardName.RAVEN
-}
+static var DATA = []
+static var SQUIRREL
+static var THE_SMOKE 
 
 enum State {
     NONE,
@@ -42,12 +33,12 @@ var abilities
 @onready var dim = $dim
 
 # stats
-var card_name: CardName
 var power: int
 var health: int
 var data: CardData
 
 # behavior
+var card_id: int
 var state = State.NONE
 
 var previous_position = null
@@ -66,11 +57,7 @@ var animate_presummon_index = 0
 func _ready():
     pass 
 
-static func load_data(p_card_name: CardName):
-    return load("res://data/card/" + CardName.keys()[p_card_name].to_lower() + ".tres")
-
-func card_init(p_card_name: CardName, face_down = false):
-    card_name = p_card_name
+func card_init(p_card_id: int, face_down = false):
     card_blank = load("res://match/card/pixel_card_empty.png")
     card_back = load("res://match/card/pixel_cardback.png")
 
@@ -92,7 +79,7 @@ func card_init(p_card_name: CardName, face_down = false):
     health_label.label_settings.font_size = shared_label_settings.font_size
     health_label.label_settings.font_color = shared_label_settings.font_color
 
-    card_set_name(card_name)
+    set_card_id(p_card_id)
     card_refresh()
 
     if face_down:
@@ -100,11 +87,9 @@ func card_init(p_card_name: CardName, face_down = false):
             child.visible = false
         texture = card_back
 
-func card_set_name(p_card_name: CardName):
-    card_name = p_card_name
-    # load the card data
-    data = Card.load_data(card_name)
-
+func set_card_id(p_card_id: int):
+    card_id = p_card_id
+    data = DATA[card_id]
     portrait.texture = data.portrait
     power = data.power
     health = data.health
@@ -232,7 +217,12 @@ func evolve():
     await tween.finished
 
     var damage_taken = data.health - health
-    card_set_name(EVOLVES_INTO[card_name])
+    var evolves_into_card_id = card_id
+    for data_card_id in range(0, DATA.size()):
+        if DATA[data_card_id] == data.evolves_into:
+            evolves_into_card_id = data_card_id
+            break
+    set_card_id(evolves_into_card_id)
     health -= damage_taken
     card_refresh()
 

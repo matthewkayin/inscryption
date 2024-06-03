@@ -21,6 +21,25 @@ var root
 var player_deck = []
 
 func _ready():
+    const CARD_DATA_BASE_PATH = "res://data/card"
+
+    var card_paths = []
+    var card_dir = DirAccess.open(CARD_DATA_BASE_PATH)
+    if card_dir:
+        card_dir.list_dir_begin()
+        var filename = card_dir.get_next()
+        while filename != "":
+            card_paths.push_back(filename)
+            filename = card_dir.get_next()
+    card_paths.sort()
+    for path in card_paths:
+        var data = load(CARD_DATA_BASE_PATH + "/" + path)
+        Card.DATA.push_back(data)
+        if data.name == "Squirrel":
+            Card.SQUIRREL = Card.DATA.size() - 1
+        if data.name == "The Smoke":
+            Card.THE_SMOKE = Card.DATA.size() - 1
+
     # init cursors
     for i in range(0, CursorType.keys().size()):
         mouse_cursors[i] = load("res://ui/cursor/" + CursorType.keys()[i].to_lower() + ".png")
