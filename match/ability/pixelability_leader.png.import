@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b8on8kjtnbcsf"
-path="res://.godot/imported/pixelability_buffneighbours.png-685e729466f2f65414b52935a0c4d535.ctex"
+path="res://.godot/imported/pixelability_leader.png-ddf8ba14f8a6c1e8c63727897ebd3df5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_buffneighbours.png"
-dest_files=["res://.godot/imported/pixelability_buffneighbours.png-685e729466f2f65414b52935a0c4d535.ctex"]
+source_file="res://match/ability/pixelability_leader.png"
+dest_files=["res://.godot/imported/pixelability_leader.png-ddf8ba14f8a6c1e8c63727897ebd3df5.ctex"]
 
 [params]
 

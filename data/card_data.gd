@@ -13,15 +13,9 @@ enum Rarity {
     RARE
 }
 
-enum CreatureType {
-    NONE,
-    CANINE
-}
-
 @export var name: String
 @export var portrait: Texture2D
 @export var rarity: Rarity = Rarity.COMMON
-@export var creature_type: CreatureType = CreatureType.NONE
 @export var cost_type: CostType = CostType.NONE
 @export var cost_amount: int = 0
 @export var power: int = 0

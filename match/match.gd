@@ -320,7 +320,21 @@ func board_kill_card(turn: Turn, index: int, is_sacrifice = false):
         else:
             player_bone_count += 1
         ui_update_bone_counter()
+    await on_card_died(turn, card, index)
     card.queue_free()
+
+func board_compute_powers(which: Turn):
+    var board = player_board if which == Turn.PLAYER else opponent_board
+    var _opposite_board = opponent_board if which == Turn.PLAYER else player_board
+    for index in range(0, board.size()):
+        if board[index] == null:
+            continue
+        board[index].power = board[index].data.power
+        if index - 1 >= 0 and board[index - 1] != null and board[index - 1].has_ability(Ability.Name.LEADER):
+            board[index].power += 1
+        if index + 1 < board.size() and board[index + 1] != null and board[index + 1].has_ability(Ability.Name.LEADER):
+            board[index].power += 1
+        board[index].card_refresh()
 
 # GAME EVENTS
 
@@ -335,6 +349,13 @@ func on_card_played(by_who: Turn, _card: Card, index: int):
             if opposite_board[opposite_board_index].has_ability(Ability.Name.GUARDIAN):
                 await board_animate_guardian(opposite_player, opposite_board_index, index)
                 break
+
+    board_compute_powers(Turn.PLAYER)
+    board_compute_powers(Turn.OPPONENT)
+
+func on_card_died(_who: Turn, _card: Card, _index: int):
+    board_compute_powers(Turn.PLAYER)
+    board_compute_powers(Turn.OPPONENT)
 
 # PLAYER DRAW
 

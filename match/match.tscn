@@ -561,8 +561,8 @@ offset_left = 45.0
 offset_top = 11.5
 offset_right = 313.0
 offset_bottom = 34.5
-text = "When an opposing card is played, this
-card moves into the opposite space."
+text = "Creatures adjacent to this card
+gain 1 power."
 label_settings = SubResource("LabelSettings_g8paj")
 
 [node name="icon" type="Sprite2D" parent="rulebook"]

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://daiekjhxxcyl8"]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_deida"]
+[ext_resource type="Texture2D" uid="uid://bacvtfrilagnr" path="res://match/portrait/pixelportrait_alpha.png" id="1_v3h6v"]
+
+[resource]
+script = ExtResource("1_deida")
+name = "Alpha"
+portrait = ExtResource("1_v3h6v")
+rarity = 1
+creature_type = 1
+cost_type = 2
+cost_amount = 4
+power = 1
+health = 2
+ability1 = 6
+ability2 = 0
