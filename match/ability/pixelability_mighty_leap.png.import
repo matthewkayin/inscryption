@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://4q73bcufbbnl"
-path="res://.godot/imported/pixelability_quadruplebones.png-95e57477dc3ebcb7579a3b01189110fc.ctex"
+uid="uid://j6fbmolfp1gg"
+path="res://.godot/imported/pixelability_mighty_leap.png-c8ec2e0a285c9b8ab35fe2e48c0f1002.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_quadruplebones.png"
-dest_files=["res://.godot/imported/pixelability_quadruplebones.png-95e57477dc3ebcb7579a3b01189110fc.ctex"]
+source_file="res://match/ability/pixelability_mighty_leap.png"
+dest_files=["res://.godot/imported/pixelability_mighty_leap.png-c8ec2e0a285c9b8ab35fe2e48c0f1002.ctex"]
 
 [params]
 

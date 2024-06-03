@@ -46,8 +46,6 @@ var card_name: CardName
 var power: int
 var health: int
 var data: CardData
-var data_ability1: Ability = null
-var data_ability2: Ability = null
 
 # behavior
 var state = State.NONE
@@ -106,8 +104,6 @@ func card_set_name(p_card_name: CardName):
     card_name = p_card_name
     # load the card data
     data = Card.load_data(card_name)
-    data_ability1 = Ability.load_data(data.ability1)
-    data_ability2 = Ability.load_data(data.ability2)
 
     portrait.texture = data.portrait
     power = data.power
@@ -145,11 +141,11 @@ func card_refresh():
     $abilities.visible = true
     abilities[0].visible = false
     abilities[1].visible = false
-    if data.ability1 != Ability.AbilityName.NONE:
-        abilities[0].get_node("icon").texture = data_ability1.icon
+    if data.ability1 != Ability.Name.NONE:
+        abilities[0].get_node("icon").texture = Ability.load_icon(data.ability1)
         abilities[0].visible = true
-    if data.ability2 != Ability.AbilityName.NONE:
-        abilities[1].get_node("icon").texture = data_ability2.icon
+    if data.ability2 != Ability.Name.NONE:
+        abilities[1].get_node("icon").texture = Ability.load_icon(data.ability2)
         abilities[1].visible = true
 
     portrait.visible = true
@@ -167,9 +163,9 @@ func get_hovered_ability(point: Vector2):
                 return data.ability1
             if i == 1:
                 return data.ability2
-    return Ability.AbilityName.NONE
+    return Ability.Name.NONE
 
-func has_ability(ability_name: Ability.AbilityName):
+func has_ability(ability_name: Ability.Name):
     return data.ability1 == ability_name or data.ability2 == ability_name
 
 func _process(delta):

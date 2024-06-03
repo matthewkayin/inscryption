@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://j6fbmolfp1gg"
-path="res://.godot/imported/pixelability_reach.png-7f1e1ad60d75d5528520d25dadb14145.ctex"
+uid="uid://38av6i480lm1"
+path="res://.godot/imported/pixelability_airborne.png-344440df6abd25e2bc976a9eff50768c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_reach.png"
-dest_files=["res://.godot/imported/pixelability_reach.png-7f1e1ad60d75d5528520d25dadb14145.ctex"]
+source_file="res://match/ability/pixelability_airborne.png"
+dest_files=["res://.godot/imported/pixelability_airborne.png-344440df6abd25e2bc976a9eff50768c.ctex"]
 
 [params]
 

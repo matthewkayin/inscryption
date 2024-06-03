@@ -290,7 +290,7 @@ func board_kill_card(turn: Turn, index: int, is_sacrifice = false):
     await card.animate_death(is_sacrifice)
     board[index] = null
     if turn == Turn.PLAYER:
-        if card.has_ability(Ability.AbilityName.BONE_KING):
+        if card.has_ability(Ability.Name.BONE_KING):
             player_bone_count += 4
         else:
             player_bone_count += 1
@@ -376,7 +376,7 @@ func player_hand_process():
         card_hover.close()
 
     # Check if we're hovering over a sigil
-    var hovered_ability = Ability.AbilityName.NONE
+    var hovered_ability = Ability.Name.NONE
     if hovered_card != null:
         hovered_ability = hovered_card.get_hovered_ability(mouse_pos)
     else:
@@ -386,7 +386,7 @@ func player_hand_process():
             if Rect2(cardslot.global_position - (Card.CARD_SIZE * 0.5), Card.CARD_SIZE).has_point(mouse_pos) and player_board[i] != null:
                 hovered_ability = player_board[i].get_hovered_ability(mouse_pos)
                 break
-        if hovered_ability == Ability.AbilityName.NONE:
+        if hovered_ability == Ability.Name.NONE:
             # Check sigil hover on opponent board
             for i in range(0, opponent_cardslots.size()):
                 var cardslot = opponent_cardslots[i]
@@ -394,10 +394,10 @@ func player_hand_process():
                     hovered_ability = opponent_board[i].get_hovered_ability(mouse_pos)
                     break
 
-    if hovered_ability != Ability.AbilityName.NONE:
+    if hovered_ability != Ability.Name.NONE:
         cursor_type = director.CursorType.RULEBOOK
 
-    if hovered_ability != Ability.AbilityName.NONE and Input.is_action_just_pressed("mouse_button_right"):
+    if hovered_ability != Ability.Name.NONE and Input.is_action_just_pressed("mouse_button_right"):
         card_hover.close()
         rulebook_open(hovered_ability)
         return null
@@ -551,11 +551,10 @@ func player_summoning_process():
 
 # RULEBOOK
 
-func rulebook_open(ability_name: Ability.AbilityName):
-    var ability_data = Ability.load_data(ability_name)
-    rulebook_name_label.text = Ability.AbilityName.keys()[ability_name].capitalize()
-    rulebook_desc_label.text = ability_data.description
-    rulebook_icon.texture = ability_data.icon
+func rulebook_open(ability_name: Ability.Name):
+    rulebook_name_label.text = Ability.name_str(ability_name)
+    rulebook_desc_label.text = Ability.DESC[ability_name]
+    rulebook_icon.texture = Ability.load_icon(ability_name)
     rulebook.visible = true
 
 func rulebook_close():
@@ -586,7 +585,7 @@ func combat_round(turn: Turn):
             continue
         if attacker.power == 0:
             continue
-        if defender != null and attacker.has_ability(Ability.AbilityName.AIRBORNE) and not defender.has_ability(Ability.AbilityName.MIGHTY_LEAP):
+        if defender != null and attacker.has_ability(Ability.Name.AIRBORNE) and not defender.has_ability(Ability.Name.MIGHTY_LEAP):
             defender = null
         combat_damage = combat_damage + (await combat_do_attack(turn, attacker, defender))
         if defender != null and defender.health == 0:
@@ -615,7 +614,7 @@ func combat_round(turn: Turn):
     for card in defender_board:
         if card == null:
             continue
-        if card.has_ability(Ability.AbilityName.EVOLVE):
+        if card.has_ability(Ability.Name.EVOLVE):
             await card.evolve()
 
 func check_if_candle_snuffed(turn: Turn):

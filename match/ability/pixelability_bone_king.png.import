@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://38av6i480lm1"
-path="res://.godot/imported/pixelability_flying.png-9aa807a3f70fb3f81235a7cae7826987.ctex"
+uid="uid://4q73bcufbbnl"
+path="res://.godot/imported/pixelability_bone_king.png-f334ee39300e379bff318a5e1b9a3cc8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_flying.png"
-dest_files=["res://.godot/imported/pixelability_flying.png-9aa807a3f70fb3f81235a7cae7826987.ctex"]
+source_file="res://match/ability/pixelability_bone_king.png"
+dest_files=["res://.godot/imported/pixelability_bone_king.png-f334ee39300e379bff318a5e1b9a3cc8.ctex"]
 
 [params]
 

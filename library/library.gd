@@ -78,9 +78,7 @@ func open():
             deck.push_back({
                 "card_name": card,
                 "quantity": 1,
-                "data": data,
-                "data_ability1": Ability.load_data(data.ability1),
-                "data_ability2": Ability.load_data(data.ability1)
+                "data": data
             })
 
     CARD_AREA_LAST_PAGE = int(float(library.size()) / float(CARD_AREA_PAGE_SIZE))
@@ -183,9 +181,7 @@ func _process(_delta):
                 deck.push_back({
                     "card_name": hovered_card.card_name,
                     "quantity": 1,
-                    "data": hovered_card.data,
-                    "data_ability1": hovered_card.data_ability1,
-                    "data_ability2": hovered_card.data_ability1
+                    "data": hovered_card.data
                 })
             # Remove a copy of the card from the library
             var library_index = (card_area_page_number * CARD_AREA_PAGE_SIZE) + hovered_card_index
@@ -312,22 +308,22 @@ func rulebook_open(card):
         rulebook_cost.frame_coords.x = card.data.cost_amount - 1
 
     # Ability 1
-    if card.data.ability1 == Ability.AbilityName.NONE:
+    if card.data.ability1 == Ability.Name.NONE:
         rulebook_ability1.visible = false
     else:
         rulebook_ability1.visible = true
-        rulebook_ability1_name.text = Ability.AbilityName.keys()[card.data.ability1].capitalize()
-        rulebook_ability1_desc.text = card.data_ability1.description
-        rulebook_ability1_icon.texture = card.data_ability1.icon
+        rulebook_ability1_name.text = Ability.name_str(card.data.ability1)
+        rulebook_ability1_desc.text = Ability.DESC[card.data.ability1]
+        rulebook_ability1_icon.texture = Ability.load_icon(card.data.ability1)
 
     # Ability 2
-    if card.data.ability2 == Ability.AbilityName.NONE:
+    if card.data.ability2 == Ability.Name.NONE:
         rulebook_ability2.visible = false
     else:
         rulebook_ability2.visible = true
-        rulebook_ability2_name.text = Ability.AbilityName.keys()[card.data.ability2].capitalize()
-        rulebook_ability2_desc.text = card.data_ability2.description
-        rulebook_ability2_icon.texture = card.data_ability2.icon
+        rulebook_ability2_name.text = Ability.name_str(card.data.ability2)
+        rulebook_ability2_desc.text = Ability.DESC[card.data.ability2]
+        rulebook_ability2_icon.texture = Ability.load_icon(card.data.ability2)
 
     # Power and Health
     rulebook_power.text = str(card.data.power)
