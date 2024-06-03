@@ -9,7 +9,9 @@ enum Name {
     EVOLVE,
     GUARDIAN,
     LEADER,
-    MANY_LIVES
+    MANY_LIVES,
+    WORTHY_SACRIFICE,
+    SPRINTER
 }
 
 const DESC = {
@@ -20,7 +22,9 @@ const DESC = {
     Name.EVOLVE: "After surviving for 1 turn, this card\ngrows into a stronger form.",
     Name.GUARDIAN: "When an opposing card is played, this\ncard moves into the opposite space.",
     Name.LEADER: "Creatures adjacent to this card\ngain 1 power.",
-    Name.MANY_LIVES: "When this card is sacrificed,\nit does not perish."
+    Name.MANY_LIVES: "When this card is sacrificed,\nit does not perish.",
+    Name.WORTHY_SACRIFICE: "This card counts as 3 Blood rather\nthan 1 Blood when sacrificed.",
+    Name.SPRINTER: "At the end of the owner's turn, this\ncard moves in the sigil's direction."
 }
 
 static func name_str(ability_name: Name) -> String:

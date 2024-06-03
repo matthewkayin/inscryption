@@ -29,6 +29,7 @@ var cost_sprite
 var power_label 
 var health_label
 var abilities 
+var ability_icons
 @onready var sacrifice_marker = $sacrifice
 @onready var dim = $dim
 
@@ -68,6 +69,7 @@ func card_init(p_card_id: int, face_down = false):
     power_label = $power
     health_label = $health
     abilities = $abilities.get_children()
+    ability_icons = [abilities[0].get_node("icon"), abilities[1].get_node("icon")]
 
     # create copies of label settings
     var shared_label_settings = power_label.label_settings
@@ -125,10 +127,10 @@ func card_refresh():
     abilities[0].visible = false
     abilities[1].visible = false
     if data.ability1 != Ability.Name.NONE:
-        abilities[0].get_node("icon").texture = Ability.load_icon(data.ability1)
+        ability_icons[0].texture = Ability.load_icon(data.ability1)
         abilities[0].visible = true
     if data.ability2 != Ability.Name.NONE:
-        abilities[1].get_node("icon").texture = Ability.load_icon(data.ability2)
+        ability_icons[1].texture = Ability.load_icon(data.ability2)
         abilities[1].visible = true
 
     portrait.visible = true
@@ -220,10 +222,27 @@ func evolve():
         if DATA[data_card_id] == data.evolves_into:
             evolves_into_card_id = data_card_id
             break
+    var sprint_direction = get_sprint_direction()
     set_card_id(evolves_into_card_id)
+    set_sprint_direction(sprint_direction)
     health -= damage_taken
     card_refresh()
 
     var tween2 = get_tree().create_tween()
     tween2.tween_property(self, "scale", Vector2(1, 1), 0.05)
     await tween2.finished
+
+func get_sprint_direction():
+    if data.ability1 == Ability.Name.SPRINTER:
+        return -1 if ability_icons[0].flip_h else 1
+    elif data.ability2 == Ability.Name.SPRINTER:
+        return -1 if ability_icons[1].flip_h else 1
+    else:
+        return 1
+
+func set_sprint_direction(direction: int):
+    portrait.flip_h = direction == -1
+    if data.ability1 == Ability.Name.SPRINTER:
+        ability_icons[0].flip_h = direction == -1
+    else:
+        ability_icons[1].flip_h = direction == -1

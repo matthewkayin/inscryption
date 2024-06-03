@@ -279,6 +279,8 @@ func opponent_board_play_card(index: int, card_id: int):
     tween.tween_property(card, "position", opponent_cardslots[index].global_position, 0.25)
     card.set_card_id(card_id)
     await tween.finished
+    if card.has_ability(Ability.Name.SPRINTER):
+        card.set_sprint_direction(-1)
     await card.card_flip(Card.FlipTo.FRONT)
     sfx_crunch.play()
     card.z_index = 0
@@ -368,6 +370,38 @@ func on_card_died(who: Turn, card: Card, index: int):
 
     board_compute_powers(Turn.PLAYER)
     board_compute_powers(Turn.OPPONENT)
+
+func on_combat_over(who: Turn):
+    var attacker_board = player_board if who == Turn.PLAYER else opponent_board
+    var attacker_cardslots = player_cardslots if who == Turn.PLAYER else opponent_cardslots
+    var defender_board = opponent_board if who == Turn.PLAYER else player_board
+
+    var skip_index = false
+    for board_index in range(0, attacker_board.size()):
+        if skip_index:
+            skip_index = false
+            continue
+        var card = attacker_board[board_index]
+        if card == null:
+            continue
+        if card.has_ability(Ability.Name.SPRINTER):
+            var direction = card.get_sprint_direction()
+            var next_index = board_index + direction
+            var is_blocked = next_index < 0 or next_index >= attacker_board.size() or attacker_board[next_index] != null
+            if is_blocked:
+                card.set_sprint_direction(direction * -1)
+            else:
+                var tween = get_tree().create_tween()
+                tween.tween_property(card, "position", attacker_cardslots[next_index].global_position, 0.25)
+                await tween.finished
+                attacker_board[next_index] = card
+                attacker_board[board_index] = null
+                skip_index = true
+    for card in defender_board:
+        if card == null:
+            continue
+        if card.has_ability(Ability.Name.EVOLVE):
+            await card.evolve()
 
 # PLAYER DRAW
 
@@ -495,6 +529,8 @@ func player_turn_process():
                 if board_card == null:
                     continue
                 blood_available += 1
+                if board_card.has_ability(Ability.Name.WORTHY_SACRIFICE):
+                    blood_available += 2
             if blood_available >= hovered_card.data.cost_amount:
                 can_summon = true
         elif hovered_card.data.cost_type == CardData.CostType.BONE and player_bone_count >= hovered_card.data.cost_amount:
@@ -647,8 +683,10 @@ func player_summoning_process():
                     _on_opponent_sacrifice_card.rpc_id(network.opponent_id, hovered_cardslot_index)
                 director.set_cursor(director.CursorType.POINTER)
                 card_hover.close()
-                await board_kill_card(Turn.PLAYER, hovered_cardslot_index, true)
                 summoning_blood_count += 1
+                if player_board[hovered_cardslot_index].has_ability(Ability.Name.WORTHY_SACRIFICE):
+                    summoning_blood_count += 2
+                await board_kill_card(Turn.PLAYER, hovered_cardslot_index, true)
                 summoning_cost_met = summoning_blood_count >= summoning_card.data.cost_amount
                 ui_update_blood_counter()
                 state = State.PLAYER_SUMMONING
@@ -718,11 +756,7 @@ func combat_round(turn: Turn):
     if is_game_over:
         return
 
-    for card in defender_board:
-        if card == null:
-            continue
-        if card.has_ability(Ability.Name.EVOLVE):
-            await card.evolve()
+    await on_combat_over(turn)
 
 func check_if_candle_snuffed(turn: Turn):
     # Check if a candle is to be snuffed

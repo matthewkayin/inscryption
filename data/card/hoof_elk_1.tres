@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://cp53u4yoyatvs"]
+
+[ext_resource type="Texture2D" uid="uid://3uml2gkvnknj" path="res://match/portrait/pixelportrait_elk.png" id="1_5ppau"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_dwxyl"]
+
+[resource]
+script = ExtResource("1_dwxyl")
+name = "Elk"
+portrait = ExtResource("1_5ppau")
+rarity = 1
+cost_type = 1
+cost_amount = 2
+power = 2
+health = 4
+ability1 = 9
+ability2 = 0

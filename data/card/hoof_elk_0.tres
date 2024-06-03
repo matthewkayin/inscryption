@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3 uid="uid://ijbhvkty2cct"]
+
+[ext_resource type="Resource" uid="uid://cp53u4yoyatvs" path="res://data/card/hoof_elk_1.tres" id="1_faxxs"]
+[ext_resource type="Texture2D" uid="uid://83pgdfacacmj" path="res://match/portrait/pixelportrait_elkcub.png" id="2_rh6fa"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="3_0qvff"]
+
+[resource]
+script = ExtResource("3_0qvff")
+name = "Elk"
+portrait = ExtResource("2_rh6fa")
+rarity = 1
+cost_type = 1
+cost_amount = 1
+power = 1
+health = 1
+ability1 = 4
+ability2 = 9
+evolves_into = ExtResource("1_faxxs")
