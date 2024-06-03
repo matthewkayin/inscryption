@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="CardData" load_steps=4 format=3 uid="uid://ncx7l0uh1oaw"]
 
-[ext_resource type="Resource" uid="uid://c84ek8pxmnqa4" path="res://data/card/raven_1.tres" id="1_ip3dc"]
+[ext_resource type="Resource" uid="uid://c84ek8pxmnqa4" path="res://data/card/bird_raven_1.tres" id="1_ip3dc"]
 [ext_resource type="Texture2D" uid="uid://cjad70sd04xay" path="res://match/portrait/pixelportrait_ravenegg.png" id="2_0o4s1"]
 [ext_resource type="Script" path="res://data/card_data.gd" id="3_kn1w6"]
 

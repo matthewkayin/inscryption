@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://cv1l57tdf1jii"]
+
+[ext_resource type="Texture2D" uid="uid://b7hd4qfssf3p" path="res://match/portrait/pixelportrait_bloodhound.png" id="1_dnrlr"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_05cdj"]
+
+[resource]
+script = ExtResource("2_05cdj")
+name = "Bloodhound"
+portrait = ExtResource("1_dnrlr")
+rarity = 1
+creature_type = 1
+cost_type = 1
+cost_amount = 2
+power = 2
+health = 3
+ability1 = 5
+ability2 = 0

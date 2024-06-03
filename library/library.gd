@@ -23,7 +23,10 @@ var card_area_cards = []
 var card_area_page_number = 0
 
 const MAX_DECK_SIZE = 20
-const CARD_DUPLICATE_LIMIT = 4
+const CARD_DUPLICATE_LIMIT = {
+    CardData.Rarity.COMMON: 4,
+    CardData.Rarity.RARE: 2
+}
 var deck = {}
 
 var decklist_scroll_offset = 0
@@ -46,9 +49,9 @@ func _ready():
 func open():
     library = {}
     for card_id in range(0, Card.DATA.size()):
-        if Card.DATA[card_id].exclude_from_library:
+        if Card.DATA[card_id].rarity == CardData.Rarity.HIDDEN:
             continue
-        library[card_id] = CARD_DUPLICATE_LIMIT
+        library[card_id] = CARD_DUPLICATE_LIMIT[Card.DATA[card_id].rarity]
 
     deck = {}
     for card_id in director.player_deck:
@@ -58,7 +61,7 @@ func open():
         else:
             deck[card_id] = 1
 
-    CARD_AREA_LAST_PAGE = int(float(library.keys().size()) / float(CARD_AREA_PAGE_SIZE))
+    CARD_AREA_LAST_PAGE = int(float(library.keys().size() - 1) / float(CARD_AREA_PAGE_SIZE))
     card_area_refresh()
 
     decklist_scroll_offset = 0
@@ -147,7 +150,7 @@ func _process(_delta):
         card_hover.close()
         rulebook_close()
     if hovered_card != null:
-        var library_card_index = (card_area_page_number * CARD_AREA_LAST_PAGE) + hovered_card_index
+        var library_card_index = (card_area_page_number * CARD_AREA_PAGE_SIZE) + hovered_card_index
         var card_id = library.keys()[library_card_index]
 
         # Show card hover
@@ -163,7 +166,7 @@ func _process(_delta):
             # Check if card already exists in deck
             var deck_has_card = deck.keys().has(card_id)
             # Don't add the card if we've hit the duplicate limit
-            if deck_has_card and deck[card_id] == CARD_DUPLICATE_LIMIT:
+            if deck_has_card and deck[card_id] == CARD_DUPLICATE_LIMIT[Card.DATA[card_id].rarity]:
                 return
             # Add the card to the deck
             if deck_has_card:

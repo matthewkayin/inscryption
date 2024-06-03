@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://lvaai7h204mp"]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_cw6ft"]
+[ext_resource type="Texture2D" uid="uid://126rw7atbt04" path="res://match/portrait/pixelportrait_wolf.png" id="1_uwp2s"]
+
+[resource]
+script = ExtResource("1_cw6ft")
+name = "Wolf"
+portrait = ExtResource("1_uwp2s")
+rarity = 1
+creature_type = 1
+cost_type = 1
+cost_amount = 2
+power = 3
+health = 2
+ability1 = 0
+ability2 = 0

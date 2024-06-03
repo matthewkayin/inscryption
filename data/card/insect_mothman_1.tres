@@ -2,12 +2,13 @@
 
 [ext_resource type="Script" path="res://data/card_data.gd" id="1_cys3g"]
 [ext_resource type="Texture2D" uid="uid://c0mhwc8okuq1l" path="res://match/portrait/pixelportrait_mothman_1.png" id="1_d47dy"]
-[ext_resource type="Resource" uid="uid://ono348wetlii" path="res://data/card/mothman_2.tres" id="1_farq1"]
+[ext_resource type="Resource" uid="uid://ono348wetlii" path="res://data/card/insect_mothman_2.tres" id="1_farq1"]
 
 [resource]
 script = ExtResource("1_cys3g")
 name = "Strange Larva"
 portrait = ExtResource("1_d47dy")
+rarity = 2
 cost_type = 1
 cost_amount = 1
 power = 0

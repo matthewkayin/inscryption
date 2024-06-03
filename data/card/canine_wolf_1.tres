@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3 uid="uid://bci83mtltj44h"]
+
+[ext_resource type="Resource" uid="uid://lvaai7h204mp" path="res://data/card/canine_wolf_2.tres" id="1_sfw3i"]
+[ext_resource type="Texture2D" uid="uid://c356dwyek8uee" path="res://match/portrait/pixelportrait_wolfcub.png" id="2_48s75"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="3_6yh2e"]
+
+[resource]
+script = ExtResource("3_6yh2e")
+name = "Wolf Cub"
+portrait = ExtResource("2_48s75")
+rarity = 1
+creature_type = 1
+cost_type = 1
+cost_amount = 1
+power = 1
+health = 1
+ability1 = 4
+ability2 = 0
+evolves_into = ExtResource("1_sfw3i")

@@ -6,7 +6,8 @@ enum Name {
     BONE_KING,
     MIGHTY_LEAP,
     AIRBORNE,
-    EVOLVE
+    EVOLVE,
+    GUARDIAN
 }
 
 const DESC = {
@@ -14,7 +15,8 @@ const DESC = {
     Name.BONE_KING: "When this card dies, 4 bones are \nawarded instead of 1.",
     Name.MIGHTY_LEAP: "This card blocks opposing Airborne \ncreatures.",
     Name.AIRBORNE: "This card ignores opposing creatures\nand attacks an opponent directly.",
-    Name.EVOLVE: "After surviving for 1 turn, this card\ngrows into a stronger form."
+    Name.EVOLVE: "After surviving for 1 turn, this card\ngrows into a stronger form.",
+    Name.GUARDIAN: "When an opposing card is played, this\ncard moves into the opposite space."
 }
 
 static func name_str(ability_name: Name) -> String:

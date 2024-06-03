@@ -285,6 +285,26 @@ func opponent_board_play_card(index: int, card_id: int):
     opponent_board[index] = card
     await opponent_hand_update_positions()
 
+    await on_card_played(Turn.OPPONENT, card, index)
+
+func board_animate_guardian(which: Turn, from: int, to: int):
+    var board = player_board if which == Turn.PLAYER else opponent_board
+    var to_cardslot = player_cardslots[to] if which == Turn.PLAYER else opponent_cardslots[to]
+    var card = board[from]
+    var direction = 1 if which == Turn.PLAYER else -1
+
+    card.z_index = 1
+    var tween = get_tree().create_tween()
+    tween.tween_property(card, "position", card.position + (direction * Vector2(0, 16)), 0.125)
+    tween.tween_property(card, "position", to_cardslot.global_position + (direction * Vector2(0, 16)), 0.25)
+    tween.tween_property(card, "position", to_cardslot.global_position, 0.125)
+    await tween.finished
+    card.z_index = 0
+    sfx_crunch.play()
+
+    board[to] = card
+    board[from] = null
+
 func board_kill_card(turn: Turn, index: int, is_sacrifice = false):
     var board = player_board if turn == Turn.PLAYER else opponent_board
     var card = board[index] 
@@ -301,6 +321,20 @@ func board_kill_card(turn: Turn, index: int, is_sacrifice = false):
             player_bone_count += 1
         ui_update_bone_counter()
     card.queue_free()
+
+# GAME EVENTS
+
+func on_card_played(by_who: Turn, _card: Card, index: int):
+    var opposite_player = Turn.OPPONENT if by_who == Turn.PLAYER else Turn.PLAYER
+    var opposite_board = opponent_board if by_who == Turn.PLAYER else player_board
+
+    if opposite_board[index] == null:
+        for opposite_board_index in range(0, opposite_board.size()):
+            if opposite_board[opposite_board_index] == null:
+                continue
+            if opposite_board[opposite_board_index].has_ability(Ability.Name.GUARDIAN):
+                await board_animate_guardian(opposite_player, opposite_board_index, index)
+                break
 
 # PLAYER DRAW
 
@@ -527,22 +561,27 @@ func player_summoning_process():
                 director.set_cursor(director.CursorType.POINTER)
                 card_hover.close()
                 summoning_card.animate_presummon_end()
+
                 # Move the card into place
                 var tween = get_tree().create_tween()
                 tween.tween_property(summoning_card, "position", hovered_cardslot.global_position, 0.25)
                 await tween.finished
                 sfx_crunch.play()
                 summoning_card.z_index = 0
+
                 # Swap the card out of player hand and onto the board
                 player_hand.erase(summoning_card)
                 player_board[hovered_cardslot_index] = summoning_card
                 if summoning_card.data.cost_type == CardData.CostType.BONE:
                     player_bone_count -= summoning_card.data.cost_amount
                     ui_update_bone_counter()
-                summoning_card = null
+
                 summoning_blood_count = 0
+                summoning_card = null
                 ui_update_blood_counter()
+
                 await hand_update_positions()
+                await on_card_played(Turn.PLAYER, player_board[hovered_cardslot_index], hovered_cardslot_index)
                 state = State.PLAYER_TURN
                 return
     # SACRIFICE CREATURE

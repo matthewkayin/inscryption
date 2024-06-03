@@ -7,10 +7,10 @@
 script = ExtResource("2_lhvr6")
 name = "Mothman"
 portrait = ExtResource("1_gqcdk")
+rarity = 0
 cost_type = 1
 cost_amount = 1
 power = 7
 health = 3
 ability1 = 3
 ability2 = 0
-exclude_from_library = true

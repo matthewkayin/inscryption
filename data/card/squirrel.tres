@@ -7,10 +7,10 @@
 script = ExtResource("1_r8vk6")
 name = "Squirrel"
 portrait = ExtResource("1_sdwre")
+rarity = 0
 cost_type = 0
 cost_amount = 0
 power = 0
 health = 1
 ability1 = 0
 ability2 = 0
-exclude_from_library = true
