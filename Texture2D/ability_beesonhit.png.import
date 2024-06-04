@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ddqib2sekh6m5"
-path="res://.godot/imported/pixelability_bifurcated_strike.png-24810c66c5a1dd36d3279312cc0dc124.ctex"
+uid="uid://codocbqdwgciu"
+path="res://.godot/imported/ability_beesonhit.png-e1cae56909ae3ea13c463bbf16fded22.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_bifurcated_strike.png"
-dest_files=["res://.godot/imported/pixelability_bifurcated_strike.png-24810c66c5a1dd36d3279312cc0dc124.ctex"]
+source_file="res://Texture2D/ability_beesonhit.png"
+dest_files=["res://.godot/imported/ability_beesonhit.png-e1cae56909ae3ea13c463bbf16fded22.ctex"]
 
 [params]
 

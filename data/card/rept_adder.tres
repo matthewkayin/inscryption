@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://hlyjagatqgof"]
+
+[ext_resource type="Texture2D" uid="uid://c4h02q83cuo2t" path="res://match/portrait/pixelportrait_adder.png" id="1_omlbp"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_tja62"]
+
+[resource]
+script = ExtResource("1_tja62")
+name = "Adder"
+portrait = ExtResource("1_omlbp")
+rarity = 1
+cost_type = 1
+cost_amount = 2
+power = 1
+health = 1
+ability1 = 13
+ability2 = 0

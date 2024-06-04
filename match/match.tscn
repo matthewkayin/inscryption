@@ -552,7 +552,7 @@ offset_left = 44.5
 offset_top = 0.5
 offset_right = 119.5
 offset_bottom = 23.5
-text = "Bifurcated Strike"
+text = "Deathtouch"
 label_settings = SubResource("LabelSettings_g8paj")
 
 [node name="desc" type="Label" parent="rulebook"]
@@ -561,8 +561,7 @@ offset_left = 45.0
 offset_top = 11.5
 offset_right = 313.0
 offset_bottom = 34.5
-text = "This card attacks opposing spaces to
-the left, right, and opposite of it."
+text = "When this card is played, an Ant is"
 label_settings = SubResource("LabelSettings_g8paj")
 
 [node name="icon" type="Sprite2D" parent="rulebook"]

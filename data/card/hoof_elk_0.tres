@@ -6,7 +6,7 @@
 
 [resource]
 script = ExtResource("3_0qvff")
-name = "Elk"
+name = "Elk Fawn"
 portrait = ExtResource("2_rh6fa")
 rarity = 1
 cost_type = 1

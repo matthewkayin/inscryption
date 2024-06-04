@@ -106,10 +106,13 @@ func _ready():
         opponent_hand_add_card()
     # Init player hand
     await hand_add_card(Card.SQUIRREL)
-    for i in range(0, 3):
-        if player_deck.is_empty():
-            break
-        await hand_add_card(player_deck.pop_front())
+    var cards_in_hand = 1
+    while cards_in_hand != 4:
+        if not player_deck.is_empty():
+            await hand_add_card(player_deck.pop_front())
+        else:
+            await hand_add_card(Card.SQUIRREL)
+        cards_in_hand += 1
 
     ui_update_deck_counters()
 
@@ -342,9 +345,9 @@ func board_compute_powers(which: Turn):
 
 # GAME EVENTS
 
-func on_card_played(by_who: Turn, _card: Card, index: int):
-    var opposite_player = Turn.OPPONENT if by_who == Turn.PLAYER else Turn.PLAYER
-    var opposite_board = opponent_board if by_who == Turn.PLAYER else player_board
+func on_card_played(who: Turn, card: Card, index: int):
+    var opposite_player = Turn.OPPONENT if who == Turn.PLAYER else Turn.PLAYER
+    var opposite_board = opponent_board if who == Turn.PLAYER else player_board
 
     if opposite_board[index] == null:
         for opposite_board_index in range(0, opposite_board.size()):
@@ -356,6 +359,23 @@ func on_card_played(by_who: Turn, _card: Card, index: int):
 
     board_compute_powers(Turn.PLAYER)
     board_compute_powers(Turn.OPPONENT)
+
+    if card.has_ability(Ability.Name.ANT_SPAWNER) or card.has_ability(Ability.Name.RABBIT_HOLE):
+        if who == Turn.PLAYER:
+            await hand_add_card(Card.get_id_from_data(card.data.tail))
+        else:
+            await opponent_hand_add_card()
+
+func on_card_hit(who: Turn, card: Card, attacker: Card):
+    if card.has_ability(Ability.Name.BEES_WITHIN):
+        if who == Turn.PLAYER:
+            await hand_add_card(Card.get_id_from_data(card.data.tail))
+        else:
+            await opponent_hand_add_card()
+    if card.has_ability(Ability.Name.SHARP):
+        attacker.health -= 1
+        board_compute_powers(Turn.PLAYER)
+        board_compute_powers(Turn.OPPONENT)
 
 func on_card_died(who: Turn, card: Card, index: int, was_sacrifice = false):
     var board = player_board if who == Turn.PLAYER else opponent_board
@@ -401,6 +421,9 @@ func on_combat_over(who: Turn):
                 await tween.finished
                 attacker_board[next_index] = card
                 attacker_board[board_index] = null
+                if card.data.tail != null:
+                    board_add_card(who, board_index, Card.get_id_from_data(card.data.tail))
+                    attacker_board[board_index].set_sprint_direction(card.get_sprint_direction())
 
                 # If we moved into the next index to be iterated over, skip that index
                 if (direction == 1 and who == Turn.PLAYER) or (direction == -1 and who == Turn.OPPONENT):
@@ -768,8 +791,8 @@ func combat_round(turn: Turn):
 
         # Determine attack indices
         var attack_indices = [lane_index]
-        if attacker.has_ability(Ability.Name.BIFURCATED_STRIKE) or attacker.has_ability(Ability.Name.TRIFURCATED_STRIKE):
-            if attacker.has_ability(Ability.Name.BIFURCATED_STRIKE):
+        if attacker.has_ability(Ability.Name.TWIN_STRIKE) or attacker.has_ability(Ability.Name.TRIPLET_STRIKE):
+            if attacker.has_ability(Ability.Name.TWIN_STRIKE):
                 attack_indices = [lane_index - 1, lane_index + 1] if turn == Turn.PLAYER else [lane_index + 1, lane_index - 1]
             else:
                 attack_indices = [lane_index - 1, lane_index, lane_index + 1] if turn == Turn.PLAYER else [lane_index + 1, lane_index, lane_index - 1]
@@ -783,8 +806,14 @@ func combat_round(turn: Turn):
                 defender = null
 
             combat_damage = combat_damage + (await combat_do_attack(turn, attacker, attack_index))
-            if defender != null and defender.health == 0:
-                await board_kill_card(opponent_turn, attack_index)
+            if defender != null:
+                await on_card_hit(opponent_turn, defender, attacker)
+                if defender.health == 0 or attacker.has_ability(Ability.Name.DEATHTOUCH):
+                    await board_kill_card(opponent_turn, attack_index)
+            # Handle death from porcupine
+            if attacker.health == 0:
+                await board_kill_card(turn, lane_index)
+                break
     
     # Update score
     for i in range(0, combat_damage):

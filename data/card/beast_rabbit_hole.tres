@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3 uid="uid://cgwxh2ygw6f4r"]
+
+[ext_resource type="Texture2D" uid="uid://htw46wjvwp4j" path="res://match/portrait/pixelportrait_warren.png" id="1_1bk2p"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_vr7ti"]
+[ext_resource type="Resource" uid="uid://dp48df4ad17c7" path="res://data/card/beast_rabbit.tres" id="3_valdx"]
+
+[resource]
+script = ExtResource("1_vr7ti")
+name = "Warren"
+portrait = ExtResource("1_1bk2p")
+rarity = 1
+cost_type = 1
+cost_amount = 1
+power = 0
+health = 2
+ability1 = 17
+ability2 = 0
+tail = ExtResource("3_valdx")

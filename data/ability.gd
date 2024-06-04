@@ -13,8 +13,13 @@ enum Name {
     WORTHY_SACRIFICE,
     SPRINTER,
     HEFTY,
-    BIFURCATED_STRIKE,
-    TRIFURCATED_STRIKE
+    TWIN_STRIKE,
+    TRIPLET_STRIKE,
+    DEATHTOUCH,
+    BEES_WITHIN,
+    SHARP,
+    ANT_SPAWNER,
+    RABBIT_HOLE
 }
 
 const DESC = {
@@ -29,8 +34,13 @@ const DESC = {
     Name.WORTHY_SACRIFICE: "This card counts as 3 Blood rather\nthan 1 Blood when sacrificed.",
     Name.SPRINTER: "After owner's turn, this\ncard moves in the sigil's direction.",
     Name.HEFTY: "After owner's turn, this and adjacent\ncards move in the sigil's direction.",
-    Name.BIFURCATED_STRIKE: "This card attacks opposing spaces to\nthe left and right of it.",
-    Name.TRIFURCATED_STRIKE: "This card attacks opposing spaces to\nthe left, right, and opposite of it.",
+    Name.TWIN_STRIKE: "This card attacks opposing spaces to\nthe left and right of it.",
+    Name.TRIPLET_STRIKE: "This card attacks opposing spaces to\nthe left, right, and opposite of it.",
+    Name.DEATHTOUCH: "This card instantly kills any card\nit damages.",
+    Name.BEES_WITHIN: "When this card is struck, a Bee is\ncreated in the owner's hand.",
+    Name.SHARP: "When this card is struck, the attacker\nis dealt 1 damage.",
+    Name.ANT_SPAWNER: "When this card is played, an Ant is\ncreated in the owner's hand.",
+    Name.RABBIT_HOLE: "When this card is played, a Rabbit is\ncreated in the owner's hand.",
 }
 
 static func name_str(ability_name: Name) -> String:

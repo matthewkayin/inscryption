@@ -42,6 +42,7 @@ var data: CardData
 var card_id: int
 var state = State.NONE
 var sacrifice_count = 0
+var use_library_portrait = false
 
 var previous_position = null
 const ANIMATE_PRESUMMON_POSITION_OFFSETS = [
@@ -58,6 +59,12 @@ var animate_presummon_index = 0
 
 func _ready():
     pass 
+
+static func get_id_from_data(card_data: CardData):
+    for data_card_id in range(0, DATA.size()):
+        if DATA[data_card_id] == card_data:
+            return data_card_id
+    assert(false, "Card ID for given card data not found.")
 
 func card_init(p_card_id: int, face_down = false):
     card_blank = load("res://match/card/pixel_card_empty.png")
@@ -93,7 +100,10 @@ func card_init(p_card_id: int, face_down = false):
 func set_card_id(p_card_id: int):
     card_id = p_card_id
     data = DATA[card_id]
-    portrait.texture = data.portrait
+    if use_library_portrait and data.library_portrait != null:
+        portrait.texture = data.library_portrait
+    else:
+        portrait.texture = data.portrait 
     power = data.power
     health = data.health
 
@@ -142,8 +152,7 @@ func get_hovered_ability(point: Vector2):
     for i in range(0, 2):
         if not abilities[i].visible:
             continue
-        var ability_icon = abilities[0].get_node("icon")
-        if Rect2(ability_icon.global_position - (ABILITY_ICON_SIZE * 0.5), ABILITY_ICON_SIZE).has_point(point):
+        if Rect2(ability_icons[i].global_position - (ABILITY_ICON_SIZE * 0.5), ABILITY_ICON_SIZE).has_point(point):
             if i == 0:
                 return data.ability1
             if i == 1:
@@ -217,13 +226,8 @@ func evolve():
     await tween.finished
 
     var damage_taken = data.health - health
-    var evolves_into_card_id = card_id
-    for data_card_id in range(0, DATA.size()):
-        if DATA[data_card_id] == data.evolves_into:
-            evolves_into_card_id = data_card_id
-            break
     var sprint_direction = get_sprint_direction()
-    set_card_id(evolves_into_card_id)
+    set_card_id(Card.get_id_from_data(data.evolves_into))
     set_sprint_direction(sprint_direction)
     health -= damage_taken
     card_refresh()

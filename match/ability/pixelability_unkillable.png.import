@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bdix683p41m1s"
-path="res://.godot/imported/pixelability_drawant.png-fa05f1b2e2a368e119be78b2c42bca03.ctex"
+uid="uid://bdhary362mk8r"
+path="res://.godot/imported/pixelability_unkillable.png-6663d011644072d69876b04f5cc2a36c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_drawant.png"
-dest_files=["res://.godot/imported/pixelability_drawant.png-fa05f1b2e2a368e119be78b2c42bca03.ctex"]
+source_file="res://match/ability/pixelability_unkillable.png"
+dest_files=["res://.godot/imported/pixelability_unkillable.png-6663d011644072d69876b04f5cc2a36c.ctex"]
 
 [params]
 

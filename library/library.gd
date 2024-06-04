@@ -38,6 +38,7 @@ func _ready():
         card_area_cards.push_back(card_control.get_child(0))
     for card in card_area_cards:
         card.card_init(Card.SQUIRREL)
+        card.use_library_portrait = true
 
     decklist_scroll_up_button.pressed.connect(_on_scroll_up)
     decklist_scroll_down_button.pressed.connect(_on_scroll_down)

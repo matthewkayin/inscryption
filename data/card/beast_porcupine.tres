@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://dmt8xv53c5hko"]
+
+[ext_resource type="Texture2D" uid="uid://dyxr2aawsfsrh" path="res://match/portrait/pixelportrait_porcupine.png" id="1_4dq2u"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_gw0bd"]
+
+[resource]
+script = ExtResource("1_gw0bd")
+name = "Porcupine"
+portrait = ExtResource("1_4dq2u")
+rarity = 1
+cost_type = 1
+cost_amount = 1
+power = 1
+health = 2
+ability1 = 15
+ability2 = 0

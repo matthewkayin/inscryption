@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://tpwpy5gqsmkl"]
+
+[ext_resource type="Texture2D" uid="uid://bd4vrt4u3sto2" path="res://match/portrait/pixelportrait_bee.png" id="1_3tjdx"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_qs6rx"]
+
+[resource]
+script = ExtResource("1_qs6rx")
+name = "Bee"
+portrait = ExtResource("1_3tjdx")
+rarity = 0
+cost_type = 0
+cost_amount = 0
+power = 1
+health = 1
+ability1 = 3
+ability2 = 0

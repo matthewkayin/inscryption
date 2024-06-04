@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://bqqxljex5tttq"]
+
+[ext_resource type="Texture2D" uid="uid://c7c6rdu5ej45r" path="res://match/portrait/pixelportrait_opossum.png" id="1_a1qwf"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_sucfl"]
+
+[resource]
+script = ExtResource("1_sucfl")
+name = "Opossum"
+portrait = ExtResource("1_a1qwf")
+rarity = 1
+cost_type = 2
+cost_amount = 2
+power = 1
+health = 1
+ability1 = 0
+ability2 = 0

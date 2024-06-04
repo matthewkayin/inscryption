@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://bqy5lp0mlge5d"]
+
+[ext_resource type="Texture2D" uid="uid://cxqovvxtqdt2m" path="res://match/portrait/pixelportrait_rattler.png" id="1_2prcr"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_860qu"]
+
+[resource]
+script = ExtResource("1_860qu")
+name = "Rattler"
+portrait = ExtResource("1_2prcr")
+rarity = 1
+cost_type = 2
+cost_amount = 6
+power = 3
+health = 1
+ability1 = 0
+ability2 = 0

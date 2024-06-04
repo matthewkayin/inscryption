@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bdhary362mk8r"
-path="res://.godot/imported/pixelability_drawcopyondeath.png-8b6570aacc1b114e926f201a246ca898.ctex"
+uid="uid://cmhh2aaq0p6n2"
+path="res://.godot/imported/pixelportrait_mantis.png-3665b973bb2dd79257e77fff1ca7db6b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_drawcopyondeath.png"
-dest_files=["res://.godot/imported/pixelability_drawcopyondeath.png-8b6570aacc1b114e926f201a246ca898.ctex"]
+source_file="res://match/portrait/pixelportrait_mantis.png"
+dest_files=["res://.godot/imported/pixelportrait_mantis.png-3665b973bb2dd79257e77fff1ca7db6b.ctex"]
 
 [params]
 

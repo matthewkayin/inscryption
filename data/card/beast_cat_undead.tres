@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://i0ph03bj4j5b"]
+
+[ext_resource type="Texture2D" uid="uid://y6qhqs2moi0o" path="res://match/portrait/pixelportrait_cat_undead.png" id="1_2saf2"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_kc1bs"]
+
+[resource]
+script = ExtResource("2_kc1bs")
+name = "Undead Cat"
+portrait = ExtResource("1_2saf2")
+rarity = 0
+cost_type = 1
+cost_amount = 1
+power = 0
+health = 1
+ability1 = 0
+ability2 = 0

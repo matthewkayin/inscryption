@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://cwlqt7tym6hkf"]
+
+[ext_resource type="Texture2D" uid="uid://doa2owswlug4f" path="res://match/portrait/pixeldecal_snelk_4.png" id="1_bhc0a"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_in7n3"]
+
+[resource]
+script = ExtResource("1_in7n3")
+name = "Vertibrae"
+portrait = ExtResource("1_bhc0a")
+rarity = 0
+cost_type = 2
+cost_amount = 4
+power = 0
+health = 1
+ability1 = 0
+ability2 = 0

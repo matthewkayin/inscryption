@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://funcu4okcspo"]
+
+[ext_resource type="Texture2D" uid="uid://ytk3bonjuwm7" path="res://match/portrait/pixelportrait_turtle.png" id="1_did7u"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_u81st"]
+
+[resource]
+script = ExtResource("1_u81st")
+name = "River Snapper"
+portrait = ExtResource("1_did7u")
+rarity = 1
+cost_type = 1
+cost_amount = 1
+power = 1
+health = 6
+ability1 = 0
+ability2 = 0

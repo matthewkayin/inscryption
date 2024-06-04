@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://dp48df4ad17c7"]
+
+[ext_resource type="Texture2D" uid="uid://c57cj5b7llj5k" path="res://match/portrait/pixelportrait_rabbit.png" id="1_foli8"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_nfi43"]
+
+[resource]
+script = ExtResource("1_nfi43")
+name = "Rabbit"
+portrait = ExtResource("1_foli8")
+rarity = 0
+cost_type = 0
+cost_amount = 0
+power = 0
+health = 1
+ability1 = 0
+ability2 = 0

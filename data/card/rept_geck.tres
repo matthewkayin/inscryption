@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://bbd0bwo146bgc"]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_7glbm"]
+[ext_resource type="Texture2D" uid="uid://c038jl17akeuq" path="res://match/portrait/pixelportrait_geck.png" id="1_7j65j"]
+
+[resource]
+script = ExtResource("1_7glbm")
+name = "Geck"
+portrait = ExtResource("1_7j65j")
+rarity = 1
+cost_type = 0
+cost_amount = 0
+power = 1
+health = 1
+ability1 = 0
+ability2 = 0

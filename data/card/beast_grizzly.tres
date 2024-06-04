@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://d2c3gi003scw4"]
+
+[ext_resource type="Texture2D" uid="uid://cbre7wv0rsss7" path="res://match/portrait/pixelportrait_grizzly.png" id="1_4pkuh"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_woojd"]
+
+[resource]
+script = ExtResource("1_woojd")
+name = "Grizzly"
+portrait = ExtResource("1_4pkuh")
+rarity = 1
+cost_type = 1
+cost_amount = 3
+power = 4
+health = 6
+ability1 = 0
+ability2 = 0

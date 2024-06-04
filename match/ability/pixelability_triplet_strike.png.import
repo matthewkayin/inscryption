@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ciqae85lminsu"
-path="res://.godot/imported/pixelability_drawrabbits.png-40185b2daffdaa97483884052dd8fed7.ctex"
+uid="uid://b5o1g4kuau2sp"
+path="res://.godot/imported/pixelability_triplet_strike.png-74312017b8a6f9593e264c88c30ccf89.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_drawrabbits.png"
-dest_files=["res://.godot/imported/pixelability_drawrabbits.png-40185b2daffdaa97483884052dd8fed7.ctex"]
+source_file="res://match/ability/pixelability_triplet_strike.png"
+dest_files=["res://.godot/imported/pixelability_triplet_strike.png-74312017b8a6f9593e264c88c30ccf89.ctex"]
 
 [params]
 

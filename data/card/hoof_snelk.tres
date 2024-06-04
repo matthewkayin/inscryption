@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=5 format=3 uid="uid://efo3hbauw47x"]
+
+[ext_resource type="Texture2D" uid="uid://doa2owswlug4f" path="res://match/portrait/pixeldecal_snelk_4.png" id="1_s7xty"]
+[ext_resource type="Texture2D" uid="uid://c7o5qmkdlmsu2" path="res://match/portrait/pixeldecal_snelk_main.png" id="2_0272g"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_obn8f"]
+[ext_resource type="Resource" uid="uid://cwlqt7tym6hkf" path="res://data/card/hoof_snelk_tail.tres" id="4_opes2"]
+
+[resource]
+script = ExtResource("2_obn8f")
+name = "Long Elk"
+portrait = ExtResource("2_0272g")
+library_portrait = ExtResource("1_s7xty")
+rarity = 2
+cost_type = 2
+cost_amount = 4
+power = 1
+health = 2
+ability1 = 9
+ability2 = 13
+tail = ExtResource("4_opes2")

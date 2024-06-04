@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://data/card_data.gd" id="1_beno0"]
 [ext_resource type="Texture2D" uid="uid://bxhk4iupcgepq" path="res://match/portrait/pixelportrait_cat.png" id="1_bq13x"]
-[ext_resource type="Resource" uid="uid://i0ph03bj4j5b" path="res://data/card/misc_cat_undead.tres" id="1_f6tb2"]
+[ext_resource type="Resource" uid="uid://i0ph03bj4j5b" path="res://data/card/beast_cat_undead.tres" id="1_f6tb2"]
 
 [resource]
 script = ExtResource("1_beno0")
