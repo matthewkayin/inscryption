@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b5o1g4kuau2sp"
-path="res://.godot/imported/pixelability_tristrike.png-4d8fc8abcd13453c8518f1c06726412f.ctex"
+path="res://.godot/imported/pixelability_trifurcated_strike.png-ec9c7b6094f470b26086b3d40213b04d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_tristrike.png"
-dest_files=["res://.godot/imported/pixelability_tristrike.png-4d8fc8abcd13453c8518f1c06726412f.ctex"]
+source_file="res://match/ability/pixelability_trifurcated_strike.png"
+dest_files=["res://.godot/imported/pixelability_trifurcated_strike.png-ec9c7b6094f470b26086b3d40213b04d.ctex"]
 
 [params]
 

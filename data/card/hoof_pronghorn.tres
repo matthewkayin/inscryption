@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://c71s2xvl8gcsn"]
+
+[ext_resource type="Texture2D" uid="uid://bo0btigqjjdte" path="res://match/portrait/pixelportrait_pronghorn.png" id="1_5h7ao"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_7u054"]
+
+[resource]
+script = ExtResource("1_7u054")
+name = "Pronghorn"
+portrait = ExtResource("1_5h7ao")
+rarity = 1
+cost_type = 1
+cost_amount = 2
+power = 1
+health = 3
+ability1 = 11
+ability2 = 9

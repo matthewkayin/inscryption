@@ -759,17 +759,32 @@ func combat_round(turn: Turn):
 
     var combat_damage = 0
     for lane_index in lane_indices:
+        # Determine attacker
         var attacker = attacker_board[lane_index]
-        var defender = defender_board[lane_index]
         if attacker == null:
             continue
         if attacker.power == 0:
             continue
-        if defender != null and attacker.has_ability(Ability.Name.AIRBORNE) and not defender.has_ability(Ability.Name.MIGHTY_LEAP):
-            defender = null
-        combat_damage = combat_damage + (await combat_do_attack(turn, attacker, defender))
-        if defender != null and defender.health == 0:
-            await board_kill_card(opponent_turn, lane_index)
+
+        # Determine attack indices
+        var attack_indices = [lane_index]
+        if attacker.has_ability(Ability.Name.BIFURCATED_STRIKE) or attacker.has_ability(Ability.Name.TRIFURCATED_STRIKE):
+            if attacker.has_ability(Ability.Name.BIFURCATED_STRIKE):
+                attack_indices = [lane_index - 1, lane_index + 1] if turn == Turn.PLAYER else [lane_index + 1, lane_index - 1]
+            else:
+                attack_indices = [lane_index - 1, lane_index, lane_index + 1] if turn == Turn.PLAYER else [lane_index + 1, lane_index, lane_index - 1]
+        # Attack at each index
+        for attack_index in attack_indices:
+            if attack_index < 0 or attack_index >= 4:
+                continue
+
+            var defender = defender_board[attack_index]
+            if defender != null and attacker.has_ability(Ability.Name.AIRBORNE) and not defender.has_ability(Ability.Name.MIGHTY_LEAP):
+                defender = null
+
+            combat_damage = combat_damage + (await combat_do_attack(turn, attacker, attack_index))
+            if defender != null and defender.health == 0:
+                await board_kill_card(opponent_turn, attack_index)
     
     # Update score
     for i in range(0, combat_damage):
@@ -842,22 +857,25 @@ func combat_attack_animation_play(at_position: Vector2):
     attack_animation.visible = false
     attack_animation.modulate.a = 1.0
 
-func combat_do_attack(turn: Turn, attacker: Card, defender: Card):
+func combat_do_attack(turn: Turn, attacker: Card, index: int):
+    var defender_board = opponent_board if turn == Turn.PLAYER else player_board
+    var defender_cardslots = opponent_cardslots if turn == Turn.PLAYER else player_cardslots
+    var defender = defender_board[index]
+
     var attacker_position = attacker.position
-    # attacker_direction flips attack direction when the opponent is attacking
-    var attacker_direction = 1 if turn == Turn.PLAYER else -1
+    var lunge_direction = attacker.position.direction_to(defender_cardslots[index].global_position)
     var added_score = 0
 
     # Attacker lunge
     var attack_tween = get_tree().create_tween()
-    attack_tween.tween_property(attacker, "position", attacker_position + Vector2(0, 4 * attacker_direction), 0.1)
-    attack_tween.tween_property(attacker, "position", attacker_position + Vector2(0, -18 * attacker_direction), 0.25)
+    attack_tween.tween_property(attacker, "position", attacker_position + (-4 * lunge_direction), 0.1)
+    attack_tween.tween_property(attacker, "position", attacker_position + (18 * lunge_direction), 0.25)
     await attack_tween.finished
 
     # Attacker return
     var return_tween = get_tree().create_tween()
     return_tween.tween_property(attacker, "position", attacker_position, 0.125)
-    return_tween.tween_property(attacker, "position", attacker_position + Vector2(0, -8 * attacker_direction), 0.125)
+    return_tween.tween_property(attacker, "position", attacker_position + (8 * lunge_direction), 0.125)
     return_tween.tween_property(attacker, "position", attacker_position, 0.125)
 
     # Update health
