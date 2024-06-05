@@ -22,7 +22,9 @@ enum Name {
     RABBIT_HOLE,
     COLONY,
     UNKILLABLE,
-    ETERNAL
+    ETERNAL,
+    CORPSE_EATER,
+    LOOSE_TAIL
 }
 
 const DESC = {
@@ -46,7 +48,9 @@ const DESC = {
     Name.RABBIT_HOLE: "When this card is played, a Rabbit is\ncreated in the owner's hand.",
     Name.COLONY: "This card gets 1 power for each ant on\nits side of the board (including itself).",
     Name.UNKILLABLE: "When this card dies, a copy of it is\ncreated in its owner's hand.",
-    Name.ETERNAL: "When this card dies, a +1/+1 copy of it\nis created in its owner's hand."
+    Name.ETERNAL: "When this card dies, a +1/+1 copy of it\nis created in its owner's hand.",
+    Name.CORPSE_EATER: "When a card you own dies by combat,\nthis card is played in its place.",
+    Name.LOOSE_TAIL: "When this card would be struck, it\ndrops its' tail and moves to the side."
 }
 
 static func name_str(ability_name: Name) -> String:

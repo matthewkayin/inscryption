@@ -561,8 +561,8 @@ offset_left = 45.0
 offset_top = 11.5
 offset_right = 313.0
 offset_bottom = 34.5
-text = "When this card dies, a +1/+1 copy of it 
-is created in its owner's hand."
+text = "When this card would be struck, it drops
+its tails and moves to the side."
 label_settings = SubResource("LabelSettings_g8paj")
 
 [node name="icon" type="Sprite2D" parent="rulebook"]

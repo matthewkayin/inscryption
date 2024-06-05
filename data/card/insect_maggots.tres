@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://borhjtan8pn06"]
+
+[ext_resource type="Texture2D" uid="uid://287ie52mtcwa" path="res://match/portrait/pixelportrait_maggots.png" id="1_j18eh"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_oyha8"]
+
+[resource]
+script = ExtResource("2_oyha8")
+name = "Maggots"
+portrait = ExtResource("1_j18eh")
+rarity = 1
+cost_type = 2
+cost_amount = 5
+power = 1
+health = 2
+ability1 = 21
+ability2 = 0

@@ -301,6 +301,40 @@ func opponent_board_play_card(index: int, card_id: int, eternal_counter: int = 0
 
     await on_card_played(Turn.OPPONENT, card, index)
 
+func player_summon_card(card: Card, index: int, pay_cost: bool = true):
+    if network.network_is_connected():
+        var eternal_counter = 0
+        if card.has_ability(Ability.Name.ETERNAL):
+            eternal_counter = card.base_power - card.data.power
+        _on_opponent_place_card.rpc_id(network.opponent_id, index, card.card_id, eternal_counter)
+
+    # Move the card into place
+    card.z_index = 1
+    var tween = get_tree().create_tween()
+    tween.tween_property(card, "position", player_cardslots[index].global_position, 0.25)
+    await tween.finished
+    sfx_crunch.play()
+    card.z_index = 0
+
+    # Swap the card out of player hand and onto the board
+    player_hand.erase(card)
+    player_board[index] = card
+
+    if pay_cost:
+        # Update bones
+        if card.data.cost_type == CardData.CostType.BONE:
+            player_bone_count -= card.data.cost_amount
+            ui_update_bone_counter()
+
+        # Update blood
+        summoning_blood_count = 0
+        ui_update_blood_counter()
+
+    # Update hand
+    await hand_update_positions()
+    await on_card_played(Turn.PLAYER, player_board[index], index)
+
+
 func board_animate_guardian(which: Turn, from: int, to: int):
     var board = player_board if which == Turn.PLAYER else opponent_board
     var to_cardslot = player_cardslots[to] if which == Turn.PLAYER else opponent_cardslots[to]
@@ -388,7 +422,10 @@ func on_card_played(who: Turn, card: Card, index: int):
         else:
             await opponent_hand_add_card()
 
-func on_card_hit(who: Turn, card: Card, attacker: Card):
+func on_card_hit(who: Turn, card: Card, index: int, attacker: Card):
+    var board = player_board if who == Turn.PLAYER else opponent_board
+    var cardslots = player_cardslots if who == Turn.PLAYER else opponent_cardslots
+
     if card.has_ability(Ability.Name.BEES_WITHIN):
         if who == Turn.PLAYER:
             await hand_add_card(Card.get_id_from_data(card.data.tail))
@@ -398,6 +435,23 @@ func on_card_hit(who: Turn, card: Card, attacker: Card):
         attacker.health -= 1
         board_compute_powers(Turn.PLAYER)
         board_compute_powers(Turn.OPPONENT)
+    if card.has_ability(Ability.Name.LOOSE_TAIL):
+        var free_index = -1
+        var direction = 1 if who == Turn.PLAYER else -1
+        if index + direction >= 0 and index + direction < board.size() and board[index + direction] == null:
+            free_index = index + direction
+        elif index - direction >= 0 and index - direction < board.size() and board[index - direction] == null:
+            free_index = index - direction
+        if free_index != -1:
+            var tween = get_tree().create_tween()
+            tween.tween_property(card, "position", cardslots[free_index].global_position, 0.25)
+            await tween.finished
+            board[free_index] = card
+            board[index] = null
+            var card_tail_id = Card.get_id_from_data(card.data.tail)
+            print(Card.DATA[card_tail_id])
+            await card.evolve()
+            board_add_card(who, index, card_tail_id)
 
 func on_card_died(who: Turn, card: Card, index: int, was_sacrifice = false):
     var board = player_board if who == Turn.PLAYER else opponent_board
@@ -424,6 +478,11 @@ func on_card_died(who: Turn, card: Card, index: int, was_sacrifice = false):
                 await hand_add_card_instance(card_copy)
         else:
             await opponent_hand_add_card()
+    if board[index] == null and who == Turn.PLAYER and not was_sacrifice:
+        for hand_card in player_hand:
+            if hand_card.has_ability(Ability.Name.CORPSE_EATER):
+                await player_summon_card(hand_card, index, false)
+                break
 
     board_compute_powers(Turn.PLAYER)
     board_compute_powers(Turn.OPPONENT)
@@ -739,35 +798,11 @@ func player_summoning_process():
             if Input.is_action_just_pressed("mouse_button_left"):
                 # SUMMON
                 state = State.WAIT
-                if network.network_is_connected():
-                    var eternal_counter = 0
-                    if summoning_card.has_ability(Ability.Name.ETERNAL):
-                        eternal_counter = summoning_card.base_power - summoning_card.data.power
-                    _on_opponent_place_card.rpc_id(network.opponent_id, hovered_cardslot_index, summoning_card.card_id, eternal_counter)
                 director.set_cursor(director.CursorType.POINTER)
                 card_hover.close()
                 summoning_card.animate_presummon_end()
-
-                # Move the card into place
-                var tween = get_tree().create_tween()
-                tween.tween_property(summoning_card, "position", hovered_cardslot.global_position, 0.25)
-                await tween.finished
-                sfx_crunch.play()
-                summoning_card.z_index = 0
-
-                # Swap the card out of player hand and onto the board
-                player_hand.erase(summoning_card)
-                player_board[hovered_cardslot_index] = summoning_card
-                if summoning_card.data.cost_type == CardData.CostType.BONE:
-                    player_bone_count -= summoning_card.data.cost_amount
-                    ui_update_bone_counter()
-
-                summoning_blood_count = 0
+                await player_summon_card(summoning_card, hovered_cardslot_index, true)
                 summoning_card = null
-                ui_update_blood_counter()
-
-                await hand_update_positions()
-                await on_card_played(Turn.PLAYER, player_board[hovered_cardslot_index], hovered_cardslot_index)
                 state = State.PLAYER_TURN
                 return
     # SACRIFICE CREATURE
@@ -847,7 +882,7 @@ func combat_round(turn: Turn):
 
             combat_damage = combat_damage + (await combat_do_attack(turn, attacker, attack_index, defender))
             if defender != null:
-                await on_card_hit(opponent_turn, defender, attacker)
+                await on_card_hit(opponent_turn, defender, attack_index, attacker)
                 if defender.health == 0 or attacker.has_ability(Ability.Name.DEATHTOUCH):
                     await board_kill_card(opponent_turn, attack_index)
             # Handle death from porcupine
@@ -947,7 +982,23 @@ func combat_do_attack(turn: Turn, attacker: Card, index: int, defender):
 
     # Update health
     var defender_tween = null
-    if defender != null:
+
+    # Check if we should hit the defender
+    var hit_defender = defender != null
+    # If the defender has LOOSE_TAIL, then we should not hit the defender unless they have nowhere to go
+    if hit_defender and defender.has_ability(Ability.Name.LOOSE_TAIL):
+        print("HAS LOOSE TAIL, index ", index)
+        var defender_board = opponent_board if turn == Turn.PLAYER else player_board
+        var free_index = -1
+        var direction = 1
+        if index + direction >= 0 and index + direction < defender_board.size() and defender_board[index + direction] == null:
+            free_index = index + direction
+        elif index - direction >= 0 and index - direction < defender_board.size() and defender_board[index - direction] == null:
+            free_index = index - direction
+        if free_index != -1:
+            hit_defender = false
+
+    if hit_defender:
         defender.health = max(defender.health - attacker.power, 0)
         defender.card_refresh()
 
@@ -960,7 +1011,7 @@ func combat_do_attack(turn: Turn, attacker: Card, index: int, defender):
         defender_tween.tween_property(defender, "position", defender.position, 0.1)
         defender_tween.tween_property(defender, "modulate", Color(1, 1, 1, 1), 0.0)
         defender_tween.tween_property(defender.dim, "visible", false, 0.0)
-    else:
+    elif defender == null:
         added_score = attacker.power
 
     # Await tweens
