@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://dg6buprl2p7bp"]
+
+[ext_resource type="Texture2D" uid="uid://blfkakxj5yebg" path="res://match/portrait/pixelportrait_moleman.png" id="1_m224b"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_2ugb7"]
+
+[resource]
+script = ExtResource("2_2ugb7")
+name = "Mole Man"
+portrait = ExtResource("1_m224b")
+rarity = 1
+cost_type = 1
+cost_amount = 1
+power = 0
+health = 6
+ability1 = 25
+ability2 = 2

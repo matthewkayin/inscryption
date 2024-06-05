@@ -90,7 +90,7 @@ func card_init(p_card_id: int, face_down = false):
     health_label.label_settings.font_size = shared_label_settings.font_size
     health_label.label_settings.font_color = shared_label_settings.font_color
 
-    is_face_down = is_face_down
+    is_face_down = face_down
     set_card_id(p_card_id)
     card_refresh()
 

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://b416e64151ubj"]
+
+[ext_resource type="Texture2D" uid="uid://d2icegm8ccmiw" path="res://match/portrait/pixelportrait_fieldmice.png" id="1_4ecwx"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_iuuo7"]
+
+[resource]
+script = ExtResource("1_iuuo7")
+name = "Field Mice"
+portrait = ExtResource("1_4ecwx")
+rarity = 1
+cost_type = 1
+cost_amount = 2
+power = 2
+health = 2
+ability1 = 24
+ability2 = 0

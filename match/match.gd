@@ -421,6 +421,26 @@ func on_card_played(who: Turn, card: Card, index: int):
             await hand_add_card(Card.get_id_from_data(card.data.tail))
         else:
             await opponent_hand_add_card()
+    if card.has_ability(Ability.Name.FECUNDITY):
+        if who == Turn.PLAYER:
+            await hand_add_card(Card.get_id_from_data(card.data))
+        else:
+            await opponent_hand_add_card()
+
+func on_card_is_about_to_attack(who: Turn, _attacker: Card, index: int):
+    var opposite = Turn.OPPONENT if who == Turn.PLAYER else Turn.PLAYER
+    var defender_board = player_board if opposite == Turn.PLAYER else opponent_board
+
+    if defender_board[index] == null:
+        var defender_indices = [0, 1, 2, 3] if opposite == Turn.PLAYER else [3, 2, 1, 0]
+        for defender_index in defender_indices:
+            if defender_index == index:
+                continue
+            if defender_board[defender_index] == null:
+                continue
+            if defender_board[defender_index].has_ability(Ability.Name.BURROWER):
+                await board_animate_guardian(opposite, defender_index, index)
+                break
 
 func on_card_hit(who: Turn, card: Card, index: int, attacker: Card):
     var board = player_board if who == Turn.PLAYER else opponent_board
@@ -878,6 +898,8 @@ func combat_round(turn: Turn):
         for attack_index in attack_indices:
             if attack_index < 0 or attack_index >= 4:
                 continue
+
+            await on_card_is_about_to_attack(turn, attacker, attack_index)
 
             var defender = defender_board[attack_index]
             if defender != null and attacker.has_ability(Ability.Name.AIRBORNE) and not defender.has_ability(Ability.Name.MIGHTY_LEAP):

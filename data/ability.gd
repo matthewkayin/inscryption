@@ -25,7 +25,9 @@ enum Name {
     ETERNAL,
     CORPSE_EATER,
     LOOSE_TAIL,
-    SUBMERGE
+    SUBMERGE,
+    FECUNDITY,
+    BURROWER
 }
 
 const DESC = {
@@ -52,7 +54,9 @@ const DESC = {
     Name.ETERNAL: "When this card dies, a +1/+1 copy of it\nis created in its owner's hand.",
     Name.CORPSE_EATER: "When a card you own dies by combat,\nthis card is played in its place.",
     Name.LOOSE_TAIL: "When this card would be struck, it\ndrops its' tail and moves to the side.",
-    Name.SUBMERGE: "This card avoids attacks. Attacks aimed\nat it will strike its owner instead."
+    Name.SUBMERGE: "This card avoids attacks. Attacks aimed\nat it will strike its owner instead.",
+    Name.FECUNDITY: "When this card is played, a copy of it is\ncreated in its owner's hand.",
+    Name.BURROWER: "When an opposing card attacks, this\ncard moves to block it."
 }
 
 static func name_str(ability_name: Name) -> String:

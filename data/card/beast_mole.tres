@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://bjty8eh05nceu"]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_mynjg"]
+[ext_resource type="Texture2D" uid="uid://bdy2dhdb8o23t" path="res://match/portrait/pixelportrait_mole.png" id="1_p1fv2"]
+
+[resource]
+script = ExtResource("1_mynjg")
+name = "Mole"
+portrait = ExtResource("1_p1fv2")
+rarity = 1
+cost_type = 1
+cost_amount = 1
+power = 0
+health = 4
+ability1 = 25
+ability2 = 0
