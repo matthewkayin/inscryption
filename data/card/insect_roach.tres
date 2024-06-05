@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://tljxqxoywtgh"]
+
+[ext_resource type="Texture2D" uid="uid://7kfa8fhmpvad" path="res://match/portrait/pixelportrait_cockroach.png" id="1_05vr6"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_pt5dm"]
+
+[resource]
+script = ExtResource("1_pt5dm")
+name = "Cockroach"
+portrait = ExtResource("1_05vr6")
+rarity = 1
+cost_type = 2
+cost_amount = 4
+power = 1
+health = 1
+ability1 = 19
+ability2 = 0

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3 uid="uid://xhpp3jtu5g5"]
+
+[ext_resource type="Texture2D" uid="uid://bm8fbkckgj057" path="res://match/portrait/pixelportrait_antqueen.png" id="1_campo"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_0xukn"]
+[ext_resource type="Resource" uid="uid://vc418sb5xloh" path="res://data/card/insect_ant.tres" id="3_w25eg"]
+
+[resource]
+script = ExtResource("2_0xukn")
+name = "Ant Queen"
+portrait = ExtResource("1_campo")
+rarity = 1
+cost_type = 1
+cost_amount = 2
+power = 0
+health = 3
+ability1 = 18
+ability2 = 16
+tail = ExtResource("3_w25eg")

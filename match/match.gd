@@ -202,10 +202,13 @@ func hand_update_positions():
     await tween.finished
 
 func hand_add_card(card_id: int):
-    const CARD_SPAWN_POS = Vector2(681, 407)
-
     var card_instance = card_scene.instantiate()
     card_instance.card_init(card_id)
+    hand_add_card_instance(card_instance)
+
+func hand_add_card_instance(card_instance: Card):
+    const CARD_SPAWN_POS = Vector2(681, 407)
+
     add_child(card_instance)
     card_instance.position = CARD_SPAWN_POS
     player_hand.append(card_instance)
@@ -274,7 +277,7 @@ func board_add_card(which: Turn, index: int, card_id: int):
         card_instance.position = opponent_cardslots[index].global_position
         opponent_board[index] = card_instance
 
-func opponent_board_play_card(index: int, card_id: int):
+func opponent_board_play_card(index: int, card_id: int, eternal_counter: int = 0):
     var card = opponent_hand[opponent_hand.size() - 1]
     card.z_index = 1
 
@@ -284,6 +287,10 @@ func opponent_board_play_card(index: int, card_id: int):
     await tween.finished
     if card.has_ability(Ability.Name.SPRINTER) or card.has_ability(Ability.Name.HEFTY):
         card.set_sprint_direction(-1)
+    card.base_power += eternal_counter
+    card.base_health += eternal_counter
+    card.power = card.base_power
+    card.health = card.base_health
     await card.card_flip(Card.FlipTo.FRONT)
     sfx_crunch.play()
     card.z_index = 0
@@ -333,10 +340,25 @@ func board_kill_card(turn: Turn, index: int, is_sacrifice = false):
 func board_compute_powers(which: Turn):
     var board = player_board if which == Turn.PLAYER else opponent_board
     var _opposite_board = opponent_board if which == Turn.PLAYER else player_board
+
+    # Determine the number of ants
+    var ant_count = 0
     for index in range(0, board.size()):
         if board[index] == null:
             continue
-        board[index].power = board[index].data.power
+        if board[index].has_ability(Ability.Name.COLONY):
+            ant_count += 1
+
+    # Determine the power for each creature
+    for index in range(0, board.size()):
+        if board[index] == null:
+            continue
+        # Start with their base power
+        board[index].power = board[index].base_power
+        # Apply ant count bonus if it's an ant
+        if board[index].has_ability(Ability.Name.COLONY):
+            board[index].power += ant_count
+        # Give +1 if there is a LEADER on either side
         if index - 1 >= 0 and board[index - 1] != null and board[index - 1].has_ability(Ability.Name.LEADER):
             board[index].power += 1
         if index + 1 < board.size() and board[index + 1] != null and board[index + 1].has_ability(Ability.Name.LEADER):
@@ -387,6 +409,21 @@ func on_card_died(who: Turn, card: Card, index: int, was_sacrifice = false):
             if board[index].sacrifice_count == CAT_LIVES:
                 if board[index].data.evolves_into != null:
                     await board[index].evolve()
+    if card.has_ability(Ability.Name.UNKILLABLE) or card.has_ability(Ability.Name.ETERNAL):
+        if who == Turn.PLAYER:
+            if card.has_ability(Ability.Name.UNKILLABLE):
+                await hand_add_card(card.card_id)
+            else:
+                var card_copy = card_scene.instantiate()
+                card_copy.card_init(card.card_id)
+                card_copy.base_power = card.base_power + 1
+                card_copy.base_health = card.base_health + 1
+                card_copy.power = card_copy.base_power
+                card_copy.health = card_copy.base_health
+                card_copy.card_refresh()
+                await hand_add_card_instance(card_copy)
+        else:
+            await opponent_hand_add_card()
 
     board_compute_powers(Turn.PLAYER)
     board_compute_powers(Turn.OPPONENT)
@@ -703,7 +740,10 @@ func player_summoning_process():
                 # SUMMON
                 state = State.WAIT
                 if network.network_is_connected():
-                    _on_opponent_place_card.rpc_id(network.opponent_id, hovered_cardslot_index, summoning_card.card_id)
+                    var eternal_counter = 0
+                    if summoning_card.has_ability(Ability.Name.ETERNAL):
+                        eternal_counter = summoning_card.base_power - summoning_card.data.power
+                    _on_opponent_place_card.rpc_id(network.opponent_id, hovered_cardslot_index, summoning_card.card_id, eternal_counter)
                 director.set_cursor(director.CursorType.POINTER)
                 card_hover.close()
                 summoning_card.animate_presummon_end()
@@ -805,7 +845,7 @@ func combat_round(turn: Turn):
             if defender != null and attacker.has_ability(Ability.Name.AIRBORNE) and not defender.has_ability(Ability.Name.MIGHTY_LEAP):
                 defender = null
 
-            combat_damage = combat_damage + (await combat_do_attack(turn, attacker, attack_index))
+            combat_damage = combat_damage + (await combat_do_attack(turn, attacker, attack_index, defender))
             if defender != null:
                 await on_card_hit(opponent_turn, defender, attacker)
                 if defender.health == 0 or attacker.has_ability(Ability.Name.DEATHTOUCH):
@@ -886,10 +926,8 @@ func combat_attack_animation_play(at_position: Vector2):
     attack_animation.visible = false
     attack_animation.modulate.a = 1.0
 
-func combat_do_attack(turn: Turn, attacker: Card, index: int):
-    var defender_board = opponent_board if turn == Turn.PLAYER else player_board
+func combat_do_attack(turn: Turn, attacker: Card, index: int, defender):
     var defender_cardslots = opponent_cardslots if turn == Turn.PLAYER else player_cardslots
-    var defender = defender_board[index]
 
     var attacker_position = attacker.position
     var lunge_direction = attacker.position.direction_to(defender_cardslots[index].global_position)
@@ -968,7 +1006,7 @@ func network_process():
     elif action.type == NetworkActionType.SACRIFICE:
         await board_kill_card(Turn.OPPONENT, 3 - action.index, true)
     elif action.type == NetworkActionType.SUMMON:
-        await opponent_board_play_card(3 - action.index, action.card_id)
+        await opponent_board_play_card(3 - action.index, action.card_id, action.eternal_counter)
     elif action.type == NetworkActionType.BELL:
         await combat_round(Turn.OPPONENT)
     elif action.type == NetworkActionType.YIELD:
@@ -997,11 +1035,12 @@ func _on_opponent_sacrifice_card(index: int):
     })
 
 @rpc("any_peer", "reliable")
-func _on_opponent_place_card(index: int, card_id: int):
+func _on_opponent_place_card(index: int, card_id: int, eternal_counter: int):
     network_action_queue.push_back({
         "type": NetworkActionType.SUMMON,
         "index": index,
-        "card_id": card_id
+        "card_id": card_id,
+        "eternal_counter": eternal_counter
     })
 
 @rpc("any_peer", "reliable")

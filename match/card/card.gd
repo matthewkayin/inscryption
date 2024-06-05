@@ -34,6 +34,8 @@ var ability_icons
 @onready var dim = $dim
 
 # stats
+var base_power: int
+var base_health: int
 var power: int
 var health: int
 var data: CardData
@@ -104,12 +106,14 @@ func set_card_id(p_card_id: int):
         portrait.texture = data.library_portrait
     else:
         portrait.texture = data.portrait 
-    power = data.power
-    health = data.health
+    base_power = data.power
+    power = base_power
+    base_health = data.health
+    health = base_health
 
 func card_refresh():
     # Power
-    if power != data.power:
+    if power != base_power:
         power_label.label_settings.font_color = LOW_HEALTH_COLOR
     else:
         power_label.label_settings.font_color = Color.BLACK
@@ -117,7 +121,7 @@ func card_refresh():
     power_label.visible = true
 
     # Health
-    if health != data.health:
+    if health != base_health:
         health_label.label_settings.font_color = LOW_HEALTH_COLOR
     else:
         health_label.label_settings.font_color = Color.BLACK
@@ -225,7 +229,7 @@ func evolve():
     tween.tween_property(self, "scale", Vector2(0, 1), 0.05)
     await tween.finished
 
-    var damage_taken = data.health - health
+    var damage_taken = base_health - health
     var sprint_direction = get_sprint_direction()
     set_card_id(Card.get_id_from_data(data.evolves_into))
     set_sprint_direction(sprint_direction)
