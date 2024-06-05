@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://cooqcyrewhnhg"]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_7x5n8"]
+[ext_resource type="Texture2D" uid="uid://u6no5fvmiy6q" path="res://match/portrait/pixelportrait_otter.png" id="1_bq4vy"]
+
+[resource]
+script = ExtResource("1_7x5n8")
+name = "Otter"
+portrait = ExtResource("1_bq4vy")
+rarity = 1
+cost_type = 1
+cost_amount = 1
+power = 1
+health = 1
+ability1 = 23
+ability2 = 0

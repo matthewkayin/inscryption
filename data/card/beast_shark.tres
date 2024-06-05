@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://dl3fb75wnwmwm"]
+
+[ext_resource type="Texture2D" uid="uid://dfh30fm78gvxp" path="res://match/portrait/pixelportrait_shark.png" id="1_rqbps"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_ugy0c"]
+
+[resource]
+script = ExtResource("1_ugy0c")
+name = "Great White"
+portrait = ExtResource("1_rqbps")
+rarity = 1
+cost_type = 1
+cost_amount = 3
+power = 4
+health = 2
+ability1 = 23
+ability2 = 0

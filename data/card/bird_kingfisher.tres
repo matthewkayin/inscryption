@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://dghoax6tsiydv"]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_qe3yb"]
+[ext_resource type="Texture2D" uid="uid://v115koyxholw" path="res://match/portrait/pixelportrait_kingfisher.png" id="1_x67ra"]
+
+[resource]
+script = ExtResource("1_qe3yb")
+name = "Kingfisher"
+portrait = ExtResource("1_x67ra")
+rarity = 1
+cost_type = 1
+cost_amount = 1
+power = 1
+health = 1
+ability1 = 3
+ability2 = 23

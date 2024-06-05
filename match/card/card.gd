@@ -21,8 +21,9 @@ const CARD_SIZE = Vector2(82, 112)
 const ABILITY_ICON_SIZE = Vector2(34, 34)
 
 # onready
-var card_blank 
-var card_back 
+@export var card_blank: Texture2D
+@export var card_back: Texture2D
+@export var card_submerged: Texture2D
 
 var portrait 
 var cost_sprite 
@@ -45,6 +46,7 @@ var card_id: int
 var state = State.NONE
 var sacrifice_count = 0
 var use_library_portrait = false
+var is_face_down = false
 
 var previous_position = null
 const ANIMATE_PRESUMMON_POSITION_OFFSETS = [
@@ -69,9 +71,6 @@ static func get_id_from_data(card_data: CardData):
     assert(false, "Card ID for given card data not found.")
 
 func card_init(p_card_id: int, face_down = false):
-    card_blank = load("res://match/card/pixel_card_empty.png")
-    card_back = load("res://match/card/pixel_cardback.png")
-
     # get handles to all card members
     portrait = $portrait
     cost_sprite = $cost
@@ -91,12 +90,11 @@ func card_init(p_card_id: int, face_down = false):
     health_label.label_settings.font_size = shared_label_settings.font_size
     health_label.label_settings.font_color = shared_label_settings.font_color
 
+    is_face_down = is_face_down
     set_card_id(p_card_id)
     card_refresh()
 
-    if face_down:
-        for child in get_children():
-            child.visible = false
+    if is_face_down:
         texture = card_back
 
 func set_card_id(p_card_id: int):
@@ -112,6 +110,11 @@ func set_card_id(p_card_id: int):
     health = base_health
 
 func card_refresh():
+    if is_face_down:
+        for child in get_children():
+            child.visible = false
+        return
+
     # Power
     if power != base_power:
         power_label.label_settings.font_color = LOW_HEALTH_COLOR
@@ -212,10 +215,15 @@ func card_flip(flip_to: FlipTo):
     await tween.finished
 
     if flip_to == FlipTo.FRONT:
-        card_refresh()
         texture = card_blank
+        is_face_down = false
+    elif flip_to == FlipTo.SUBMERGE:
+        texture = card_submerged
+        is_face_down = true
     else:
         texture = card_back
+        is_face_down = true
+    card_refresh()
 
     var tween2 = get_tree().create_tween()
     tween2.tween_property(self, "scale", Vector2(1, 1), 0.05)

@@ -51,7 +51,6 @@ func open():
     library = {}
     for card_id in range(0, Card.DATA.size()):
         if Card.DATA[card_id].rarity == CardData.Rarity.HIDDEN:
-            print(Card.DATA[card_id].name, ": HIDDEN")
             continue
         library[card_id] = CARD_DUPLICATE_LIMIT[Card.DATA[card_id].rarity]
 

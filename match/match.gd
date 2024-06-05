@@ -449,7 +449,6 @@ func on_card_hit(who: Turn, card: Card, index: int, attacker: Card):
             board[free_index] = card
             board[index] = null
             var card_tail_id = Card.get_id_from_data(card.data.tail)
-            print(Card.DATA[card_tail_id])
             await card.evolve()
             board_add_card(who, index, card_tail_id)
 
@@ -551,11 +550,15 @@ func on_combat_over(who: Turn):
                 # If we moved into the next index to be iterated over, skip that index
                 if (direction == 1 and who == Turn.PLAYER) or (direction == -1 and who == Turn.OPPONENT):
                     skip_index = true
+        if card.has_ability(Ability.Name.SUBMERGE):
+            await card.card_flip(Card.FlipTo.SUBMERGE)
     for card in defender_board:
         if card == null:
             continue
         if card.has_ability(Ability.Name.EVOLVE):
             await card.evolve()
+        if card.has_ability(Ability.Name.SUBMERGE):
+            await card.card_flip(Card.FlipTo.FRONT)
 
 # PLAYER DRAW
 
@@ -985,9 +988,11 @@ func combat_do_attack(turn: Turn, attacker: Card, index: int, defender):
 
     # Check if we should hit the defender
     var hit_defender = defender != null
+    # Don't hit submerged creatures
+    if hit_defender and defender.has_ability(Ability.Name.SUBMERGE):
+        hit_defender = false
     # If the defender has LOOSE_TAIL, then we should not hit the defender unless they have nowhere to go
     if hit_defender and defender.has_ability(Ability.Name.LOOSE_TAIL):
-        print("HAS LOOSE TAIL, index ", index)
         var defender_board = opponent_board if turn == Turn.PLAYER else player_board
         var free_index = -1
         var direction = 1
