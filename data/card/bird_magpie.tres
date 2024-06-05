@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://c8da7e4tl0jfd"]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_3miwa"]
+[ext_resource type="Texture2D" uid="uid://d2k7ley7aos68" path="res://match/portrait/pixelportrait_magpie.png" id="1_k5dbr"]
+
+[resource]
+script = ExtResource("1_3miwa")
+name = "Magpie"
+portrait = ExtResource("1_k5dbr")
+rarity = 1
+cost_type = 1
+cost_amount = 2
+power = 1
+health = 1
+ability1 = 26
+ability2 = 3

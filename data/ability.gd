@@ -27,7 +27,8 @@ enum Name {
     LOOSE_TAIL,
     SUBMERGE,
     FECUNDITY,
-    BURROWER
+    BURROWER,
+    HOARDER
 }
 
 const DESC = {
@@ -56,7 +57,8 @@ const DESC = {
     Name.LOOSE_TAIL: "When this card would be struck, it\ndrops its' tail and moves to the side.",
     Name.SUBMERGE: "This card avoids attacks. Attacks aimed\nat it will strike its owner instead.",
     Name.FECUNDITY: "When this card is played, a copy of it is\ncreated in its owner's hand.",
-    Name.BURROWER: "When an opposing card attacks, this\ncard moves to block it."
+    Name.BURROWER: "When an opposing card attacks, this\ncard moves to block it.",
+    Name.HOARDER: "When this card is played, its owner\ndraws a card of choice from their deck."
 }
 
 static func name_str(ability_name: Name) -> String:

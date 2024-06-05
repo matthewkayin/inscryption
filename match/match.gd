@@ -1,6 +1,7 @@
 extends Node2D
 
 signal server_ready
+signal player_deck_draw_finished
 
 @onready var director = get_node("/root/Director")
 @onready var network = get_node("/root/Network")
@@ -39,7 +40,8 @@ enum State {
     WAIT,
     PLAYER_DRAW,
     PLAYER_TURN,
-    PLAYER_SUMMONING
+    PLAYER_SUMMONING,
+    PLAYER_DECK_DRAW
 }
 
 enum BellState {
@@ -61,6 +63,8 @@ const BELL_SIZE = Vector2(182, 72)
 
 var state = State.WAIT
 var player_hand = []
+var player_deck_hand = []
+var player_deck_hand_visible = false
 var player_board = [null, null, null, null]
 var player_score = 0
 var player_bone_count = 0
@@ -169,10 +173,16 @@ func _process(_delta):
 # HAND
 
 func hand_update_positions():
-    const HAND_CENTER = Vector2(320, 407)
+    await hand_update_positions_helper(player_hand, 407)
+
+func deck_hand_update_positions():
+    await hand_update_positions_helper(player_deck_hand, 200)
+
+func hand_update_positions_helper(hand, hand_center_y):
+    var HAND_CENTER = Vector2(320, hand_center_y)
     const HAND_UPDATE_DURATION = 0.25
 
-    var hand_size = player_hand.size()
+    var hand_size = hand.size()
     var HAND_CARD_PADDING 
     if hand_size < 6:
         HAND_CARD_PADDING = 98
@@ -182,23 +192,23 @@ func hand_update_positions():
         const LAST_CARD_POSITION = 532.0 - 82.0
         HAND_CARD_PADDING = LAST_CARD_POSITION / (hand_size - 1)
 
-    if player_hand.size() == 0:
+    if hand.size() == 0:
         return
     var tween = get_tree().create_tween()
-    if player_hand.size() == 1:
-        tween.parallel().tween_property(player_hand[0], "position", HAND_CENTER, HAND_UPDATE_DURATION)
+    if hand.size() == 1:
+        tween.parallel().tween_property(hand[0], "position", HAND_CENTER, HAND_UPDATE_DURATION)
     else: 
         var hand_area_size 
         var hand_area_start 
         if hand_size < 7:
-            hand_area_size = (player_hand.size() * HAND_CARD_PADDING) - (HAND_CARD_PADDING - Card.CARD_SIZE.x)
+            hand_area_size = (hand.size() * HAND_CARD_PADDING) - (HAND_CARD_PADDING - Card.CARD_SIZE.x)
             hand_area_start = 320 - int(hand_area_size / 2.0) + (Card.CARD_SIZE.x / 2.0)
         else:
             hand_area_size = 532.0
             hand_area_start = 95.0
-        for i in range(0, player_hand.size()):
+        for i in range(0, hand.size()):
             var card_x = hand_area_start + (i * HAND_CARD_PADDING)
-            tween.parallel().tween_property(player_hand[i], "position", Vector2(card_x, HAND_CENTER.y), HAND_UPDATE_DURATION)
+            tween.parallel().tween_property(hand[i], "position", Vector2(card_x, HAND_CENTER.y), HAND_UPDATE_DURATION)
     await tween.finished
 
 func hand_add_card(card_id: int):
@@ -426,6 +436,22 @@ func on_card_played(who: Turn, card: Card, index: int):
             await hand_add_card(Card.get_id_from_data(card.data))
         else:
             await opponent_hand_add_card()
+    if card.has_ability(Ability.Name.HOARDER):
+        if who == Turn.PLAYER:
+            state = State.WAIT
+            player_deck_hand = []
+            for card_id in player_deck:
+                var deck_card = card_scene.instantiate()
+                deck_card.card_init(card_id)
+                add_child(deck_card)
+                deck_card.position = Vector2(640 + Card.CARD_SIZE.x, 240)
+                player_deck_hand.push_back(deck_card)
+                await deck_hand_update_positions()
+            player_deck_hand_visible = true
+            state = State.PLAYER_DECK_DRAW
+            await player_deck_draw_finished
+        else:
+            popup.open("Opponent is choosing a card from their deck.")
 
 func on_card_is_about_to_attack(who: Turn, _attacker: Card, index: int):
     var opposite = Turn.OPPONENT if who == Turn.PLAYER else Turn.PLAYER
@@ -646,20 +672,39 @@ func player_hand_process():
 
     var mouse_pos = get_viewport().get_mouse_position()
     var hovered_card = null
-    for card in player_hand:
-        card.z_index = 0
-    for i in range(player_hand.size() - 1, -1, -1):
-        var card = player_hand[i]
-        if card.has_point(mouse_pos):
-            # make sure that card hover is not already open on this card
-            hovered_card = card
-            if state == State.PLAYER_TURN and not (card_hover.visible and card_hover.position == card.position): 
-                card_hover.open(card.position)
-            break
+    var selected_card = null
+
+    if player_deck_hand_visible:
+        for card in player_deck_hand:
+            card.z_index = 0
+        for i in range(player_deck_hand.size() - 1, -1, -1):
+            var card = player_deck_hand[i]
+            if card.has_point(mouse_pos):
+                # make sure that card hover is not already open on this card
+                hovered_card = card
+                if state == State.PLAYER_DECK_DRAW:
+                    selected_card = card
+                    if not (card_hover.visible and card_hover.position == card.position): 
+                        card_hover.open(card.position)
+                    break
+
+    if hovered_card == null:
+        for card in player_hand:
+            card.z_index = 0
+        for i in range(player_hand.size() - 1, -1, -1):
+            var card = player_hand[i]
+            if card.has_point(mouse_pos):
+                # make sure that card hover is not already open on this card
+                hovered_card = card
+                if state == State.PLAYER_TURN:
+                    selected_card = card
+                    if not (card_hover.visible and card_hover.position == card.position): 
+                        card_hover.open(card.position)
+                    break
 
     if hovered_card != null:
         hovered_card.z_index = 1
-    if hovered_card == null and card_hover.visible:
+    if selected_card == null and card_hover.visible:
         card_hover.close()
 
     # Check if we're hovering over a sigil
@@ -690,7 +735,7 @@ func player_hand_process():
         return null
 
     director.set_cursor(cursor_type)
-    return hovered_card
+    return selected_card
 
 func player_turn_process():
     var hovered_card = player_hand_process()
@@ -785,6 +830,36 @@ func player_turn_process():
             bell.frame_coords.x = int(BellState.HOVER)
     else:
         bell.frame_coords.x = int(BellState.READY)
+
+# PLAYER DECK DRAw
+
+func player_deck_draw_process():
+    var selected_card = player_hand_process()
+
+    if selected_card != null and Input.is_action_just_pressed("mouse_button_left"):
+        state = State.WAIT
+        # Tell opponent we drew a card
+        if network.network_is_connected():
+            _on_opponent_draw_card.rpc_id(network.opponent_id)
+        # Place the card in our hand
+        player_deck_hand.erase(selected_card)
+        for card in player_deck_hand:
+            card.visible = false
+            card.queue_free()
+        player_deck_hand = []
+        player_deck.erase(selected_card.card_id)
+        player_hand.push_back(selected_card)
+
+        # Shuffle the deck
+        var unshuffled_deck = []
+        while not player_deck.is_empty():
+            unshuffled_deck.push_back(player_deck.pop_front())
+        while not unshuffled_deck.is_empty():
+            player_deck.push_back(unshuffled_deck.pop_at(randi_range(0, unshuffled_deck.size() - 1)))
+        ui_update_deck_counters()
+
+        await hand_update_positions()
+        player_deck_draw_finished.emit()
 
 # PLAYER SUMMONING
 
@@ -1068,6 +1143,8 @@ func network_process():
     var action = network_action_queue.pop_front()
     network_is_action_running = true
     if action.type == NetworkActionType.DRAW:
+        if popup.visible:
+            popup.close()
         await opponent_hand_add_card()
     elif action.type == NetworkActionType.NO_DRAW:
         player_score += 1
