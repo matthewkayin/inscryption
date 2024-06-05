@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://bseur6inr6ad2"]
+
+[ext_resource type="Texture2D" uid="uid://c04bx4fhe1bk" path="res://match/portrait/pixelportrait_mummy.png" id="1_oeolq"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_84ace"]
+
+[resource]
+script = ExtResource("2_84ace")
+name = "Mummy Lord"
+portrait = ExtResource("1_oeolq")
+rarity = 0
+cost_type = 2
+cost_amount = 8
+power = 3
+health = 3
+ability1 = 0
+ability2 = 0

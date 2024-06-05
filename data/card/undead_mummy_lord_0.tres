@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3 uid="uid://du3mtaw6r0fc2"]
+
+[ext_resource type="Resource" uid="uid://bseur6inr6ad2" path="res://data/card/undead_mummy_lord_1.tres" id="1_6jwdl"]
+[ext_resource type="Texture2D" uid="uid://dln3mxa3c2pon" path="res://match/portrait/pixelportrait_sarcophagus.png" id="1_con2g"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_03ixq"]
+
+[resource]
+script = ExtResource("2_03ixq")
+name = "Sarcophagus"
+portrait = ExtResource("1_con2g")
+rarity = 1
+cost_type = 2
+cost_amount = 4
+power = 0
+health = 2
+ability1 = 4
+ability2 = 0
+evolves_into = ExtResource("1_6jwdl")

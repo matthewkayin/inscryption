@@ -28,7 +28,12 @@ enum Name {
     SUBMERGE,
     FECUNDITY,
     BURROWER,
-    HOARDER
+    HOARDER,
+    STINKY,
+    BONE_THIEF,
+    BONE_DIGGER,
+    DOUBLE_STRIKE,
+    DOUBLE_DEATH
 }
 
 const DESC = {
@@ -58,7 +63,12 @@ const DESC = {
     Name.SUBMERGE: "This card avoids attacks. Attacks aimed\nat it will strike its owner instead.",
     Name.FECUNDITY: "When this card is played, a copy of it is\ncreated in its owner's hand.",
     Name.BURROWER: "When an opposing card attacks, this\ncard moves to block it.",
-    Name.HOARDER: "When this card is played, its owner\ndraws a card of choice from their deck."
+    Name.HOARDER: "When this card is played, its owner\ndraws a card of choice from their deck.",
+    Name.STINKY: "The card opposing this one loses\n1 power.",
+    Name.BONE_THIEF: "When an opposing creature dies, this\ncard's owner takes the bones.",
+    Name.BONE_DIGGER: "After the opponent's turn, this card\ngrants its owner 1 bone.",
+    Name.DOUBLE_STRIKE: "This card attacks twice.",
+    Name.DOUBLE_DEATH: "This card makes its owner's cards die\ntwice."
 }
 
 static func name_str(ability_name: Name) -> String:

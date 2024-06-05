@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://mu126n2sddkw"
-path="res://.godot/imported/pixelability_bonedigger.png-264ae42fb252b16935a6ee1c4d14cb46.ctex"
+uid="uid://byuh20scy0ufr"
+path="res://.godot/imported/pixelability_double_strike.png-34f48c2b3e435c395cdda440e76bdb17.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_bonedigger.png"
-dest_files=["res://.godot/imported/pixelability_bonedigger.png-264ae42fb252b16935a6ee1c4d14cb46.ctex"]
+source_file="res://match/ability/pixelability_double_strike.png"
+dest_files=["res://.godot/imported/pixelability_double_strike.png-34f48c2b3e435c395cdda440e76bdb17.ctex"]
 
 [params]
 

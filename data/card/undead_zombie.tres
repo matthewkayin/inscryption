@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://dgtjwm2nym56g"]
+
+[ext_resource type="Texture2D" uid="uid://4j3rflxapkdh" path="res://match/portrait/pixelportrait_zombie.png" id="1_7od3e"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_ccu6f"]
+
+[resource]
+script = ExtResource("2_ccu6f")
+name = "Zombie"
+portrait = ExtResource("1_7od3e")
+rarity = 1
+cost_type = 2
+cost_amount = 2
+power = 1
+health = 1
+ability1 = 0
+ability2 = 0

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://0skblnrjnrir"]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_8w8ug"]
+[ext_resource type="Texture2D" uid="uid://bs1w1fygje41v" path="res://match/portrait/pixelportrait_salmon.png" id="1_30qfb"]
+
+[resource]
+script = ExtResource("1_8w8ug")
+name = "Salmon"
+portrait = ExtResource("1_30qfb")
+rarity = 1
+cost_type = 1
+cost_amount = 2
+power = 2
+health = 2
+ability1 = 23
+ability2 = 9

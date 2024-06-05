@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://ofd1js418gns"]
+
+[ext_resource type="Texture2D" uid="uid://d13sq5xona2jx" path="res://match/portrait/pixelportrait_banshee.png" id="1_fji82"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_vkw58"]
+
+[resource]
+script = ExtResource("1_vkw58")
+name = "Banshee"
+portrait = ExtResource("1_fji82")
+rarity = 1
+cost_type = 2
+cost_amount = 2
+power = 1
+health = 1
+ability1 = 3
+ability2 = 0

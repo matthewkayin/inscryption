@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://cpygur8o31gm1"]
+
+[ext_resource type="Texture2D" uid="uid://bgtk00qtiepvr" path="res://match/portrait/pixelportrait_gravedigger.png" id="1_1b0l4"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_pewbc"]
+
+[resource]
+script = ExtResource("1_pewbc")
+name = "Gravedigger"
+portrait = ExtResource("1_1b0l4")
+rarity = 1
+cost_type = 2
+cost_amount = 1
+power = 0
+health = 3
+ability1 = 29
+ability2 = 0

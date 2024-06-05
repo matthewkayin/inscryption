@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://wr026dwlt30s"]
+
+[ext_resource type="Texture2D" uid="uid://bijd7o7cp868g" path="res://match/portrait/pixelportrait_direwolf.png" id="1_wu8yh"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_ub35l"]
+
+[resource]
+script = ExtResource("2_ub35l")
+name = "Dire Wolf"
+portrait = ExtResource("1_wu8yh")
+rarity = 1
+cost_type = 1
+cost_amount = 3
+power = 2
+health = 5
+ability1 = 30
+ability2 = 0

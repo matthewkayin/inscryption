@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://bgu6jsc1fqwjo"]
+
+[ext_resource type="Texture2D" uid="uid://bbbaluoafjgcb" path="res://match/portrait/pixelportrait_franknstein.png" id="1_4bo5m"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_homjr"]
+
+[resource]
+script = ExtResource("2_homjr")
+name = "Frank & Stein"
+portrait = ExtResource("1_4bo5m")
+rarity = 1
+cost_type = 2
+cost_amount = 5
+power = 2
+health = 2
+ability1 = 0
+ability2 = 0

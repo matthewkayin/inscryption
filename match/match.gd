@@ -35,6 +35,8 @@ var blood_counter_sprites = []
 @onready var sfx_attack = $sfx/attack
 @onready var sfx_crunch = $sfx/crunch
 @onready var sfx_blip = $sfx/blip
+@onready var bone_popup = $bone_popup
+@onready var bone_popup_value = $bone_popup/value
 
 enum State {
     WAIT,
@@ -96,6 +98,7 @@ func _ready():
     score_scale.display_scores(0, 0)
     network.server_client_disconnected.connect(_on_opponent_disconnect)
     network.client_server_disconnected.connect(_on_opponent_disconnect)
+    bone_popup.visible = false
     rulebook_close()
 
     # Init player deck
@@ -274,6 +277,19 @@ func ui_update_deck_counters():
     deck_count_label.text = "x" + str(player_deck.size())
     squirrel_deck_count_label.text = "x" + str(player_squirrel_deck_count)
 
+func ui_animate_bone_popup(who: Turn, index: int, bone_count: int):
+    var cardslots = player_cardslots if who == Turn.PLAYER else opponent_cardslots
+    bone_popup.position = cardslots[index].global_position
+    bone_popup.modulate = Color(1, 1, 1, 1)
+    bone_popup.visible = true
+    bone_popup_value.visible = bone_count > 1
+    bone_popup_value.text = "x" + str(bone_count)
+    var tween = get_tree().create_tween()
+    tween.tween_property(bone_popup, "position", bone_popup.position + Vector2(0, -70), 0.25)
+    tween.tween_property(bone_popup, "modulate", Color(1, 1, 1, 0), 0.25)
+    await tween.finished
+    bone_popup.visible = false
+
 # BOARD
 
 func board_add_card(which: Turn, index: int, card_id: int):
@@ -365,6 +381,7 @@ func board_animate_guardian(which: Turn, from: int, to: int):
 
 func board_kill_card(turn: Turn, index: int, is_sacrifice = false):
     var board = player_board if turn == Turn.PLAYER else opponent_board
+
     var card = board[index] 
     if is_sacrifice:
         sfx_sacrifice.play()
@@ -372,18 +389,13 @@ func board_kill_card(turn: Turn, index: int, is_sacrifice = false):
         sfx_death.play()
     await card.animate_death(is_sacrifice)
     board[index] = null
-    if turn == Turn.PLAYER:
-        if card.has_ability(Ability.Name.BONE_KING):
-            player_bone_count += 4
-        else:
-            player_bone_count += 1
-        ui_update_bone_counter()
+
     await on_card_died(turn, card, index, is_sacrifice)
     card.queue_free()
 
 func board_compute_powers(which: Turn):
     var board = player_board if which == Turn.PLAYER else opponent_board
-    var _opposite_board = opponent_board if which == Turn.PLAYER else player_board
+    var opposite_board = opponent_board if which == Turn.PLAYER else player_board
 
     # Determine the number of ants
     var ant_count = 0
@@ -407,6 +419,9 @@ func board_compute_powers(which: Turn):
             board[index].power += 1
         if index + 1 < board.size() and board[index + 1] != null and board[index + 1].has_ability(Ability.Name.LEADER):
             board[index].power += 1
+        # Give -1 if there is STINKY on other side
+        if opposite_board[index] != null and opposite_board[index].has_ability(Ability.Name.STINKY):
+            board[index].power -= 1
         board[index].card_refresh()
 
 # GAME EVENTS
@@ -498,9 +513,32 @@ func on_card_hit(who: Turn, card: Card, index: int, attacker: Card):
             await card.evolve()
             board_add_card(who, index, card_tail_id)
 
-func on_card_died(who: Turn, card: Card, index: int, was_sacrifice = false):
+func on_card_died(who: Turn, card: Card, index: int, was_sacrifice = false, is_double_death = false):
     var board = player_board if who == Turn.PLAYER else opponent_board
+    var opposing_board = opponent_board if who == Turn.PLAYER else player_board
+    var opposing_player = Turn.OPPONENT if who == Turn.PLAYER else Turn.PLAYER
 
+    # Compute bone yield
+    var bone_yield = 1
+    if card.has_ability(Ability.Name.BONE_KING):
+        bone_yield = 4
+
+    # Check for a bone thief
+    var opposing_has_bone_thief = false
+    for opposing_card_index in range(0, 4):
+        var opposing_card = opposing_board[opposing_card_index]
+        if opposing_card == null:
+            continue
+        if opposing_card.has_ability(Ability.Name.BONE_THIEF):
+            opposing_has_bone_thief = true
+            await ui_animate_bone_popup(opposing_player, opposing_card_index, bone_yield)
+
+    # Grant the bones (to card owner or to bone thief owner)
+    if (who == Turn.PLAYER and not opposing_has_bone_thief) or (who == Turn.OPPONENT and opposing_has_bone_thief):
+        player_bone_count += bone_yield
+        ui_update_bone_counter()
+
+    # MANY LIVES
     if was_sacrifice and card.has_ability(Ability.Name.MANY_LIVES):
         board_add_card(who, index, card.card_id)
         if board[index].sacrifice_count < CAT_LIVES:
@@ -508,6 +546,8 @@ func on_card_died(who: Turn, card: Card, index: int, was_sacrifice = false):
             if board[index].sacrifice_count == CAT_LIVES:
                 if board[index].data.evolves_into != null:
                     await board[index].evolve()
+
+    # UNKILLABLE / ETERNAL
     if card.has_ability(Ability.Name.UNKILLABLE) or card.has_ability(Ability.Name.ETERNAL):
         if who == Turn.PLAYER:
             if card.has_ability(Ability.Name.UNKILLABLE):
@@ -523,11 +563,29 @@ func on_card_died(who: Turn, card: Card, index: int, was_sacrifice = false):
                 await hand_add_card_instance(card_copy)
         else:
             await opponent_hand_add_card()
+
+    # CORPSE EATER
     if board[index] == null and who == Turn.PLAYER and not was_sacrifice:
         for hand_card in player_hand:
             if hand_card.has_ability(Ability.Name.CORPSE_EATER):
                 await player_summon_card(hand_card, index, false)
                 break
+
+    # DOUBLE DEATH
+    if board[index] == null and not is_double_death:
+        var should_double_death = false
+        for board_index in range(0, board.size()):
+            if board_index == index or board[board_index] == null:
+                continue
+            if board[board_index].has_ability(Ability.Name.DOUBLE_DEATH):
+                should_double_death = true
+                break
+        if should_double_death:
+            board_add_card(who, index, card.card_id)
+            await board[index].animate_death(false)
+            var undead_copy = board[index]
+            board[index] = null
+            await on_card_died(who, undead_copy, index, false, true)
 
     board_compute_powers(Turn.PLAYER)
     board_compute_powers(Turn.OPPONENT)
@@ -554,6 +612,13 @@ func on_combat_over(who: Turn):
 
             # If so, flip direction
             if is_blocked:
+                var tween = get_tree().create_tween()
+                tween.tween_property(card, "rotation_degrees", 7, 0.0375)
+                tween.tween_property(card, "rotation_degrees", -7, 0.075)
+                tween.tween_property(card, "rotation_degrees", 7, 0.075)
+                tween.tween_property(card, "rotation_degrees", -7, 0.075)
+                tween.tween_property(card, "rotation_degrees", 0, 0.0375)
+                await tween.finished
                 card.set_sprint_direction(direction * -1)
             # Otherwise, move one space
             else:
@@ -598,13 +663,26 @@ func on_combat_over(who: Turn):
                     skip_index = true
         if card.has_ability(Ability.Name.SUBMERGE):
             await card.card_flip(Card.FlipTo.SUBMERGE)
-    for card in defender_board:
+    var defender_lane_indices = range(0, 4) if who == Turn.OPPONENT else range(3, -1, -1)
+    for defender_lane_index in defender_lane_indices:
+        var card = defender_board[defender_lane_index]
         if card == null:
             continue
-        if card.has_ability(Ability.Name.EVOLVE):
-            await card.evolve()
         if card.has_ability(Ability.Name.SUBMERGE):
             await card.card_flip(Card.FlipTo.FRONT)
+        if card.has_ability(Ability.Name.BONE_DIGGER):
+            var tween = get_tree().create_tween()
+            tween.tween_property(card, "position", card.position + Vector2(0, 8), 0.25)
+            tween.tween_property(card, "position", card.position, 0.125)
+            await tween.finished
+            await ui_animate_bone_popup(Turn.OPPONENT if who == Turn.PLAYER else Turn.PLAYER, defender_lane_index, 1)
+            if who == Turn.OPPONENT:
+                player_bone_count += 1
+        if card.has_ability(Ability.Name.EVOLVE):
+            await card.evolve()
+
+    board_compute_powers(Turn.PLAYER)
+    board_compute_powers(Turn.OPPONENT)
 
 # PLAYER DRAW
 
@@ -964,11 +1042,12 @@ func combat_round(turn: Turn):
 
         # Determine attack indices
         var attack_indices = [lane_index]
-        if attacker.has_ability(Ability.Name.TWIN_STRIKE) or attacker.has_ability(Ability.Name.TRIPLET_STRIKE):
-            if attacker.has_ability(Ability.Name.TWIN_STRIKE):
-                attack_indices = [lane_index - 1, lane_index + 1] if turn == Turn.PLAYER else [lane_index + 1, lane_index - 1]
-            else:
-                attack_indices = [lane_index - 1, lane_index, lane_index + 1] if turn == Turn.PLAYER else [lane_index + 1, lane_index, lane_index - 1]
+        if attacker.has_ability(Ability.Name.TWIN_STRIKE):
+            attack_indices = [lane_index - 1, lane_index + 1] if turn == Turn.PLAYER else [lane_index + 1, lane_index - 1]
+        elif attacker.has_ability(Ability.Name.TRIPLET_STRIKE):
+            attack_indices = [lane_index - 1, lane_index, lane_index + 1] if turn == Turn.PLAYER else [lane_index + 1, lane_index, lane_index - 1]
+        elif attacker.has_ability(Ability.Name.DOUBLE_STRIKE):
+            attack_indices = [lane_index, lane_index]
         # Attack at each index
         for attack_index in attack_indices:
             if attack_index < 0 or attack_index >= 4:

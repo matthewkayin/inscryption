@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dwsfdqgtn5eje"
-path="res://.godot/imported/pixelability_opponentbones.png-b8e8ffd6626ab8197fa76740f8c154a4.ctex"
+path="res://.godot/imported/pixelability_bone_thief.png-c0a5eec01c019e9bf788eebad929f561.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_opponentbones.png"
-dest_files=["res://.godot/imported/pixelability_opponentbones.png-b8e8ffd6626ab8197fa76740f8c154a4.ctex"]
+source_file="res://match/ability/pixelability_bone_thief.png"
+dest_files=["res://.godot/imported/pixelability_bone_thief.png-c0a5eec01c019e9bf788eebad929f561.ctex"]
 
 [params]
 

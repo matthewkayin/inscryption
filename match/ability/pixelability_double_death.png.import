@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b05qb4jrox20g"
-path="res://.godot/imported/pixelability_doubledeath.png-8c636418083bdbe001080a48b1177867.ctex"
+path="res://.godot/imported/pixelability_double_death.png-11694ceff7b4ed4881706e62650165f3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_doubledeath.png"
-dest_files=["res://.godot/imported/pixelability_doubledeath.png-8c636418083bdbe001080a48b1177867.ctex"]
+source_file="res://match/ability/pixelability_double_death.png"
+dest_files=["res://.godot/imported/pixelability_double_death.png-11694ceff7b4ed4881706e62650165f3.ctex"]
 
 [params]
 

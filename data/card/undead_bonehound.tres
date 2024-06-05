@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://d0rdudftn8cc7"]
+
+[ext_resource type="Texture2D" uid="uid://beye14cq55kni" path="res://match/portrait/pixelportrait_bonehound.png" id="1_mjcpl"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_elfkc"]
+
+[resource]
+script = ExtResource("2_elfkc")
+name = "Bonehound"
+portrait = ExtResource("1_mjcpl")
+rarity = 1
+cost_type = 2
+cost_amount = 7
+power = 2
+health = 3
+ability1 = 5
+ability2 = 0

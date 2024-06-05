@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://byuh20scy0ufr"
-path="res://.godot/imported/pixelability_doublestrike.png-aa82a6c25dc0fa743b15262c279c3e82.ctex"
+uid="uid://mu126n2sddkw"
+path="res://.godot/imported/pixelability_bone_digger.png-e2ce265941ed6265721b7ac9072cfa28.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_doublestrike.png"
-dest_files=["res://.godot/imported/pixelability_doublestrike.png-aa82a6c25dc0fa743b15262c279c3e82.ctex"]
+source_file="res://match/ability/pixelability_bone_digger.png"
+dest_files=["res://.godot/imported/pixelability_bone_digger.png-e2ce265941ed6265721b7ac9072cfa28.ctex"]
 
 [params]
 

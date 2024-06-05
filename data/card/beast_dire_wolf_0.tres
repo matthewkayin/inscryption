@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3 uid="uid://dqhfmxa2aeide"]
+
+[ext_resource type="Resource" uid="uid://wr026dwlt30s" path="res://data/card/beast_dire_wolf_1.tres" id="1_uf6sh"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_dnoig"]
+[ext_resource type="Texture2D" uid="uid://dd125b8m4yew8" path="res://match/portrait/pixelportrait_direwolfcub.png" id="2_w1n4n"]
+
+[resource]
+script = ExtResource("2_dnoig")
+name = "Dire Wolf Pup"
+portrait = ExtResource("2_w1n4n")
+rarity = 1
+cost_type = 1
+cost_amount = 2
+power = 1
+health = 1
+ability1 = 29
+ability2 = 4
+evolves_into = ExtResource("1_uf6sh")

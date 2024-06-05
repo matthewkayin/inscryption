@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://bpk2egvn836fo"]
+
+[ext_resource type="Texture2D" uid="uid://bax8goktt8ium" path="res://match/portrait/pixelportrait_headlesshorseman.png" id="1_p5kcy"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_rpfhn"]
+
+[resource]
+script = ExtResource("2_rpfhn")
+name = "Headless Horseman"
+portrait = ExtResource("1_p5kcy")
+rarity = 1
+cost_type = 2
+cost_amount = 13
+power = 5
+health = 5
+ability1 = 3
+ability2 = 9

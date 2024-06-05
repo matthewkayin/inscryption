@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://cbg0i4gyp15ig"]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_0rma1"]
+[ext_resource type="Texture2D" uid="uid://cqaaxikuyedp7" path="res://match/portrait/pixelportrait_raccoon.png" id="1_lyfge"]
+
+[resource]
+script = ExtResource("1_0rma1")
+name = "Raccoon"
+portrait = ExtResource("1_lyfge")
+rarity = 1
+cost_type = 1
+cost_amount = 1
+power = 1
+health = 1
+ability1 = 28
+ability2 = 0

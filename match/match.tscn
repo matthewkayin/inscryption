@@ -379,6 +379,24 @@ scale = Vector2(2, 2)
 text = "x0"
 label_settings = SubResource("LabelSettings_njcht")
 
+[node name="bone_popup" type="Node2D" parent="."]
+visible = false
+z_index = 1
+position = Vector2(287, 195)
+
+[node name="icon" type="Sprite2D" parent="bone_popup"]
+scale = Vector2(2, 2)
+texture = ExtResource("8_wdy8x")
+
+[node name="value" type="Label" parent="bone_popup"]
+offset_left = 5.0
+offset_top = -10.0
+offset_right = 57.0
+offset_bottom = 41.0
+scale = Vector2(2, 2)
+text = "x0"
+label_settings = SubResource("LabelSettings_njcht")
+
 [node name="bell" type="Sprite2D" parent="."]
 position = Vector2(122, 97)
 scale = Vector2(2, 2)
@@ -561,8 +579,8 @@ offset_left = 45.0
 offset_top = 11.5
 offset_right = 313.0
 offset_bottom = 34.5
-text = "When this card is played, its owner
-draws a card of choice from their deck."
+text = "This card makes its owner's cards die
+twice."
 label_settings = SubResource("LabelSettings_g8paj")
 
 [node name="icon" type="Sprite2D" parent="rulebook"]
