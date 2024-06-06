@@ -37,6 +37,7 @@ var blood_counter_sprites = []
 @onready var sfx_blip = $sfx/blip
 @onready var bone_popup = $bone_popup
 @onready var bone_popup_value = $bone_popup/value
+@onready var concede_menu = $concede_menu
 
 enum State {
     WAIT,
@@ -71,7 +72,7 @@ var player_board = [null, null, null, null]
 var player_score = 0
 var player_bone_count = 0
 var player_deck = []
-var player_squirrel_deck_count = 20
+var player_squirrel_deck_count = 0
 var opponent_hand = []
 var opponent_board = [null, null, null, null]
 var opponent_score = 0
@@ -101,6 +102,7 @@ func _ready():
     network.server_client_disconnected.connect(_on_opponent_disconnect)
     network.client_server_disconnected.connect(_on_opponent_disconnect)
     bone_popup.visible = false
+    concede_menu.player_conceded.connect(_on_player_concede)
     rulebook_close()
 
     # Init player deck
@@ -164,6 +166,14 @@ func _process(_delta):
             await tween.finished
             director.end_match()
             return
+    if Input.is_action_just_pressed("escape"):
+        if concede_menu.visible:
+            concede_menu.close()
+        else:
+            concede_menu.open()
+            return
+    if concede_menu.visible:
+        return
     if state == State.WAIT or state == State.PLAYER_DRAW:
         player_hand_process()
     if state == State.WAIT:
@@ -766,6 +776,8 @@ func player_draw_process():
         state = State.WAIT
         if network.network_is_connected():
             _on_opponent_cannot_draw_card.rpc_id(network.opponent_id)
+        await popup.open("No cards to draw. Take 1 damage.", 2.0)
+
         opponent_score += 1
 
         # Update scale
@@ -1304,6 +1316,8 @@ func network_process():
             popup.close()
         await opponent_hand_add_card()
     elif action.type == NetworkActionType.NO_DRAW:
+        await popup.open("Opponent's deck is empty. They take 1 damage.", 2.0)
+
         player_score += 1
 
         # Update scale
@@ -1369,6 +1383,12 @@ func _on_opponent_yield_turn():
         "type": NetworkActionType.YIELD
     })
 
+@rpc("any_peer", "reliable")
+func _on_opponent_concede():
+    sfx_win.play()
+    popup.open("Your opponent conceded.")
+    set_game_over()
+
 func _on_opponent_disconnect():
     popup.open("Your opponent disconnected.")
     set_game_over()
@@ -1376,3 +1396,12 @@ func _on_opponent_disconnect():
 func set_game_over():
     rulebook_close()
     is_game_over = true
+
+func _on_player_concede():
+    if network.network_is_connected():
+        _on_opponent_concede.rpc_id(network.opponent_id)
+    else:
+        print("conceded but network disconnected?")
+    sfx_win.play()
+    popup.open("You conceded.")
+    set_game_over()

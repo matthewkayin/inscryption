@@ -36,6 +36,7 @@ extends Node2D
 
 var local_ip: String
 var client_ready = false
+var enter_in_lobby = false
 
 func _ready():
     if OS.has_feature("windows") and OS.has_environment("COMPUTERNAME"):
@@ -67,7 +68,11 @@ func _ready():
     network.server_client_disconnected.connect(_on_client_disconnected)
     network.client_server_disconnected.connect(_on_server_disconnected)
 
-    open_main_cluster()
+    if network.network_is_connected():
+        open_lobby_cluster()
+        lobby_update_status()
+    else:
+        open_main_cluster()
 
 # NETWORK ROUTING FUNCTIONS
 

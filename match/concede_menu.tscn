@@ -1,0 +1,50 @@
+[gd_scene load_steps=6 format=3 uid="uid://cxn6xtk0ubd6q"]
+
+[ext_resource type="Script" path="res://match/concede_menu.gd" id="1_7nfu1"]
+[ext_resource type="Texture2D" uid="uid://2l4mqtom3pen" path="res://ui/menucard_concede.png" id="2_5xhwl"]
+[ext_resource type="FontFile" uid="uid://dpq6fp6gls8cw" path="res://ui/Marksman.ttf" id="3_5x85r"]
+[ext_resource type="Texture2D" uid="uid://dl2rfvgbo2wfd" path="res://ui/menucard_continue.png" id="4_msnd5"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_g3aib"]
+font = ExtResource("3_5x85r")
+font_color = Color(0.843137, 0.886275, 0.639216, 1)
+
+[node name="concede_menu" type="Node2D"]
+texture_filter = 1
+script = ExtResource("1_7nfu1")
+
+[node name="bg" type="ColorRect" parent="."]
+offset_right = 640.0
+offset_bottom = 480.0
+mouse_filter = 2
+color = Color(0.00784314, 0.0392157, 0.0666667, 0.501961)
+
+[node name="concede" type="Sprite2D" parent="."]
+position = Vector2(258, 240)
+scale = Vector2(2, 2)
+texture = ExtResource("2_5xhwl")
+hframes = 2
+
+[node name="label" type="Label" parent="concede"]
+offset_left = -25.0
+offset_top = 28.0
+offset_right = 26.0
+offset_bottom = 54.0
+text = "Concede"
+label_settings = SubResource("LabelSettings_g3aib")
+horizontal_alignment = 1
+
+[node name="continue" type="Sprite2D" parent="."]
+position = Vector2(382, 240)
+scale = Vector2(2, 2)
+texture = ExtResource("4_msnd5")
+hframes = 2
+
+[node name="label" type="Label" parent="continue"]
+offset_left = -25.0
+offset_top = 28.0
+offset_right = 26.0
+offset_bottom = 54.0
+text = "Continue"
+label_settings = SubResource("LabelSettings_g3aib")
+horizontal_alignment = 1

@@ -14,8 +14,6 @@ enum CursorType {
 
 var current_cursor = null
 var mouse_cursors = {}
-var menu_instance = null
-var match_instance = null
 var root
 
 var player_deck = []
@@ -54,18 +52,21 @@ func set_cursor(cursor_type: CursorType):
     Input.set_custom_mouse_cursor(mouse_cursors[int(cursor_type)])
 
 func start_match():
+    var menu_instance = get_node_or_null("/root/menu")
     if menu_instance == null:
-        menu_instance = get_node("/root/menu")
-    match_instance = match_scene.instantiate()
+        print(network.player.name + ": MENU IS NULL")
+        return
+    var match_instance = match_scene.instantiate()
     root.remove_child(menu_instance)
     root.add_child(match_instance)
+    menu_instance.queue_free()
 
 func end_match():
-    if menu_instance == null or not network.network_is_connected():
-        menu_instance = menu_scene.instantiate()
-    else:
-        menu_instance.client_ready = false
-        menu_instance.lobby_update_status()
+    var match_instance = get_node_or_null("/root/match")
+    if match_instance == null:
+        print(network.player.name + ": MATCH IS NULL")
+        return
+    var menu_instance = menu_scene.instantiate()
     root.remove_child(match_instance)
     root.add_child(menu_instance)
     match_instance.queue_free()
