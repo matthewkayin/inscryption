@@ -576,12 +576,13 @@ label_settings = SubResource("LabelSettings_g8paj")
 [node name="desc" type="Label" parent="rulebook"]
 layout_mode = 0
 offset_left = 45.0
-offset_top = 11.5
-offset_right = 313.0
-offset_bottom = 34.5
-text = "This card makes its owner's cards die
-twice."
+offset_top = 12.0
+offset_right = 284.0
+offset_bottom = 39.0
+text = "After its owner's turn, this card moves in the sigil's direction."
 label_settings = SubResource("LabelSettings_g8paj")
+autowrap_mode = 2
+clip_text = true
 
 [node name="icon" type="Sprite2D" parent="rulebook"]
 position = Vector2(23.5, 22)

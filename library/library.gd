@@ -16,6 +16,11 @@ extends Node2D
 @onready var card_area_page_left = $card_area/page_left
 @onready var card_area_page_right = $card_area/page_right
 
+@onready var rulebook_ability1_desc = $rulebook/ability1/desc
+@onready var rulebook_ability2_desc = $rulebook/ability2/desc
+
+@onready var bg = $bg
+
 const CARD_AREA_PAGE_SIZE = 8
 var CARD_AREA_LAST_PAGE  
 var library = {}
@@ -32,6 +37,18 @@ var deck = {}
 var decklist_scroll_offset = 0
 
 func _ready():
+    var shared_label_settings = rulebook_ability1_desc.label_settings
+    rulebook_ability1_desc.label_settings = LabelSettings.new()
+    rulebook_ability1_desc.label_settings.font = shared_label_settings.font
+    rulebook_ability1_desc.label_settings.font_size = shared_label_settings.font_size
+    rulebook_ability1_desc.label_settings.line_spacing = shared_label_settings.line_spacing
+    rulebook_ability1_desc.label_settings.font_color = shared_label_settings.font_color
+    rulebook_ability2_desc.label_settings = LabelSettings.new()
+    rulebook_ability2_desc.label_settings.font = shared_label_settings.font
+    rulebook_ability2_desc.label_settings.font_size = shared_label_settings.font_size
+    rulebook_ability2_desc.label_settings.line_spacing = shared_label_settings.line_spacing
+    rulebook_ability2_desc.label_settings.font_color = shared_label_settings.font_color
+
     for card_control in card_area_row1.get_children():
         card_area_cards.push_back(card_control.get_child(0))
     for card_control in card_area_row2.get_children():
@@ -274,11 +291,9 @@ func decklist_refresh():
 @onready var rulebook_cost = $rulebook/cost
 @onready var rulebook_ability1 = $rulebook/ability1
 @onready var rulebook_ability1_name = $rulebook/ability1/name
-@onready var rulebook_ability1_desc = $rulebook/ability1/desc
 @onready var rulebook_ability1_icon = $rulebook/ability1/icon
 @onready var rulebook_ability2 = $rulebook/ability2
 @onready var rulebook_ability2_name = $rulebook/ability2/name
-@onready var rulebook_ability2_desc = $rulebook/ability2/desc
 @onready var rulebook_ability2_icon = $rulebook/ability2/icon
 @onready var rulebook_power = $rulebook/power
 @onready var rulebook_health = $rulebook/health
@@ -302,7 +317,10 @@ func rulebook_open(card_id):
     else:
         rulebook_ability1.visible = true
         rulebook_ability1_name.text = Ability.name_str(data.ability1)
+        rulebook_ability1_desc.label_settings.font_size = 24
         rulebook_ability1_desc.text = Ability.DESC[data.ability1]
+        if rulebook_ability1_desc.get_line_count() != rulebook_ability1_desc.get_visible_line_count():
+            rulebook_ability1_desc.label_settings.font_size = 20
         rulebook_ability1_icon.texture = Ability.load_icon(data.ability1)
 
     # Ability 2
@@ -311,7 +329,10 @@ func rulebook_open(card_id):
     else:
         rulebook_ability2.visible = true
         rulebook_ability2_name.text = Ability.name_str(data.ability2)
+        rulebook_ability2_desc.label_settings.font_size = 24
         rulebook_ability2_desc.text = Ability.DESC[data.ability2]
+        if rulebook_ability2_desc.get_line_count() != rulebook_ability2_desc.get_visible_line_count():
+            rulebook_ability2_desc.label_settings.font_size = 20
         rulebook_ability2_icon.texture = Ability.load_icon(data.ability2)
 
     # Power and Health

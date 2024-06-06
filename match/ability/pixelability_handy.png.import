@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://db2fau8wa31jv"
-path="res://.godot/imported/pixelability_drawnewhand.png-4e997bddd7dc79f2bff6d46795f416a4.ctex"
+path="res://.godot/imported/pixelability_handy.png-3da341703aa9570589b2ddef0a70d589.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_drawnewhand.png"
-dest_files=["res://.godot/imported/pixelability_drawnewhand.png-4e997bddd7dc79f2bff6d46795f416a4.ctex"]
+source_file="res://match/ability/pixelability_handy.png"
+dest_files=["res://.godot/imported/pixelability_handy.png-3da341703aa9570589b2ddef0a70d589.ctex"]
 
 [params]
 

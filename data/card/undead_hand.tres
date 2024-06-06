@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://gwhm21ef1rv"]
+
+[ext_resource type="Texture2D" uid="uid://du0kmfyxp2tks" path="res://match/portrait/pixelportrait_deadhand.png" id="1_c0vpk"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_e4knf"]
+
+[resource]
+script = ExtResource("1_e4knf")
+name = "Dead Hand"
+portrait = ExtResource("1_c0vpk")
+rarity = 1
+cost_type = 2
+cost_amount = 5
+power = 1
+health = 1
+ability1 = 32
+ability2 = 0

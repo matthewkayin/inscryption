@@ -84,7 +84,7 @@ var network_action_queue = []
 var network_is_action_running = false
 
 var is_game_over = false
-var is_game_done = false
+var is_process_disabled = false
 var is_server_ready = false
 
 var skip_draw = false
@@ -152,11 +152,11 @@ func _on_server_declared_first_turn(server_goes_first):
     popup.open(message, 1.0)
 
 func _process(_delta):
-    if is_game_done:
+    if is_process_disabled:
         return
     if is_game_over:
         if Input.is_action_just_pressed("mouse_button_left"):
-            is_game_done = true
+            is_process_disabled = true
             var tween = get_tree().create_tween()
             tween.tween_property(fade, "color", Color(0, 0, 0, 1), 1.0)
             await tween.finished
@@ -335,6 +335,7 @@ func player_summon_card(card: Card, index: int, pay_cost: bool = true):
         _on_opponent_place_card.rpc_id(network.opponent_id, index, card.card_id, eternal_counter)
 
     # Move the card into place
+    is_process_disabled = true
     card.z_index = 1
     var tween = get_tree().create_tween()
     tween.tween_property(card, "position", player_cardslots[index].global_position, 0.25)
@@ -359,7 +360,7 @@ func player_summon_card(card: Card, index: int, pay_cost: bool = true):
     # Update hand
     await hand_update_positions()
     await on_card_played(Turn.PLAYER, player_board[index], index)
-
+    is_process_disabled = false
 
 func board_animate_guardian(which: Turn, from: int, to: int):
     var board = player_board if which == Turn.PLAYER else opponent_board
@@ -452,21 +453,49 @@ func on_card_played(who: Turn, card: Card, index: int):
         else:
             await opponent_hand_add_card()
     if card.has_ability(Ability.Name.HOARDER):
+        if player_deck.size() > 0:
+            if who == Turn.PLAYER:
+                state = State.WAIT
+                player_deck_hand = []
+                for card_id in player_deck:
+                    var deck_card = card_scene.instantiate()
+                    deck_card.card_init(card_id)
+                    add_child(deck_card)
+                    deck_card.position = Vector2(640 + Card.CARD_SIZE.x, 240)
+                    player_deck_hand.push_back(deck_card)
+                    await deck_hand_update_positions()
+                player_deck_hand_visible = true
+                state = State.PLAYER_DECK_DRAW
+                await player_deck_draw_finished
+            else:
+                popup.open("Opponent is choosing a card from their deck.")
+    if card.has_ability(Ability.Name.HANDY):
+        var hand = player_hand if who == Turn.PLAYER else opponent_hand
+        for hand_index in range(0, hand.size()):
+            if hand_index == hand.size() - 1:
+                await hand[hand_index].animate_death()
+            else:
+                hand[hand_index].animate_death()
+        for hand_card in hand:
+            hand_card.queue_free()
+        var tween = get_tree().create_tween()
+        tween.tween_interval(0.5)
+        await tween.finished
         if who == Turn.PLAYER:
-            state = State.WAIT
-            player_deck_hand = []
-            for card_id in player_deck:
-                var deck_card = card_scene.instantiate()
-                deck_card.card_init(card_id)
-                add_child(deck_card)
-                deck_card.position = Vector2(640 + Card.CARD_SIZE.x, 240)
-                player_deck_hand.push_back(deck_card)
-                await deck_hand_update_positions()
-            player_deck_hand_visible = true
-            state = State.PLAYER_DECK_DRAW
-            await player_deck_draw_finished
+            player_hand = []
+            for i in range(0, 4):
+                if player_deck.is_empty() and player_squirrel_deck_count == 0:
+                    break
+                _on_opponent_draw_card.rpc_id(network.opponent_id)
+                if not player_deck.is_empty():
+                    await hand_add_card(player_deck.pop_front())
+                else:
+                    player_squirrel_deck_count -= 1
+                    await hand_add_card(Card.SQUIRREL)
+                ui_update_deck_counters()
         else:
-            popup.open("Opponent is choosing a card from their deck.")
+            opponent_hand = []
+            popup.open("Opponent discards and redraws their hand.", 2.0)
 
 func on_card_is_about_to_attack(who: Turn, _attacker: Card, index: int):
     var opposite = Turn.OPPONENT if who == Turn.PLAYER else Turn.PLAYER
