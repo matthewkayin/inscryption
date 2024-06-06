@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3 uid="uid://r3evhlayleyv"]
+
+[ext_resource type="Resource" uid="uid://dbbwt4fkjj8k2" path="res://data/card/rept_bullfrog_1.tres" id="1_ml47c"]
+[ext_resource type="Texture2D" uid="uid://cftjbhn4cpnib" path="res://match/portrait/pixelportrait_tadpole.png" id="2_3ki3o"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_lni2m"]
+
+[resource]
+script = ExtResource("2_lni2m")
+name = "Tadpole"
+portrait = ExtResource("2_3ki3o")
+rarity = 1
+cost_type = 0
+cost_amount = 0
+power = 0
+health = 1
+ability1 = 23
+ability2 = 4
+evolves_into = ExtResource("1_ml47c")

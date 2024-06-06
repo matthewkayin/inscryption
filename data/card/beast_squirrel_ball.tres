@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3 uid="uid://cyybvs22bk678"]
+
+[ext_resource type="Texture2D" uid="uid://cnrmtiyci5yc" path="res://match/portrait/pixelportrait_squirrelball.png" id="1_1hv4e"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_p784a"]
+[ext_resource type="Resource" uid="uid://6e6tdn2shn" path="res://data/card/a_squirrel.tres" id="3_7ti3r"]
+
+[resource]
+script = ExtResource("1_p784a")
+name = "Squirrel Ball"
+portrait = ExtResource("1_1hv4e")
+rarity = 1
+cost_type = 1
+cost_amount = 1
+power = 0
+health = 1
+ability1 = 33
+ability2 = 0
+tail = ExtResource("3_7ti3r")

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://b87snn81gsaol"]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_h8nlr"]
+[ext_resource type="Texture2D" uid="uid://cu8kq8bos6s1m" path="res://match/portrait/pixelportrait_brokenegg.png" id="1_iiicq"]
+
+[resource]
+script = ExtResource("1_h8nlr")
+name = "Broken Egg"
+portrait = ExtResource("1_iiicq")
+rarity = 0
+cost_type = 0
+cost_amount = 0
+power = 0
+health = 1
+ability1 = 43
+ability2 = 0

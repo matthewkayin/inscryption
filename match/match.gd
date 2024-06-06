@@ -75,10 +75,12 @@ var player_squirrel_deck_count = 20
 var opponent_hand = []
 var opponent_board = [null, null, null, null]
 var opponent_score = 0
+var opponent_bone_count = 0
 
 var summoning_card = null
 var summoning_cost_met = false
 var summoning_blood_count = 0
+var summoning_blood_count_this_turn = 0
 
 var network_action_queue = []
 var network_is_action_running = false
@@ -303,7 +305,7 @@ func board_add_card(which: Turn, index: int, card_id: int):
         card_instance.position = opponent_cardslots[index].global_position
         opponent_board[index] = card_instance
 
-func opponent_board_play_card(index: int, card_id: int, eternal_counter: int = 0):
+func opponent_board_play_card(index: int, card_id: int, eternal_counter: int = 0, morsel_power: int = 0, morsel_health: int = 0):
     var card = opponent_hand[opponent_hand.size() - 1]
     card.z_index = 1
 
@@ -311,13 +313,16 @@ func opponent_board_play_card(index: int, card_id: int, eternal_counter: int = 0
     tween.tween_property(card, "position", opponent_cardslots[index].global_position, 0.25)
     card.set_card_id(card_id)
     await tween.finished
-    if card.has_ability(Ability.Name.SPRINTER) or card.has_ability(Ability.Name.HEFTY):
+    if card.has_sprint_ability():
         card.set_sprint_direction(-1)
     card.base_power += eternal_counter
     card.base_health += eternal_counter
     card.power = card.base_power
     card.health = card.base_health
+    card.give_morsel(morsel_power, morsel_health)
     await card.card_flip(Card.FlipTo.FRONT)
+    if card.data.cost_type == CardData.CostType.BONE:
+        opponent_bone_count -= card.data.cost_amount
     sfx_crunch.play()
     card.z_index = 0
 
@@ -332,7 +337,7 @@ func player_summon_card(card: Card, index: int, pay_cost: bool = true):
         var eternal_counter = 0
         if card.has_ability(Ability.Name.ETERNAL):
             eternal_counter = card.base_power - card.data.power
-        _on_opponent_place_card.rpc_id(network.opponent_id, index, card.card_id, eternal_counter)
+        _on_opponent_place_card.rpc_id(network.opponent_id, index, card.card_id, eternal_counter, card.morsel_power, card.morsel_health)
 
     # Move the card into place
     is_process_disabled = true
@@ -411,7 +416,7 @@ func board_compute_powers(which: Turn):
         if board[index] == null:
             continue
         # Start with their base power
-        board[index].power = board[index].base_power
+        board[index].power = board[index].base_power + board[index].morsel_power
         # Apply ant count bonus if it's an ant
         if board[index].has_ability(Ability.Name.COLONY):
             board[index].power += ant_count
@@ -423,6 +428,19 @@ func board_compute_powers(which: Turn):
         # Give -1 if there is STINKY on other side
         if opposite_board[index] != null and opposite_board[index].has_ability(Ability.Name.STINKY):
             board[index].power -= 1
+        # Apply kill bonus if it has BLOOD LUST
+        if board[index].has_ability(Ability.Name.BLOOD_LUST):
+            board[index].power += board[index].kill_count
+        # Apply sacrifice bonus if it has SPILLED BLOOD
+        if board[index].has_ability(Ability.Name.SPILLED_BLOOD):
+            board[index].power += summoning_blood_count_this_turn
+        # Apply bone bonus if it has BONE VIGOR
+        if board[index].has_ability(Ability.Name.BONE_VIGOR):
+            if which == Turn.PLAYER:
+                board[index].power += int(ceil(player_bone_count / 2.0))
+            else:
+                board[index].power += int(ceil(opponent_bone_count / 2.0))
+        board[index].power = max(board[index].power, 0)
         board[index].card_refresh()
 
 # GAME EVENTS
@@ -496,6 +514,10 @@ func on_card_played(who: Turn, card: Card, index: int):
         else:
             opponent_hand = []
             popup.open("Opponent discards and redraws their hand.", 2.0)
+    if card.has_ability(Ability.Name.BROOD_PARASITE):
+        if opposite_board[index] == null:
+            var spawn_raven_egg = randf() <= 0.1
+            board_add_card(opposite_player, index, Card.get_id_from_data(card.data.evolves_into if spawn_raven_egg else card.data.tail))
 
 func on_card_is_about_to_attack(who: Turn, _attacker: Card, index: int):
     var opposite = Turn.OPPONENT if who == Turn.PLAYER else Turn.PLAYER
@@ -541,6 +563,8 @@ func on_card_hit(who: Turn, card: Card, index: int, attacker: Card):
             var card_tail_id = Card.get_id_from_data(card.data.tail)
             await card.evolve()
             board_add_card(who, index, card_tail_id)
+    if card.has_ability(Ability.Name.ARMORED):
+        await card.evolve()
 
 func on_card_died(who: Turn, card: Card, index: int, was_sacrifice = false, is_double_death = false):
     var board = player_board if who == Turn.PLAYER else opponent_board
@@ -563,9 +587,12 @@ func on_card_died(who: Turn, card: Card, index: int, was_sacrifice = false, is_d
             await ui_animate_bone_popup(opposing_player, opposing_card_index, bone_yield)
 
     # Grant the bones (to card owner or to bone thief owner)
-    if (who == Turn.PLAYER and not opposing_has_bone_thief) or (who == Turn.OPPONENT and opposing_has_bone_thief):
+    var who_gets_bones = who if not opposing_has_bone_thief else opposing_player
+    if who_gets_bones == Turn.PLAYER:
         player_bone_count += bone_yield
         ui_update_bone_counter()
+    else:
+        opponent_bone_count += bone_yield
 
     # MANY LIVES
     if was_sacrifice and card.has_ability(Ability.Name.MANY_LIVES):
@@ -633,12 +660,22 @@ func on_combat_over(who: Turn):
         var card = attacker_board[board_index]
         if card == null:
             continue
-        if card.has_ability(Ability.Name.SPRINTER):
+        # SPRINT
+        if card.has_sprint_ability():
+            var is_hefty = card.has_ability(Ability.Name.HEFTY)
+            var is_rampager = card.has_ability(Ability.Name.RAMPAGER)
+
             # Determine if blocked
             var direction = card.get_sprint_direction()
             var next_index = board_index + direction
-            var is_blocked = next_index < 0 or next_index >= attacker_board.size() or attacker_board[next_index] != null
-
+            if is_hefty:
+                next_index = board_index
+                while next_index >= 0 and next_index < attacker_board.size() and attacker_board[next_index] != null:
+                    next_index += direction
+            var is_blocked = next_index < 0 or next_index >= attacker_board.size()
+            if not is_blocked and attacker_board[next_index] != null and not (is_hefty or is_rampager):
+                is_blocked = true
+            
             # If so, flip direction
             if is_blocked:
                 var tween = get_tree().create_tween()
@@ -652,46 +689,43 @@ func on_combat_over(who: Turn):
             # Otherwise, move one space
             else:
                 var tween = get_tree().create_tween()
-                tween.tween_property(card, "position", attacker_cardslots[next_index].global_position, 0.25)
+                # HEFTY MOVE
+                if is_hefty:
+                    # Start from the free space and move everyone over one at a time
+                    var dest_index = next_index
+                    while dest_index != board_index:
+                        var source_index = dest_index - direction
+                        tween.parallel().tween_property(attacker_board[source_index], "position", attacker_cardslots[dest_index].global_position, 0.25)
+                        attacker_board[dest_index] = attacker_board[source_index]
+
+                        dest_index = source_index
+                    attacker_board[board_index] = null
+                # RAMPAGER MOVE
+                elif is_rampager:
+                    if attacker_board[next_index] != null:
+                        tween.parallel().tween_property(attacker_board[next_index], "position", card.position, 0.25)
+                    attacker_board[board_index] = attacker_board[next_index]
+                    tween.parallel().tween_property(card, "position", attacker_cardslots[next_index].global_position, 0.25)
+                    attacker_board[next_index] = card
+                # SPRINTER MOVE
+                else:
+                    tween.tween_property(card, "position", attacker_cardslots[next_index].global_position, 0.25)
+                    attacker_board[next_index] = card
+                    attacker_board[board_index] = null
+
+                    # SPRINTER TAIL DROP
+                    if card.data.tail != null:
+                        board_add_card(who, board_index, Card.get_id_from_data(card.data.tail))
+                        attacker_board[board_index].set_sprint_direction(card.get_sprint_direction())
                 await tween.finished
-                attacker_board[next_index] = card
-                attacker_board[board_index] = null
-                if card.data.tail != null:
-                    board_add_card(who, board_index, Card.get_id_from_data(card.data.tail))
-                    attacker_board[board_index].set_sprint_direction(card.get_sprint_direction())
 
-                # If we moved into the next index to be iterated over, skip that index
-                if (direction == 1 and who == Turn.PLAYER) or (direction == -1 and who == Turn.OPPONENT):
-                    skip_index = true
-        if card.has_ability(Ability.Name.HEFTY):
-            # Determine if blocked
-            var direction = card.get_sprint_direction()
-            var next_free_index = board_index
-            while next_free_index >= 0 and next_free_index < attacker_board.size() and attacker_board[next_free_index] != null:
-                next_free_index += direction
-            var is_blocked = next_free_index < 0 or next_free_index >= attacker_board.size()
-
-            # If so, flip direction
-            if is_blocked:
-                card.set_sprint_direction(direction * -1)
-            # Otherwise, move one space
-            else:
-                var tween = get_tree().create_tween()
-                # Start from the free space and move everyone over one at a time
-                var dest_index = next_free_index
-                while dest_index != board_index:
-                    var source_index = dest_index - direction
-                    tween.parallel().tween_property(attacker_board[source_index], "position", attacker_cardslots[dest_index].global_position, 0.25)
-                    attacker_board[dest_index] = attacker_board[source_index]
-
-                    dest_index = source_index
-                attacker_board[board_index] = null
-                await tween.finished
                 # If we moved into the next index to be iterated over, skip that index
                 if (direction == 1 and who == Turn.PLAYER) or (direction == -1 and who == Turn.OPPONENT):
                     skip_index = true
         if card.has_ability(Ability.Name.SUBMERGE):
             await card.card_flip(Card.FlipTo.SUBMERGE)
+        if card.has_ability(Ability.Name.BRITTLE):
+            await board_kill_card(who, board_index)
     var defender_lane_indices = range(0, 4) if who == Turn.OPPONENT else range(3, -1, -1)
     for defender_lane_index in defender_lane_indices:
         var card = defender_board[defender_lane_index]
@@ -710,6 +744,7 @@ func on_combat_over(who: Turn):
         if card.has_ability(Ability.Name.EVOLVE):
             await card.evolve()
 
+    summoning_blood_count_this_turn = 0
     board_compute_powers(Turn.PLAYER)
     board_compute_powers(Turn.OPPONENT)
 
@@ -860,6 +895,8 @@ func player_turn_process():
                 blood_available += 1
                 if board_card.has_ability(Ability.Name.WORTHY_SACRIFICE):
                     blood_available += 2
+                if board_card.has_ability(Ability.Name.EGG):
+                    blood_available -= 1
             if blood_available >= hovered_card.data.cost_amount:
                 can_summon = true
         elif hovered_card.data.cost_type == CardData.CostType.BONE and player_bone_count >= hovered_card.data.cost_amount:
@@ -984,6 +1021,9 @@ func player_summoning_process():
         # Don't allow players to sacrifice an empty slot
         if not summoning_cost_met and summoning_card.data.cost_type == CardData.CostType.BLOOD and player_board[i] == null:
             continue
+        # Don't allow players to sacrifice an egg
+        if not summoning_cost_met and player_board[i].has_ability(Ability.Name.EGG):
+            continue
         # Check if mouse is within cardslot
         var cardslot = player_cardslots[i]
         if Rect2(cardslot.global_position - (Card.CARD_SIZE * 0.5), Card.CARD_SIZE).has_point(mouse_pos):
@@ -1022,8 +1062,13 @@ func player_summoning_process():
                 director.set_cursor(director.CursorType.POINTER)
                 card_hover.close()
                 summoning_blood_count += 1
+                summoning_blood_count_this_turn += 1
                 if player_board[hovered_cardslot_index].has_ability(Ability.Name.WORTHY_SACRIFICE):
                     summoning_blood_count += 2
+                    summoning_blood_count_this_turn += 2
+                if player_board[hovered_cardslot_index].has_ability(Ability.Name.MORSEL):
+                    summoning_card.give_morsel(player_board[hovered_cardslot_index].base_power, player_board[hovered_cardslot_index].base_health)
+                    summoning_card.card_refresh()
                 await board_kill_card(Turn.PLAYER, hovered_cardslot_index, true)
                 summoning_cost_met = summoning_blood_count >= summoning_card.data.cost_amount
                 ui_update_blood_counter()
@@ -1092,6 +1137,7 @@ func combat_round(turn: Turn):
             if defender != null:
                 await on_card_hit(opponent_turn, defender, attack_index, attacker)
                 if defender.health == 0 or attacker.has_ability(Ability.Name.DEATHTOUCH):
+                    attacker.kill_count += 1
                     await board_kill_card(opponent_turn, attack_index)
             # Handle death from porcupine
             if attacker.health == 0:
@@ -1196,6 +1242,9 @@ func combat_do_attack(turn: Turn, attacker: Card, index: int, defender):
     # Don't hit submerged creatures
     if hit_defender and defender.has_ability(Ability.Name.SUBMERGE):
         hit_defender = false
+    # Don't hit armored creatures
+    if hit_defender and defender.has_ability(Ability.Name.ARMORED):
+        hit_defender = false
     # If the defender has LOOSE_TAIL, then we should not hit the defender unless they have nowhere to go
     if hit_defender and defender.has_ability(Ability.Name.LOOSE_TAIL):
         var defender_board = opponent_board if turn == Turn.PLAYER else player_board
@@ -1269,7 +1318,7 @@ func network_process():
     elif action.type == NetworkActionType.SACRIFICE:
         await board_kill_card(Turn.OPPONENT, 3 - action.index, true)
     elif action.type == NetworkActionType.SUMMON:
-        await opponent_board_play_card(3 - action.index, action.card_id, action.eternal_counter)
+        await opponent_board_play_card(3 - action.index, action.card_id, action.eternal_counter, action.morsel_power, action.morsel_health)
     elif action.type == NetworkActionType.BELL:
         await combat_round(Turn.OPPONENT)
     elif action.type == NetworkActionType.YIELD:
@@ -1298,12 +1347,14 @@ func _on_opponent_sacrifice_card(index: int):
     })
 
 @rpc("any_peer", "reliable")
-func _on_opponent_place_card(index: int, card_id: int, eternal_counter: int):
+func _on_opponent_place_card(index: int, card_id: int, eternal_counter: int, morsel_power: int, morsel_health: int):
     network_action_queue.push_back({
         "type": NetworkActionType.SUMMON,
         "index": index,
         "card_id": card_id,
-        "eternal_counter": eternal_counter
+        "eternal_counter": eternal_counter,
+        "morsel_power": morsel_power,
+        "morsel_health": morsel_health
     })
 
 @rpc("any_peer", "reliable")

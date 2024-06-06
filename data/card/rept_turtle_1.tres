@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://cjy0g1v8sdoqq"]
+
+[ext_resource type="Texture2D" uid="uid://bv3f7uvuvew08" path="res://match/portrait/pixelportrait_mudturtle_2.png" id="1_or52t"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_pfx5l"]
+
+[resource]
+script = ExtResource("1_pfx5l")
+name = "Mud Turtle"
+portrait = ExtResource("1_or52t")
+rarity = 0
+cost_type = 1
+cost_amount = 2
+power = 2
+health = 2
+ability1 = 0
+ability2 = 0

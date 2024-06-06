@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dabelqw6o72ew"
-path="res://.godot/imported/pixelability_strafeswap.png-833aa1e0abf92bb9687d49ffebc81c3b.ctex"
+uid="uid://dp1obyyb6qjp5"
+path="res://.godot/imported/pixel_special_stat_icons.png-071432c98db3b952c2c08e0f10c5bfb6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_strafeswap.png"
-dest_files=["res://.godot/imported/pixelability_strafeswap.png-833aa1e0abf92bb9687d49ffebc81c3b.ctex"]
+source_file="res://Texture2D/pixel_special_stat_icons.png"
+dest_files=["res://.godot/imported/pixel_special_stat_icons.png-071432c98db3b952c2c08e0f10c5bfb6.ctex"]
 
 [params]
 

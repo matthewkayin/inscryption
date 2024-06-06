@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3 uid="uid://dlpe7xv231wd"]
+
+[ext_resource type="Resource" uid="uid://cjy0g1v8sdoqq" path="res://data/card/rept_turtle_1.tres" id="1_2wmns"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_uls4h"]
+[ext_resource type="Texture2D" uid="uid://cqadhfgmjuo1x" path="res://match/portrait/pixelportrait_mudturtle.png" id="1_yrgri"]
+
+[resource]
+script = ExtResource("1_uls4h")
+name = "Mud Turtle"
+portrait = ExtResource("1_yrgri")
+rarity = 1
+cost_type = 1
+cost_amount = 2
+power = 0
+health = 2
+ability1 = 37
+ability2 = 0
+evolves_into = ExtResource("1_2wmns")

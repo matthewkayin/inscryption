@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://deg46rf3q8doy"]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_3oon3"]
+[ext_resource type="Texture2D" uid="uid://653i24s1x22n" path="res://match/portrait/pixelportrait_lammergeier.png" id="1_51cdj"]
+
+[resource]
+script = ExtResource("1_3oon3")
+name = "Lammergeier"
+portrait = ExtResource("1_51cdj")
+rarity = 1
+cost_type = 1
+cost_amount = 3
+power = 0
+health = 4
+ability1 = 41
+ability2 = 3

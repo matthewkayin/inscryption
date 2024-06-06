@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://dldjx34qxuijt"]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_s3f2b"]
+[ext_resource type="Texture2D" uid="uid://cmhh2aaq0p6n2" path="res://match/portrait/pixelportrait_mantis.png" id="1_we718"]
+
+[resource]
+script = ExtResource("1_s3f2b")
+name = "Mantis"
+portrait = ExtResource("1_we718")
+rarity = 1
+cost_type = 1
+cost_amount = 1
+power = 1
+health = 1
+ability1 = 11
+ability2 = 0

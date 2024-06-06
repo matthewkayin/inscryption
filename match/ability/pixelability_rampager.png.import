@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cb23aoff0u56h"
-path="res://.godot/imported/pixelability_deathshield.png-ab1d9f2ff40204f6a7d2da621cd55c0c.ctex"
+uid="uid://dabelqw6o72ew"
+path="res://.godot/imported/pixelability_rampager.png-ab99a17f747fa5e4944a3077080a6da8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_deathshield.png"
-dest_files=["res://.godot/imported/pixelability_deathshield.png-ab1d9f2ff40204f6a7d2da621cd55c0c.ctex"]
+source_file="res://match/ability/pixelability_rampager.png"
+dest_files=["res://.godot/imported/pixelability_rampager.png-ab99a17f747fa5e4944a3077080a6da8.ctex"]
 
 [params]
 

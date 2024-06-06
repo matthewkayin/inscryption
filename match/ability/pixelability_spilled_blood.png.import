@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b6falmqpxnmvh"
-path="res://.godot/imported/pixelability_skeletonstrafe.png-881b4cdfea6b9fe5f97852dd8b53aa56.ctex"
+uid="uid://bsu5axmq4nnwa"
+path="res://.godot/imported/pixelability_spilled_blood.png-350d4147e85afbd278655f68e13c0e78.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_skeletonstrafe.png"
-dest_files=["res://.godot/imported/pixelability_skeletonstrafe.png-881b4cdfea6b9fe5f97852dd8b53aa56.ctex"]
+source_file="res://match/ability/pixelability_spilled_blood.png"
+dest_files=["res://.godot/imported/pixelability_spilled_blood.png-350d4147e85afbd278655f68e13c0e78.ctex"]
 
 [params]
 

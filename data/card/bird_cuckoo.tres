@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=5 format=3 uid="uid://gliusj3pbhc7"]
+
+[ext_resource type="Resource" uid="uid://ncx7l0uh1oaw" path="res://data/card/bird_raven_0.tres" id="1_r463o"]
+[ext_resource type="Texture2D" uid="uid://bf10h7qojw04a" path="res://match/portrait/pixelportrait_cuckoo.png" id="2_3sxbm"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="2_y7bnk"]
+[ext_resource type="Resource" uid="uid://b87snn81gsaol" path="res://data/card/bird_broken_egg.tres" id="4_6leom"]
+
+[resource]
+script = ExtResource("2_y7bnk")
+name = "Cuckoo"
+portrait = ExtResource("2_3sxbm")
+rarity = 1
+cost_type = 1
+cost_amount = 1
+power = 1
+health = 1
+ability1 = 3
+ability2 = 42
+evolves_into = ExtResource("1_r463o")
+tail = ExtResource("4_6leom")

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=4 format=3 uid="uid://d31fwgdm844dn"]
+
+[ext_resource type="Texture2D" uid="uid://nv5q6t52nyx2" path="res://match/portrait/pixelportrait_ghostship.png" id="1_5hh8x"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_wlndn"]
+[ext_resource type="Resource" uid="uid://df0gqdbfh3rvt" path="res://data/card/undead_skeleton.tres" id="3_gs2jk"]
+
+[resource]
+script = ExtResource("1_wlndn")
+name = "Ghost Ship"
+portrait = ExtResource("1_5hh8x")
+rarity = 1
+cost_type = 2
+cost_amount = 4
+power = 0
+health = 1
+ability1 = 23
+ability2 = 35
+tail = ExtResource("3_gs2jk")

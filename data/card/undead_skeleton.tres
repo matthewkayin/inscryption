@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://df0gqdbfh3rvt"]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_2f1yq"]
+[ext_resource type="Texture2D" uid="uid://doln3gljenar" path="res://match/portrait/pixelportrait_skeleton.png" id="1_em65d"]
+
+[resource]
+script = ExtResource("1_2f1yq")
+name = "Skeleton"
+portrait = ExtResource("1_em65d")
+rarity = 1
+cost_type = 0
+cost_amount = 0
+power = 1
+health = 1
+ability1 = 34
+ability2 = 0

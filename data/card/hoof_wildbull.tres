@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://bdc6okhh32f27"]
+
+[ext_resource type="Texture2D" uid="uid://6gpmyyquld1v" path="res://match/portrait/pixelportrait_bull.png" id="1_o0pj3"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_vppi7"]
+
+[resource]
+script = ExtResource("1_vppi7")
+name = "Wild Bull"
+portrait = ExtResource("1_o0pj3")
+rarity = 1
+cost_type = 1
+cost_amount = 2
+power = 3
+health = 2
+ability1 = 36
+ability2 = 0

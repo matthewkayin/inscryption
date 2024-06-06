@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://dpb58mtxjwyf8"]
+
+[ext_resource type="Texture2D" uid="uid://m0erp5nst1tw" path="res://match/portrait/pixelportrait_redhart.png" id="1_344af"]
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_ltbsy"]
+
+[resource]
+script = ExtResource("1_ltbsy")
+name = "Red Hart"
+portrait = ExtResource("1_344af")
+rarity = 1
+cost_type = 1
+cost_amount = 2
+power = 0
+health = 2
+ability1 = 39
+ability2 = 9

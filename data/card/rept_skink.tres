@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="CardData" load_steps=5 format=3 uid="uid://bsv48xfs6udv8"]
 
-[ext_resource type="Resource" uid="uid://b3tggwae02vof" path="res://data/card/skink_tailless.tres" id="1_dyhlh"]
+[ext_resource type="Resource" uid="uid://b3tggwae02vof" path="res://data/card/rept_skink_tailless.tres" id="1_dyhlh"]
 [ext_resource type="Script" path="res://data/card_data.gd" id="2_e4rqa"]
 [ext_resource type="Texture2D" uid="uid://bkex3aqcy3ptq" path="res://match/portrait/pixelportrait_skink.png" id="2_nhkvd"]
-[ext_resource type="Resource" uid="uid://cuswcal4adsl2" path="res://data/card/skink_tail.tres" id="4_6i4i6"]
+[ext_resource type="Resource" uid="uid://cuswcal4adsl2" path="res://data/card/rept_skink_tail.tres" id="4_6i4i6"]
 
 [resource]
 script = ExtResource("2_e4rqa")

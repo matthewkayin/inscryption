@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://pjcutcwr7utk"
-path="res://.godot/imported/pixelability_gainattackonkill.png-4cc710ac837ab70f39a02d94fa73816d.ctex"
+uid="uid://d2b7opkx3hf8j"
+path="res://.godot/imported/bones_stat_icon.png-85e384b468066d11ff8096d86da31e8f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://match/ability/pixelability_gainattackonkill.png"
-dest_files=["res://.godot/imported/pixelability_gainattackonkill.png-4cc710ac837ab70f39a02d94fa73816d.ctex"]
+source_file="res://Texture2D/bones_stat_icon.png"
+dest_files=["res://.godot/imported/bones_stat_icon.png-85e384b468066d11ff8096d86da31e8f.ctex"]
 
 [params]
 

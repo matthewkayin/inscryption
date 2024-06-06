@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://blhc5tbw4b6fu"]
+
+[ext_resource type="Script" path="res://data/card_data.gd" id="1_rt0fd"]
+[ext_resource type="Texture2D" uid="uid://dcihpcidq57bo" path="res://match/portrait/pixelportrait_mealworm.png" id="1_t4ll0"]
+
+[resource]
+script = ExtResource("1_rt0fd")
+name = "Mealworm"
+portrait = ExtResource("1_t4ll0")
+rarity = 1
+cost_type = 2
+cost_amount = 2
+power = 0
+health = 2
+ability1 = 40
+ability2 = 0

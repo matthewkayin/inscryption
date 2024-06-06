@@ -34,7 +34,18 @@ enum Name {
     BONE_DIGGER,
     DOUBLE_STRIKE,
     DOUBLE_DEATH,
-    HANDY
+    HANDY,
+    SQUIRREL_SHREDDER,
+    BRITTLE,
+    SKELETON_CREW,
+    RAMPAGER,
+    ARMORED,
+    BLOOD_LUST,
+    SPILLED_BLOOD,
+    MORSEL,
+    BONE_VIGOR,
+    BROOD_PARASITE,
+    EGG
 }
 
 const DESC = {
@@ -56,7 +67,7 @@ const DESC = {
     Name.SHARP: "When this card is struck, the attacker is dealt 1 damage.",
     Name.ANT_SPAWNER: "When this card is played, an Ant is created in the owner's hand.",
     Name.RABBIT_HOLE: "When this card is played, a Rabbit is created in the owner's hand.",
-    Name.COLONY: "This card gets 1 power for each ant on its side of the board (including itself).",
+    Name.COLONY: "This card gets +1 power for each ant on its side of the board (including itself).",
     Name.UNKILLABLE: "When this card dies, a copy of it is created in its owner's hand.",
     Name.ETERNAL: "When this card dies, a +1/+1 copy of it is created in its owner's hand.",
     Name.CORPSE_EATER: "When a card you own dies by combat, this card is played in its place.",
@@ -70,7 +81,18 @@ const DESC = {
     Name.BONE_DIGGER: "After the opponent's turn, this card grants its owner 1 bone.",
     Name.DOUBLE_STRIKE: "This card attacks twice.",
     Name.DOUBLE_DEATH: "This card makes its owner's cards die twice.",
-    Name.HANDY: "When this card is played, its owner discards their hand then draws 4 cards."
+    Name.HANDY: "When this card is played, its owner discards their hand then draws 4 cards.",
+    Name.SQUIRREL_SHREDDER: "After its owner's turn, this card moves and leaves a squirrel behind.",
+    Name.BRITTLE: "After attacking on its owner's turn, this card perishes.",
+    Name.SKELETON_CREW: "After its owner's turn, this card moves and leaves a skeleton behind.",
+    Name.RAMPAGER: "After its owner's turn, this card moves and throws other cards behind it.",
+    Name.ARMORED: "This card's armor protects it from the first attack against it.",
+    Name.BLOOD_LUST: "When this card slays a creature, it gains 1 power.",
+    Name.SPILLED_BLOOD: "This card gains power for each sacrifice its owner has made this turn.",
+    Name.MORSEL: "When sacrificed, this card's stats are added to the summoned creature.",
+    Name.BONE_VIGOR: "This card gains power equal to 1/2 its owner's bone count (rounded up).",
+    Name.BROOD_PARASITE: "When this card is played, an egg is placed on the opposite space.",
+    Name.EGG: "This card is an egg. It can't be sacrificed."
 }
 
 static func name_str(ability_name: Name) -> String:

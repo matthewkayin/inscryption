@@ -5,6 +5,8 @@ static var DATA = []
 static var SQUIRREL
 static var THE_SMOKE 
 
+const SPRINT_ABILITIES = [Ability.Name.SPRINTER, Ability.Name.HEFTY, Ability.Name.SQUIRREL_SHREDDER, Ability.Name.SKELETON_CREW, Ability.Name.RAMPAGER]
+
 enum State {
     NONE,
     ANIMATE_PRESUMMON
@@ -44,9 +46,12 @@ var data: CardData
 # behavior
 var card_id: int
 var state = State.NONE
-var sacrifice_count = 0
+var sacrifice_count: int = 0
 var use_library_portrait = false
 var is_face_down = false
+var kill_count: int = 0
+var morsel_power: int = 0
+var morsel_health: int = 0
 
 var previous_position = null
 const ANIMATE_PRESUMMON_POSITION_OFFSETS = [
@@ -108,6 +113,11 @@ func set_card_id(p_card_id: int):
     power = base_power
     base_health = data.health
     health = base_health
+
+func give_morsel(p_morsel_power, p_morsel_health):
+    morsel_power = p_morsel_power
+    morsel_health = p_morsel_health
+    health += morsel_health
 
 func card_refresh():
     if is_face_down:
@@ -248,17 +258,20 @@ func evolve():
     tween2.tween_property(self, "scale", Vector2(1, 1), 0.05)
     await tween2.finished
 
+func has_sprint_ability():
+    return SPRINT_ABILITIES.has(data.ability1) or SPRINT_ABILITIES.has(data.ability2)
+
 func get_sprint_direction():
-    if data.ability1 == Ability.Name.SPRINTER or data.ability1 == Ability.Name.HEFTY:
+    if SPRINT_ABILITIES.has(data.ability1):
         return -1 if ability_icons[0].flip_h else 1
-    elif data.ability2 == Ability.Name.SPRINTER or data.ability2 == Ability.Name.HEFTY:
+    elif SPRINT_ABILITIES.has(data.ability2):
         return -1 if ability_icons[1].flip_h else 1
     else:
         return 1
 
 func set_sprint_direction(direction: int):
     portrait.flip_h = direction == -1
-    if data.ability1 == Ability.Name.SPRINTER or data.ability1 == Ability.Name.HEFTY:
+    if SPRINT_ABILITIES.has(data.ability1):
         ability_icons[0].flip_h = direction == -1
     else:
         ability_icons[1].flip_h = direction == -1
