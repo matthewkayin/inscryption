@@ -55,6 +55,7 @@ func load_decks():
             for i in range(0, deck_entry.count):
                 new_deck.cards.push_back(Card.get_id_from_data(deck_entry.card))
         decks.push_back(new_deck)
+    player_equipped_deck = 0
 
     var deck_dir = DirAccess.open("user://decks")
     if deck_dir:
@@ -83,8 +84,6 @@ func load_decks():
                 continue
             new_deck.cards.push_back(int(card_string))
         decks.push_back(new_deck)
-        if not is_player_deck_valid() and new_deck.cards.size() == Library.MAX_DECK_SIZE:
-            player_equipped_deck = decks.size() - 1
 
 func save_decks():
     if not DirAccess.dir_exists_absolute("user://decks"):
