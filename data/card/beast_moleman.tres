@@ -7,7 +7,7 @@
 script = ExtResource("2_2ugb7")
 name = "Mole Man"
 portrait = ExtResource("1_m224b")
-rarity = 1
+rarity = 2
 cost_type = 1
 cost_amount = 1
 power = 0

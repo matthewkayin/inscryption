@@ -7,7 +7,7 @@
 script = ExtResource("2_vs1lu")
 name = "Necromancer"
 portrait = ExtResource("1_7u2dg")
-rarity = 1
+rarity = 2
 cost_type = 2
 cost_amount = 3
 power = 1

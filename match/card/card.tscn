@@ -1,9 +1,10 @@
-[gd_scene load_steps=13 format=3 uid="uid://copua4ifcsdp8"]
+[gd_scene load_steps=14 format=3 uid="uid://copua4ifcsdp8"]
 
 [ext_resource type="Texture2D" uid="uid://ddbf8jfgr4mni" path="res://match/card/pixel_card_empty.png" id="1_wr2i5"]
 [ext_resource type="Script" path="res://match/card/card.gd" id="2_ffojd"]
 [ext_resource type="Texture2D" uid="uid://0uenh8mxncyq" path="res://match/card/cost.png" id="3_ci2vw"]
 [ext_resource type="Texture2D" uid="uid://bxggjxbkgmvrk" path="res://match/card/pixel_cardback.png" id="3_rts13"]
+[ext_resource type="Texture2D" uid="uid://ny7in17y0ata" path="res://match/card/pixel_card_empty_rare.png" id="3_ubbq6"]
 [ext_resource type="Texture2D" uid="uid://d3wot1nxihcja" path="res://match/card/pixel_card_submerge.png" id="4_cg8en"]
 [ext_resource type="FontFile" uid="uid://dpq6fp6gls8cw" path="res://ui/Marksman.ttf" id="4_nuk78"]
 [ext_resource type="Texture2D" uid="uid://7kfa8fhmpvad" path="res://match/portrait/pixelportrait_cockroach.png" id="5_eu6ha"]
@@ -26,6 +27,7 @@ texture_filter = 1
 texture = ExtResource("1_wr2i5")
 script = ExtResource("2_ffojd")
 card_blank = ExtResource("1_wr2i5")
+card_blank_rare = ExtResource("3_ubbq6")
 card_back = ExtResource("3_rts13")
 card_submerged = ExtResource("4_cg8en")
 

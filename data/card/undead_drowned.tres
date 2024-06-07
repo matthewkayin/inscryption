@@ -7,7 +7,7 @@
 script = ExtResource("2_simb4")
 name = "Drowned Soul"
 portrait = ExtResource("1_fpwcx")
-rarity = 1
+rarity = 2
 cost_type = 2
 cost_amount = 4
 power = 1

@@ -7,7 +7,7 @@
 script = ExtResource("1_7glbm")
 name = "Geck"
 portrait = ExtResource("1_7j65j")
-rarity = 1
+rarity = 2
 cost_type = 0
 cost_amount = 0
 power = 1

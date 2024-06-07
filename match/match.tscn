@@ -627,6 +627,8 @@ text = "Not enough sacrifices available to summon."
 label_settings = SubResource("LabelSettings_g8paj")
 
 [node name="concede_menu" parent="." instance=ExtResource("33_jeo12")]
+visible = false
+z_index = 2
 
 [node name="fade" type="ColorRect" parent="."]
 z_index = 5
@@ -637,8 +639,7 @@ color = Color(0, 0, 0, 0)
 
 [node name="tv_filter" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_bh64l")
-offset_left = -312.0
-offset_right = 328.0
+offset_right = 640.0
 offset_bottom = 480.0
 mouse_filter = 2
 color = Color(0, 0, 0, 0.101961)

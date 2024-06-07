@@ -330,13 +330,6 @@ fr: NOT READY
 bread: READY"
 label_settings = SubResource("LabelSettings_vc6rj")
 
-[node name="tv_filter" type="ColorRect" parent="."]
-material = SubResource("ShaderMaterial_uvxoy")
-offset_right = 640.0
-offset_bottom = 480.0
-mouse_filter = 2
-color = Color(0, 0, 0, 0.101961)
-
 [node name="decklist" parent="." instance=ExtResource("7_qqura")]
 
 [node name="library" parent="." instance=ExtResource("7_tkvqw")]
@@ -348,3 +341,10 @@ scale = Vector2(2, 2)
 texture = ExtResource("5_8yjkw")
 hframes = 5
 script = ExtResource("7_yrp07")
+
+[node name="tv_filter" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_uvxoy")
+offset_right = 640.0
+offset_bottom = 480.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.101961)

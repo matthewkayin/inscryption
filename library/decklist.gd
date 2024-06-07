@@ -76,17 +76,21 @@ func close():
     visible = false
 
 func set_deck_control_state(control_index: int, state: DeckControlState):
+    var deck_index = control_index + scroll_offset
+
     deck_controls[control_index].visible = state == DeckControlState.EDIT or state == DeckControlState.SHOW
     deck_name_labels[control_index].visible = state == DeckControlState.SHOW
     if state == DeckControlState.SHOW:
-        var is_deck_valid = director.decks[control_index + scroll_offset].cards.size() == Library.MAX_DECK_SIZE
+        var is_deck_valid = director.decks[deck_index].cards.size() == Library.MAX_DECK_SIZE
         deck_name_labels[control_index].label_settings.font_color = Color.BLACK if is_deck_valid else Card.LOW_HEALTH_COLOR
 
     deck_name_edits[control_index].visible = state == DeckControlState.EDIT
     deck_name_edits[control_index].editable = state == DeckControlState.EDIT
 
-    deck_edit_buttons[control_index].is_enabled = name_edit_index == -1 and state == DeckControlState.SHOW
-    deck_delete_buttons[control_index].is_enabled = name_edit_index == -1 and state == DeckControlState.SHOW
+    deck_edit_buttons[control_index].visible = (state == DeckControlState.SHOW or state == DeckControlState.EDIT) and not director.decks[deck_index].is_starter_deck
+    deck_edit_buttons[control_index].is_enabled = name_edit_index == -1 and state == DeckControlState.SHOW and deck_edit_buttons[control_index].visible
+    deck_delete_buttons[control_index].visible = deck_edit_buttons[control_index].visible
+    deck_delete_buttons[control_index].is_enabled = name_edit_index == -1 and state == DeckControlState.SHOW and deck_delete_buttons[control_index].visible
 
     deck_new_buttons[control_index].visible = state == DeckControlState.NEW
     deck_new_buttons[control_index].is_enabled = name_edit_index == -1 and state == DeckControlState.NEW
@@ -137,7 +141,8 @@ func _on_new_pressed():
     sfx_ok.play()
     director.decks.push_back({
         "name": "New Deck",
-        "cards": []
+        "cards": [],
+        "is_starter_deck": false
     })
     scroll_offset = scroll_offset_max()
     refresh()

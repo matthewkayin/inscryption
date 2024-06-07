@@ -53,32 +53,47 @@ func is_player_deck_valid():
     return player_equipped_deck != -1
 
 func load_decks():
+    var deck_paths = []
+
+    var starter_deck_dir = DirAccess.open("res://data/starter_decks")
+    if starter_deck_dir:
+        starter_deck_dir.list_dir_begin()
+        var filename = starter_deck_dir.get_next()
+        while filename != "":
+            deck_paths.push_back("res://data/starter_decks/" + filename)
+            filename = starter_deck_dir.get_next()
+    var starter_deck_count = deck_paths.size()
+
     var deck_dir = DirAccess.open("user://decks")
     if deck_dir:
         deck_dir.list_dir_begin()
         var filename = deck_dir.get_next()
         while filename != "":
-            var deck_file = FileAccess.open("user://decks/" + filename, FileAccess.READ)
-            if not deck_file:
-                print("Unable to open user://decks/", filename)
-                continue
-
-            var new_deck = {
-                "name": "",
-                "cards": []
-            }
-
-            new_deck.name = deck_file.get_line().split("=")[1]
-            var card_strings = deck_file.get_line().split("=")[1].split(",")
-            for card_string in card_strings:
-                if card_string == "":
-                    continue
-                new_deck.cards.push_back(int(card_string))
-            decks.push_back(new_deck)
-            if not is_player_deck_valid() and new_deck.cards.size() == Library.MAX_DECK_SIZE:
-                player_equipped_deck = decks.size() - 1
-
+            deck_paths.push_back("user://decks/" + filename)
             filename = deck_dir.get_next()
+
+    for deck_path in deck_paths:
+        var deck_file = FileAccess.open(deck_path, FileAccess.READ)
+        if not deck_file:
+            print("Unable to open ", deck_path)
+            continue
+
+        var deck_index = decks.size()
+        var new_deck = {
+            "name": "",
+            "cards": [],
+            "is_starter_deck": deck_index < starter_deck_count
+        }
+
+        new_deck.name = deck_file.get_line().split("=")[1]
+        var card_strings = deck_file.get_line().split("=")[1].split(",")
+        for card_string in card_strings:
+            if card_string == "":
+                continue
+            new_deck.cards.push_back(int(card_string))
+        decks.push_back(new_deck)
+        if not is_player_deck_valid() and new_deck.cards.size() == Library.MAX_DECK_SIZE:
+            player_equipped_deck = decks.size() - 1
 
 func save_decks():
     if not DirAccess.dir_exists_absolute("user://decks"):
@@ -94,15 +109,13 @@ func save_decks():
         deck_dir.remove(delete_filename)
         delete_filename = deck_dir.get_next()
 
-    var already_used_names = {}
-    for deck in decks:
-        var filename = deck.name.to_lower().replace(" ", "_")
-        if already_used_names.keys().has(filename):
-            filename += "_" + str(already_used_names[filename])
-            already_used_names[filename] += 1
-        else:
-            already_used_names[filename] = 1
-        filename += ".idf"
+    for deck_index in range(0, decks.size()):
+        var deck = decks[deck_index]
+        # Don't save starter decks
+        if deck.is_starter_deck:
+            continue
+
+        var filename = str(deck_index) + "_" + deck.name.to_lower().replace(" ", "_") + ".idf"
 
         var deck_file = FileAccess.open("user://decks/" + filename, FileAccess.WRITE)
         if not deck_file:

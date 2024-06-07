@@ -72,7 +72,7 @@ var player_board = [null, null, null, null]
 var player_score = 0
 var player_bone_count = 0
 var player_deck = []
-var player_squirrel_deck_count = 0
+var player_squirrel_deck_count = 20
 var opponent_hand = []
 var opponent_board = [null, null, null, null]
 var opponent_score = 0
@@ -123,6 +123,7 @@ func _ready():
             await hand_add_card(player_deck.pop_front())
         else:
             await hand_add_card(Card.SQUIRREL)
+            player_squirrel_deck_count -= 1
         cards_in_hand += 1
 
     ui_update_deck_counters()
@@ -165,7 +166,7 @@ func _process(_delta):
             tween.tween_property(fade, "color", Color(0, 0, 0, 1), 1.0)
             await tween.finished
             director.end_match()
-            return
+        return
     if Input.is_action_just_pressed("escape"):
         if concede_menu.visible:
             concede_menu.close()
@@ -315,7 +316,7 @@ func board_add_card(which: Turn, index: int, card_id: int):
         card_instance.position = opponent_cardslots[index].global_position
         opponent_board[index] = card_instance
 
-func opponent_board_play_card(index: int, card_id: int, eternal_counter: int = 0, morsel_power: int = 0, morsel_health: int = 0):
+func opponent_board_play_card(index: int, card_id: int, eternal_counter: int = 0, morsel_power: int = 0, morsel_health: int = 0, brood_parasite_roll: float = 0.0):
     var card = opponent_hand[opponent_hand.size() - 1]
     card.z_index = 1
 
@@ -340,14 +341,15 @@ func opponent_board_play_card(index: int, card_id: int, eternal_counter: int = 0
     opponent_board[index] = card
     await opponent_hand_update_positions()
 
-    await on_card_played(Turn.OPPONENT, card, index)
+    await on_card_played(Turn.OPPONENT, card, index, brood_parasite_roll)
 
 func player_summon_card(card: Card, index: int, pay_cost: bool = true):
+    var brood_parasite_roll = randf()
     if network.network_is_connected():
         var eternal_counter = 0
         if card.has_ability(Ability.Name.ETERNAL):
             eternal_counter = card.base_power - card.data.power
-        _on_opponent_place_card.rpc_id(network.opponent_id, index, card.card_id, eternal_counter, card.morsel_power, card.morsel_health)
+        _on_opponent_place_card.rpc_id(network.opponent_id, index, card.card_id, eternal_counter, card.morsel_power, card.morsel_health, brood_parasite_roll)
 
     # Move the card into place
     is_process_disabled = true
@@ -374,7 +376,7 @@ func player_summon_card(card: Card, index: int, pay_cost: bool = true):
 
     # Update hand
     await hand_update_positions()
-    await on_card_played(Turn.PLAYER, player_board[index], index)
+    await on_card_played(Turn.PLAYER, player_board[index], index, brood_parasite_roll)
     is_process_disabled = false
 
 func board_animate_guardian(which: Turn, from: int, to: int):
@@ -455,7 +457,7 @@ func board_compute_powers(which: Turn):
 
 # GAME EVENTS
 
-func on_card_played(who: Turn, card: Card, index: int):
+func on_card_played(who: Turn, card: Card, index: int, brood_parasite_roll: float):
     var opposite_player = Turn.OPPONENT if who == Turn.PLAYER else Turn.PLAYER
     var opposite_board = opponent_board if who == Turn.PLAYER else player_board
 
@@ -526,7 +528,7 @@ func on_card_played(who: Turn, card: Card, index: int):
             popup.open("Opponent discards and redraws their hand.", 2.0)
     if card.has_ability(Ability.Name.BROOD_PARASITE):
         if opposite_board[index] == null:
-            var spawn_raven_egg = randf() <= 0.1
+            var spawn_raven_egg = brood_parasite_roll <= 0.1
             board_add_card(opposite_player, index, Card.get_id_from_data(card.data.evolves_into if spawn_raven_egg else card.data.tail))
 
 func on_card_is_about_to_attack(who: Turn, _attacker: Card, index: int):
@@ -789,6 +791,8 @@ func player_draw_process():
         await tween.finished
 
         await check_if_candle_snuffed(Turn.OPPONENT)
+        if is_game_over:
+            return
         state = State.PLAYER_TURN
         return
 
@@ -974,6 +978,8 @@ func player_turn_process():
 
             # Do combat
             await combat_round(Turn.PLAYER)
+            if is_game_over:
+                return
 
             # Yield the turn
             if network.network_is_connected():
@@ -1022,6 +1028,14 @@ func player_deck_draw_process():
 func player_summoning_process():
     var cursor_type = director.CursorType.POINTER
     var mouse_pos = get_viewport().get_mouse_position()
+
+    if Input.is_action_just_pressed("mouse_button_right") and summoning_blood_count == 0:
+        state = State.WAIT
+        summoning_card.animate_presummon_end()
+        await hand_update_positions()
+        summoning_card = null
+        state = State.PLAYER_TURN
+        return
 
     # HOVER CARDSLOTS
     var hovered_cardslot = null
@@ -1304,6 +1318,8 @@ enum NetworkActionType {
 }
 
 func network_process():
+    if is_game_over:
+        return
     if network_is_action_running:
         return
     if network_action_queue.is_empty():
@@ -1329,10 +1345,12 @@ func network_process():
         await tween.finished
 
         await check_if_candle_snuffed(Turn.OPPONENT)
+        if is_game_over:
+            return
     elif action.type == NetworkActionType.SACRIFICE:
         await board_kill_card(Turn.OPPONENT, 3 - action.index, true)
     elif action.type == NetworkActionType.SUMMON:
-        await opponent_board_play_card(3 - action.index, action.card_id, action.eternal_counter, action.morsel_power, action.morsel_health)
+        await opponent_board_play_card(3 - action.index, action.card_id, action.eternal_counter, action.morsel_power, action.morsel_health, action.brood_parasite_roll)
     elif action.type == NetworkActionType.BELL:
         await combat_round(Turn.OPPONENT)
     elif action.type == NetworkActionType.YIELD:
@@ -1361,14 +1379,15 @@ func _on_opponent_sacrifice_card(index: int):
     })
 
 @rpc("any_peer", "reliable")
-func _on_opponent_place_card(index: int, card_id: int, eternal_counter: int, morsel_power: int, morsel_health: int):
+func _on_opponent_place_card(index: int, card_id: int, eternal_counter: int, morsel_power: int, morsel_health: int, brood_parasite_roll: float):
     network_action_queue.push_back({
         "type": NetworkActionType.SUMMON,
         "index": index,
         "card_id": card_id,
         "eternal_counter": eternal_counter,
         "morsel_power": morsel_power,
-        "morsel_health": morsel_health
+        "morsel_health": morsel_health,
+        "brood_parasite_roll": brood_parasite_roll
     })
 
 @rpc("any_peer", "reliable")

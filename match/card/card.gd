@@ -24,6 +24,7 @@ const ABILITY_ICON_SIZE = Vector2(34, 34)
 
 # onready
 @export var card_blank: Texture2D
+@export var card_blank_rare: Texture2D
 @export var card_back: Texture2D
 @export var card_submerged: Texture2D
 
@@ -48,7 +49,7 @@ var card_id: int
 var state = State.NONE
 var sacrifice_count: int = 0
 var use_library_portrait = false
-var is_face_down = false
+var flip_to_state = FlipTo.FRONT
 var kill_count: int = 0
 var morsel_power: int = 0
 var morsel_health: int = 0
@@ -95,12 +96,9 @@ func card_init(p_card_id: int, face_down = false):
     health_label.label_settings.font_size = shared_label_settings.font_size
     health_label.label_settings.font_color = shared_label_settings.font_color
 
-    is_face_down = face_down
+    flip_to_state = FlipTo.BACK if face_down else FlipTo.FRONT
     set_card_id(p_card_id)
     card_refresh()
-
-    if is_face_down:
-        texture = card_back
 
 func set_card_id(p_card_id: int):
     card_id = p_card_id
@@ -120,7 +118,14 @@ func give_morsel(p_morsel_power, p_morsel_health):
     health += morsel_health
 
 func card_refresh():
-    if is_face_down:
+    if flip_to_state == FlipTo.BACK:
+        texture = card_back
+    elif flip_to_state == FlipTo.SUBMERGE:
+        texture = card_submerged
+    else:
+        texture = card_blank_rare if data.rarity == CardData.Rarity.RARE else card_blank
+
+    if flip_to_state != FlipTo.FRONT:
         for child in get_children():
             child.visible = false
         return
@@ -224,15 +229,7 @@ func card_flip(flip_to: FlipTo):
     tween.tween_property(self, "scale", Vector2(0, 1), 0.05)
     await tween.finished
 
-    if flip_to == FlipTo.FRONT:
-        texture = card_blank
-        is_face_down = false
-    elif flip_to == FlipTo.SUBMERGE:
-        texture = card_submerged
-        is_face_down = true
-    else:
-        texture = card_back
-        is_face_down = true
+    flip_to_state = flip_to
     card_refresh()
 
     var tween2 = get_tree().create_tween()

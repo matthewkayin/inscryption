@@ -8,7 +8,7 @@
 script = ExtResource("1_cys3g")
 name = "Strange Larva"
 portrait = ExtResource("1_d47dy")
-rarity = 1
+rarity = 2
 cost_type = 1
 cost_amount = 1
 power = 0

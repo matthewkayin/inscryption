@@ -38,6 +38,8 @@ var deck_index = -1
 
 var decklist_scroll_offset = 0
 
+var is_input_enabled = false
+
 func _ready():
     var shared_label_settings = rulebook_ability1_desc.label_settings
     rulebook_ability1_desc.label_settings = LabelSettings.new()
@@ -98,6 +100,8 @@ func open(p_deck_index: int = -1):
     var delaytween = get_tree().create_tween()
     delaytween.tween_interval(0.25)
     await delaytween.finished
+    is_input_enabled = true
+
     decklist_scroll_up_button.is_enabled = true
     decklist_scroll_down_button.is_enabled = true
     trash_button.is_enabled = true
@@ -114,6 +118,7 @@ func close():
     save_button.is_enabled = false
     card_area_page_left.is_enabled = false
     card_area_page_right.is_enabled = false
+    is_input_enabled = false
     visible = false
 
 func deck_card_count():
@@ -153,7 +158,7 @@ func _on_page_right_pressed():
     card_area_refresh()
 
 func _process(_delta):
-    if not visible:
+    if not visible or not is_input_enabled:
         return
     var mouse_pos = get_viewport().get_mouse_position()
 
