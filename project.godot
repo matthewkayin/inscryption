@@ -19,7 +19,7 @@ config/windows_native_icon="res://goobert.ico"
 [autoload]
 
 Network="*res://network.gd"
-Director="*res://director.gd"
+Director="*res://director.tscn"
 
 [display]
 

@@ -135,6 +135,7 @@ hframes = 3
 script = ExtResource("5_lv3tk")
 
 [node name="name_edit" type="LineEdit" parent="decklist/cards/2"]
+layout_mode = 0
 offset_left = 1.0
 offset_top = 1.0
 offset_right = 172.0
@@ -181,6 +182,7 @@ hframes = 3
 script = ExtResource("5_lv3tk")
 
 [node name="name_edit" type="LineEdit" parent="decklist/cards/3"]
+layout_mode = 0
 offset_left = 1.0
 offset_top = 1.0
 offset_right = 172.0
@@ -227,6 +229,7 @@ hframes = 3
 script = ExtResource("5_lv3tk")
 
 [node name="name_edit" type="LineEdit" parent="decklist/cards/4"]
+layout_mode = 0
 offset_left = 1.0
 offset_top = 1.0
 offset_right = 172.0
@@ -273,6 +276,7 @@ hframes = 3
 script = ExtResource("5_lv3tk")
 
 [node name="name_edit" type="LineEdit" parent="decklist/cards/5"]
+layout_mode = 0
 offset_left = 1.0
 offset_top = 1.0
 offset_right = 172.0
@@ -319,6 +323,7 @@ hframes = 3
 script = ExtResource("5_lv3tk")
 
 [node name="name_edit" type="LineEdit" parent="decklist/cards/6"]
+layout_mode = 0
 offset_left = 1.0
 offset_top = 1.0
 offset_right = 172.0
@@ -365,6 +370,7 @@ hframes = 3
 script = ExtResource("5_lv3tk")
 
 [node name="name_edit" type="LineEdit" parent="decklist/cards/7"]
+layout_mode = 0
 offset_left = 1.0
 offset_top = 1.0
 offset_right = 172.0
@@ -411,6 +417,7 @@ hframes = 3
 script = ExtResource("5_lv3tk")
 
 [node name="name_edit" type="LineEdit" parent="decklist/cards/8"]
+layout_mode = 0
 offset_left = 1.0
 offset_top = 1.0
 offset_right = 172.0

@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="Deck" load_steps=17 format=3 uid="uid://b813w8i52fh0"]
+
+[ext_resource type="Resource" uid="uid://dqhfmxa2aeide" path="res://data/card/canine_dire_wolf_0.tres" id="1_br71i"]
+[ext_resource type="Script" path="res://data/deck.gd" id="1_na8cr"]
+[ext_resource type="Script" path="res://data/deck_entry.gd" id="2_4lw28"]
+[ext_resource type="Resource" uid="uid://daiekjhxxcyl8" path="res://data/card/canine_alpha.tres" id="3_hary1"]
+[ext_resource type="Resource" uid="uid://bqwaa8iaoddss" path="res://data/card/canine_coyote.tres" id="4_rrhwh"]
+[ext_resource type="Resource" uid="uid://bci83mtltj44h" path="res://data/card/canine_wolf_1.tres" id="5_bsxf7"]
+[ext_resource type="Resource" uid="uid://bwt0f326lpxdh" path="res://data/card/beast_ratking.tres" id="6_eoq7k"]
+[ext_resource type="Resource" uid="uid://df0gqdbfh3rvt" path="res://data/card/undead_skeleton.tres" id="7_t623o"]
+[ext_resource type="Resource" uid="uid://cbg0i4gyp15ig" path="res://data/card/beast_racoon.tres" id="8_sf4w4"]
+
+[sub_resource type="Resource" id="Resource_egrt5"]
+script = ExtResource("2_4lw28")
+card = ExtResource("1_br71i")
+count = 2
+
+[sub_resource type="Resource" id="Resource_xxsq7"]
+script = ExtResource("2_4lw28")
+card = ExtResource("3_hary1")
+count = 2
+
+[sub_resource type="Resource" id="Resource_3y4mw"]
+script = ExtResource("2_4lw28")
+card = ExtResource("4_rrhwh")
+count = 4
+
+[sub_resource type="Resource" id="Resource_je2dc"]
+script = ExtResource("2_4lw28")
+card = ExtResource("5_bsxf7")
+count = 4
+
+[sub_resource type="Resource" id="Resource_lenjo"]
+script = ExtResource("2_4lw28")
+card = ExtResource("6_eoq7k")
+count = 2
+
+[sub_resource type="Resource" id="Resource_auid1"]
+script = ExtResource("2_4lw28")
+card = ExtResource("7_t623o")
+count = 4
+
+[sub_resource type="Resource" id="Resource_ffrqb"]
+script = ExtResource("2_4lw28")
+card = ExtResource("8_sf4w4")
+count = 2
+
+[resource]
+script = ExtResource("1_na8cr")
+name = "Wolves"
+cards = Array[ExtResource("2_4lw28")]([SubResource("Resource_egrt5"), SubResource("Resource_xxsq7"), SubResource("Resource_3y4mw"), SubResource("Resource_je2dc"), SubResource("Resource_lenjo"), SubResource("Resource_auid1"), SubResource("Resource_ffrqb")])

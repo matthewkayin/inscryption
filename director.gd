@@ -4,6 +4,9 @@ extends Node
 @onready var match_scene = preload("res://match/match.tscn")
 @onready var menu_scene = preload("res://menu/menu.tscn")
 
+@export var CARD_DATA: Array[CardData] = []
+@export var STARTER_DECKS: Array[Deck] = []
+
 enum CursorType {
     POINTER,
     HAND,
@@ -21,24 +24,11 @@ var decks = []
 var player_equipped_deck = -1
 
 func _ready():
-    const CARD_DATA_BASE_PATH = "res://data/card"
-
-    var card_paths = []
-    var card_dir = DirAccess.open(CARD_DATA_BASE_PATH)
-    assert(card_dir)
-    card_dir.list_dir_begin()
-    var filename = card_dir.get_next()
-    while filename != "":
-        card_paths.push_back(filename)
-        filename = card_dir.get_next()
-
-    card_paths.sort()
-    for path in card_paths:
-        var data = load(CARD_DATA_BASE_PATH + "/" + path)
-        Card.DATA.push_back(data)
-        if data.name == "Squirrel":
+    while not CARD_DATA.is_empty():
+        Card.DATA.push_back(CARD_DATA.pop_front())
+        if Card.DATA[Card.DATA.size() - 1].name == "Squirrel":
             Card.SQUIRREL = Card.DATA.size() - 1
-        if data.name == "The Smoke":
+        if Card.DATA[Card.DATA.size() - 1].name == "The Smoke":
             Card.THE_SMOKE = Card.DATA.size() - 1
 
     load_decks()
@@ -55,14 +45,16 @@ func is_player_deck_valid():
 func load_decks():
     var deck_paths = []
 
-    var starter_deck_dir = DirAccess.open("res://data/starter_decks")
-    if starter_deck_dir:
-        starter_deck_dir.list_dir_begin()
-        var filename = starter_deck_dir.get_next()
-        while filename != "":
-            deck_paths.push_back("res://data/starter_decks/" + filename)
-            filename = starter_deck_dir.get_next()
-    var starter_deck_count = deck_paths.size()
+    for starter_deck in STARTER_DECKS:
+        var new_deck = {
+            "name": starter_deck.name,
+            "cards": [],
+            "is_starter_deck": true
+        }
+        for deck_entry in starter_deck.cards:
+            for i in range(0, deck_entry.count):
+                new_deck.cards.push_back(Card.get_id_from_data(deck_entry.card))
+        decks.push_back(new_deck)
 
     var deck_dir = DirAccess.open("user://decks")
     if deck_dir:
@@ -78,11 +70,10 @@ func load_decks():
             print("Unable to open ", deck_path)
             continue
 
-        var deck_index = decks.size()
         var new_deck = {
             "name": "",
             "cards": [],
-            "is_starter_deck": deck_index < starter_deck_count
+            "is_starter_deck": false
         }
 
         new_deck.name = deck_file.get_line().split("=")[1]
