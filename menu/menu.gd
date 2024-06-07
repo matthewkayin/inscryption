@@ -116,6 +116,9 @@ func _on_host_button_pressed():
     if name_edit.text == "":
         main_show_warning("Please enter a name.")
         return
+    if not director.is_player_deck_valid():
+        main_show_warning("Please create a complete deck.")
+        return
     update_username()
     network.server_create()
     open_host_cluster()
@@ -126,6 +129,9 @@ func _on_join_button_pressed():
     sfx_ok.play()
     if name_edit.text == "":
         main_show_warning("Please enter a name.")
+        return
+    if not director.is_player_deck_valid():
+        main_show_warning("Please create a complete deck.")
         return
     update_username()
     open_join_cluster()

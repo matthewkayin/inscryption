@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://ddc4t62k3m8be"]
+[gd_scene load_steps=17 format=3 uid="uid://ddc4t62k3m8be"]
 
 [ext_resource type="Script" path="res://menu/menu.gd" id="1_dcs8p"]
 [ext_resource type="FontFile" uid="uid://dpq6fp6gls8cw" path="res://ui/Marksman.ttf" id="1_h3v4o"]
@@ -7,6 +7,7 @@
 [ext_resource type="Shader" path="res://tv.gdshader" id="3_sgn10"]
 [ext_resource type="Texture2D" uid="uid://bvk0ohc7fd3me" path="res://menu/goobert.png" id="4_cbtlr"]
 [ext_resource type="Texture2D" uid="uid://2xdkmxx21ax1" path="res://library/library_button.png" id="5_8yjkw"]
+[ext_resource type="PackedScene" uid="uid://cr32uawgvgfw3" path="res://library/decklist.tscn" id="7_qqura"]
 [ext_resource type="PackedScene" uid="uid://byd1ebrm0dlya" path="res://library/library.tscn" id="7_tkvqw"]
 [ext_resource type="Script" path="res://menu/library_button.gd" id="7_yrp07"]
 
@@ -336,6 +337,8 @@ offset_bottom = 480.0
 mouse_filter = 2
 color = Color(0, 0, 0, 0.101961)
 
+[node name="decklist" parent="." instance=ExtResource("7_qqura")]
+
 [node name="library" parent="." instance=ExtResource("7_tkvqw")]
 visible = false
 
@@ -343,5 +346,5 @@ visible = false
 position = Vector2(605, 50)
 scale = Vector2(2, 2)
 texture = ExtResource("5_8yjkw")
-hframes = 4
+hframes = 5
 script = ExtResource("7_yrp07")

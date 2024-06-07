@@ -1,4 +1,5 @@
 extends Node2D
+class_name Library
 
 @onready var director = get_node("/root/Director")
 
@@ -19,7 +20,7 @@ extends Node2D
 @onready var rulebook_ability1_desc = $rulebook/ability1/desc
 @onready var rulebook_ability2_desc = $rulebook/ability2/desc
 
-@onready var bg = $bg
+@export var require_full_deck = true
 
 const CARD_AREA_PAGE_SIZE = 8
 var CARD_AREA_LAST_PAGE  
@@ -33,6 +34,7 @@ const CARD_DUPLICATE_LIMIT = {
     CardData.Rarity.RARE: 2
 }
 var deck = {}
+var deck_index = -1
 
 var decklist_scroll_offset = 0
 
@@ -64,7 +66,9 @@ func _ready():
     card_area_page_left.pressed.connect(_on_page_left_pressed)
     card_area_page_right.pressed.connect(_on_page_right_pressed)
 
-func open():
+func open(p_deck_index: int = -1):
+    deck_index = p_deck_index
+
     library = {}
     for card_id in range(0, Card.DATA.size()):
         if Card.DATA[card_id].rarity == CardData.Rarity.HIDDEN:
@@ -72,14 +76,16 @@ func open():
         library[card_id] = CARD_DUPLICATE_LIMIT[Card.DATA[card_id].rarity]
 
     deck = {}
-    for card_id in director.player_deck:
-        library[card_id] -= 1
-        if deck.has(card_id):
-            deck[card_id] += 1
-        else:
-            deck[card_id] = 1
+    if deck_index != -1:
+        for card_id in director.decks[deck_index].cards:
+            library[card_id] -= 1
+            if deck.has(card_id):
+                deck[card_id] += 1
+            else:
+                deck[card_id] = 1
 
     CARD_AREA_LAST_PAGE = int(float(library.keys().size() - 1) / float(CARD_AREA_PAGE_SIZE))
+    card_area_page_number = 0
     card_area_refresh()
 
     decklist_scroll_offset = 0
@@ -87,6 +93,11 @@ func open():
 
     rulebook_close()
 
+    visible = true
+
+    var delaytween = get_tree().create_tween()
+    delaytween.tween_interval(0.25)
+    await delaytween.finished
     decklist_scroll_up_button.is_enabled = true
     decklist_scroll_down_button.is_enabled = true
     trash_button.is_enabled = true
@@ -94,11 +105,9 @@ func open():
     card_area_page_left.is_enabled = true
     card_area_page_right.is_enabled = true
 
-    visible = true
-
 func close():
-    _on_save_pressed()
     deck = {}
+    deck_index = -1
     decklist_scroll_up_button.is_enabled = false
     decklist_scroll_down_button.is_enabled = false
     trash_button.is_enabled = false
@@ -122,14 +131,18 @@ func _on_scroll_down():
     decklist_refresh()
 
 func _on_trash_pressed():
-    deck = []
+    deck = {}
     decklist_refresh()
 
 func _on_save_pressed():
-    director.player_deck = []
+    if deck_index == -1:
+        return
+    director.decks[deck_index].cards = []
     for card_id in deck.keys():
         for i in range(0, deck[card_id]):
-            director.player_deck.push_back(card_id)
+            director.decks[deck_index].cards.push_back(card_id)
+    if director.player_equipped_deck == deck_index and director.decks[deck_index].cards.size() < Library.MAX_DECK_SIZE:
+        director.player_equipped_deck = -1
 
 func _on_page_left_pressed():
     card_area_page_number = max(card_area_page_number - 1, 0)

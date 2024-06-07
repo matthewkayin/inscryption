@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://codocbqdwgciu"
-path="res://.godot/imported/ability_beesonhit.png-e1cae56909ae3ea13c463bbf16fded22.ctex"
+uid="uid://c0fodt2idki7o"
+path="res://.godot/imported/new.png-8e376dd0533742b393c29984a11c8f86.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Texture2D/ability_beesonhit.png"
-dest_files=["res://.godot/imported/ability_beesonhit.png-e1cae56909ae3ea13c463bbf16fded22.ctex"]
+source_file="res://library/new.png"
+dest_files=["res://.godot/imported/new.png-8e376dd0533742b393c29984a11c8f86.ctex"]
 
 [params]
 

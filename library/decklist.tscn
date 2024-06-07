@@ -1,0 +1,495 @@
+[gd_scene load_steps=14 format=3 uid="uid://cr32uawgvgfw3"]
+
+[ext_resource type="Script" path="res://library/decklist.gd" id="1_aw1o3"]
+[ext_resource type="Texture2D" uid="uid://phfrv0iph8x0" path="res://library/frame_x2.png" id="1_xix78"]
+[ext_resource type="Texture2D" uid="uid://2a7lkv8ya8ks" path="res://library/frame.png" id="2_426ci"]
+[ext_resource type="FontFile" uid="uid://dpq6fp6gls8cw" path="res://ui/Marksman.ttf" id="3_g1oqe"]
+[ext_resource type="Texture2D" uid="uid://c0n02k6516wxj" path="res://library/frame_hover.png" id="3_vfr1j"]
+[ext_resource type="Texture2D" uid="uid://cvyetqb8gfvo5" path="res://library/scroll_button.png" id="4_dcaqf"]
+[ext_resource type="Texture2D" uid="uid://cfte7wym1ntt0" path="res://library/edit.png" id="5_06aao"]
+[ext_resource type="Texture2D" uid="uid://db2fau8wa31jv" path="res://match/ability/pixelability_handy.png" id="5_6hg27"]
+[ext_resource type="Script" path="res://library/button.gd" id="5_lv3tk"]
+[ext_resource type="Texture2D" uid="uid://b6d8b4s2sbmvk" path="res://library/scroll_button_down.png" id="6_w43cj"]
+[ext_resource type="Texture2D" uid="uid://c0fodt2idki7o" path="res://library/new.png" id="7_0pr7e"]
+[ext_resource type="Texture2D" uid="uid://b6nw55f3vb4fo" path="res://library/trash.png" id="7_3kgjv"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_p5y1s"]
+font = ExtResource("3_g1oqe")
+font_size = 32
+font_color = Color(0.00784314, 0.0392157, 0.0666667, 1)
+
+[node name="decklist" type="Node2D"]
+texture_filter = 1
+script = ExtResource("1_aw1o3")
+frame = ExtResource("2_426ci")
+frame_hover = ExtResource("3_vfr1j")
+
+[node name="bg" type="ColorRect" parent="."]
+offset_right = 640.0
+offset_bottom = 480.0
+color = Color(0.00784314, 0.0392157, 0.0666667, 0.501961)
+
+[node name="decklist" type="NinePatchRect" parent="."]
+offset_left = 167.0
+offset_top = 57.0
+offset_right = 473.0
+offset_bottom = 424.0
+texture = ExtResource("1_xix78")
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="equipped" type="Sprite2D" parent="decklist"]
+position = Vector2(23, 43)
+scale = Vector2(2, 2)
+texture = ExtResource("5_6hg27")
+
+[node name="cards" type="Control" parent="decklist"]
+anchors_preset = 0
+offset_top = 4.0
+offset_right = 40.0
+offset_bottom = 44.0
+
+[node name="1" type="NinePatchRect" parent="decklist/cards"]
+layout_mode = 2
+offset_left = 44.0
+offset_top = 21.0
+offset_right = 220.0
+offset_bottom = 57.0
+texture = ExtResource("2_426ci")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="decklist/cards/1"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 173.0
+offset_bottom = 31.0
+text = "Headless Horse"
+label_settings = SubResource("LabelSettings_p5y1s")
+text_overrun_behavior = 1
+
+[node name="name_edit" type="LineEdit" parent="decklist/cards/1"]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 172.0
+offset_bottom = 35.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_g1oqe")
+theme_override_font_sizes/font_size = 32
+text = "Headless Horse"
+
+[node name="edit" type="Sprite2D" parent="decklist/cards/1"]
+position = Vector2(198, 18)
+scale = Vector2(2, 2)
+texture = ExtResource("5_06aao")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="delete" type="Sprite2D" parent="decklist/cards/1"]
+position = Vector2(238, 18)
+scale = Vector2(2, 2)
+texture = ExtResource("7_3kgjv")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="2" type="NinePatchRect" parent="decklist/cards"]
+layout_mode = 2
+offset_left = 44.0
+offset_top = 61.0
+offset_right = 220.0
+offset_bottom = 97.0
+texture = ExtResource("2_426ci")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="decklist/cards/2"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 173.0
+offset_bottom = 31.0
+text = "Headless Horse"
+label_settings = SubResource("LabelSettings_p5y1s")
+text_overrun_behavior = 1
+
+[node name="edit" type="Sprite2D" parent="decklist/cards/2"]
+position = Vector2(198, 18)
+scale = Vector2(2, 2)
+texture = ExtResource("5_06aao")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="delete" type="Sprite2D" parent="decklist/cards/2"]
+position = Vector2(238, 18)
+scale = Vector2(2, 2)
+texture = ExtResource("7_3kgjv")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="name_edit" type="LineEdit" parent="decklist/cards/2"]
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 172.0
+offset_bottom = 35.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_g1oqe")
+theme_override_font_sizes/font_size = 32
+text = "Headless Horse"
+
+[node name="3" type="NinePatchRect" parent="decklist/cards"]
+layout_mode = 2
+offset_left = 44.0
+offset_top = 101.0
+offset_right = 220.0
+offset_bottom = 137.0
+texture = ExtResource("2_426ci")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="decklist/cards/3"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 173.0
+offset_bottom = 31.0
+text = "Headless Horse"
+label_settings = SubResource("LabelSettings_p5y1s")
+text_overrun_behavior = 1
+
+[node name="edit" type="Sprite2D" parent="decklist/cards/3"]
+position = Vector2(198, 18)
+scale = Vector2(2, 2)
+texture = ExtResource("5_06aao")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="delete" type="Sprite2D" parent="decklist/cards/3"]
+position = Vector2(238, 18)
+scale = Vector2(2, 2)
+texture = ExtResource("7_3kgjv")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="name_edit" type="LineEdit" parent="decklist/cards/3"]
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 172.0
+offset_bottom = 35.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_g1oqe")
+theme_override_font_sizes/font_size = 32
+text = "Headless Horse"
+
+[node name="4" type="NinePatchRect" parent="decklist/cards"]
+layout_mode = 2
+offset_left = 44.0
+offset_top = 141.0
+offset_right = 220.0
+offset_bottom = 177.0
+texture = ExtResource("2_426ci")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="decklist/cards/4"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 173.0
+offset_bottom = 31.0
+text = "Headless Horse"
+label_settings = SubResource("LabelSettings_p5y1s")
+text_overrun_behavior = 1
+
+[node name="edit" type="Sprite2D" parent="decklist/cards/4"]
+position = Vector2(198, 18)
+scale = Vector2(2, 2)
+texture = ExtResource("5_06aao")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="delete" type="Sprite2D" parent="decklist/cards/4"]
+position = Vector2(238, 18)
+scale = Vector2(2, 2)
+texture = ExtResource("7_3kgjv")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="name_edit" type="LineEdit" parent="decklist/cards/4"]
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 172.0
+offset_bottom = 35.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_g1oqe")
+theme_override_font_sizes/font_size = 32
+text = "Headless Horse"
+
+[node name="5" type="NinePatchRect" parent="decklist/cards"]
+layout_mode = 2
+offset_left = 44.0
+offset_top = 181.0
+offset_right = 220.0
+offset_bottom = 217.0
+texture = ExtResource("2_426ci")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="decklist/cards/5"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 173.0
+offset_bottom = 31.0
+text = "Headless Horse"
+label_settings = SubResource("LabelSettings_p5y1s")
+text_overrun_behavior = 1
+
+[node name="edit" type="Sprite2D" parent="decklist/cards/5"]
+position = Vector2(198, 18)
+scale = Vector2(2, 2)
+texture = ExtResource("5_06aao")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="delete" type="Sprite2D" parent="decklist/cards/5"]
+position = Vector2(238, 18)
+scale = Vector2(2, 2)
+texture = ExtResource("7_3kgjv")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="name_edit" type="LineEdit" parent="decklist/cards/5"]
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 172.0
+offset_bottom = 35.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_g1oqe")
+theme_override_font_sizes/font_size = 32
+text = "Headless Horse"
+
+[node name="6" type="NinePatchRect" parent="decklist/cards"]
+layout_mode = 2
+offset_left = 44.0
+offset_top = 221.0
+offset_right = 220.0
+offset_bottom = 257.0
+texture = ExtResource("2_426ci")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="decklist/cards/6"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 173.0
+offset_bottom = 31.0
+text = "Headless Horse"
+label_settings = SubResource("LabelSettings_p5y1s")
+text_overrun_behavior = 1
+
+[node name="edit" type="Sprite2D" parent="decklist/cards/6"]
+position = Vector2(198, 18)
+scale = Vector2(2, 2)
+texture = ExtResource("5_06aao")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="delete" type="Sprite2D" parent="decklist/cards/6"]
+position = Vector2(238, 18)
+scale = Vector2(2, 2)
+texture = ExtResource("7_3kgjv")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="name_edit" type="LineEdit" parent="decklist/cards/6"]
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 172.0
+offset_bottom = 35.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_g1oqe")
+theme_override_font_sizes/font_size = 32
+text = "Headless Horse"
+
+[node name="7" type="NinePatchRect" parent="decklist/cards"]
+layout_mode = 2
+offset_left = 44.0
+offset_top = 261.0
+offset_right = 220.0
+offset_bottom = 297.0
+texture = ExtResource("2_426ci")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="decklist/cards/7"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 173.0
+offset_bottom = 31.0
+text = "Headless Horse"
+label_settings = SubResource("LabelSettings_p5y1s")
+text_overrun_behavior = 1
+
+[node name="edit" type="Sprite2D" parent="decklist/cards/7"]
+position = Vector2(198, 18)
+scale = Vector2(2, 2)
+texture = ExtResource("5_06aao")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="delete" type="Sprite2D" parent="decklist/cards/7"]
+position = Vector2(238, 18)
+scale = Vector2(2, 2)
+texture = ExtResource("7_3kgjv")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="name_edit" type="LineEdit" parent="decklist/cards/7"]
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 172.0
+offset_bottom = 35.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_g1oqe")
+theme_override_font_sizes/font_size = 32
+text = "Headless Horse"
+
+[node name="8" type="NinePatchRect" parent="decklist/cards"]
+layout_mode = 2
+offset_left = 44.0
+offset_top = 301.0
+offset_right = 220.0
+offset_bottom = 337.0
+texture = ExtResource("2_426ci")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="name" type="Label" parent="decklist/cards/8"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 173.0
+offset_bottom = 31.0
+text = "Headless Horse"
+label_settings = SubResource("LabelSettings_p5y1s")
+text_overrun_behavior = 1
+
+[node name="edit" type="Sprite2D" parent="decklist/cards/8"]
+position = Vector2(198, 18)
+scale = Vector2(2, 2)
+texture = ExtResource("5_06aao")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="delete" type="Sprite2D" parent="decklist/cards/8"]
+position = Vector2(238, 18)
+scale = Vector2(2, 2)
+texture = ExtResource("7_3kgjv")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="name_edit" type="LineEdit" parent="decklist/cards/8"]
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 172.0
+offset_bottom = 35.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_g1oqe")
+theme_override_font_sizes/font_size = 32
+text = "Headless Horse"
+
+[node name="news" type="Control" parent="decklist"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="new" type="Sprite2D" parent="decklist/news"]
+visible = false
+position = Vector2(153, 43)
+scale = Vector2(2, 2)
+texture = ExtResource("7_0pr7e")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="new2" type="Sprite2D" parent="decklist/news"]
+position = Vector2(153, 83)
+scale = Vector2(2, 2)
+texture = ExtResource("7_0pr7e")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="new3" type="Sprite2D" parent="decklist/news"]
+position = Vector2(153, 123)
+scale = Vector2(2, 2)
+texture = ExtResource("7_0pr7e")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="new4" type="Sprite2D" parent="decklist/news"]
+position = Vector2(153, 163)
+scale = Vector2(2, 2)
+texture = ExtResource("7_0pr7e")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="new5" type="Sprite2D" parent="decklist/news"]
+position = Vector2(153, 203)
+scale = Vector2(2, 2)
+texture = ExtResource("7_0pr7e")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="new6" type="Sprite2D" parent="decklist/news"]
+position = Vector2(153, 243)
+scale = Vector2(2, 2)
+texture = ExtResource("7_0pr7e")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="new7" type="Sprite2D" parent="decklist/news"]
+position = Vector2(153, 283)
+scale = Vector2(2, 2)
+texture = ExtResource("7_0pr7e")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="new8" type="Sprite2D" parent="decklist/news"]
+position = Vector2(153, 323)
+scale = Vector2(2, 2)
+texture = ExtResource("7_0pr7e")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="scroll_up_button" type="Sprite2D" parent="decklist"]
+position = Vector2(153, 4)
+texture = ExtResource("4_dcaqf")
+hframes = 3
+script = ExtResource("5_lv3tk")
+
+[node name="scroll_down_button" type="Sprite2D" parent="decklist"]
+position = Vector2(153, 362)
+texture = ExtResource("6_w43cj")
+hframes = 3
+script = ExtResource("5_lv3tk")

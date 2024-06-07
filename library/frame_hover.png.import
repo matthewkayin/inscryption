@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bhv5rmj4buj44"
-path="res://.godot/imported/ability_tailonhit.png-56e8d19704886b33e9a219ccd5e00a2c.ctex"
+uid="uid://c0n02k6516wxj"
+path="res://.godot/imported/frame_hover.png-6d6e44dc43a0ef846c246f721040af4f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Texture2D/ability_tailonhit.png"
-dest_files=["res://.godot/imported/ability_tailonhit.png-56e8d19704886b33e9a219ccd5e00a2c.ctex"]
+source_file="res://library/frame_hover.png"
+dest_files=["res://.godot/imported/frame_hover.png-6d6e44dc43a0ef846c246f721040af4f.ctex"]
 
 [params]
 

@@ -107,7 +107,7 @@ func _ready():
 
     # Init player deck
     var deck_unshuffled = []
-    for card in director.player_deck:
+    for card in director.decks[director.player_equipped_deck].cards:
         deck_unshuffled.push_back(card) 
     while not deck_unshuffled.is_empty():
         player_deck.push_back(deck_unshuffled.pop_at(randi_range(0, deck_unshuffled.size() - 1)))
