@@ -19,6 +19,7 @@ var deck_delete_buttons = []
 
 @export var frame: Texture2D
 @export var frame_hover: Texture2D
+@export var allow_small_deck = false
 
 var scroll_offset = 0
 var name_edit_index = -1
@@ -195,7 +196,7 @@ func _process(_delta):
         if control_hover_index == -1:
             return
         var deck_index = control_hover_index + scroll_offset
-        var is_deck_valid = director.decks[deck_index].cards.size() == Library.MAX_DECK_SIZE
+        var is_deck_valid = director.decks[deck_index].cards.size() == Library.MAX_DECK_SIZE or allow_small_deck
         if not is_deck_valid:
             return
         sfx_ok.play()

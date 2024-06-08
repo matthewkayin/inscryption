@@ -158,6 +158,7 @@ func _on_server_declared_first_turn(server_goes_first):
 
 func _process(_delta):
     if is_process_disabled:
+        print(network.player.name, ": process disabled")
         return
     if is_game_over:
         if Input.is_action_just_pressed("mouse_button_left"):
@@ -485,6 +486,10 @@ func on_card_played(who: Turn, card: Card, index: int, brood_parasite_roll: floa
     if card.has_ability(Ability.Name.HOARDER):
         if player_deck.size() > 0:
             if who == Turn.PLAYER:
+                # Tell the opponent we played a magpie
+                if network.network_is_connected():
+                    _on_opponent_use_hoarder.rpc_id(network.opponent_id)
+
                 state = State.WAIT
                 player_deck_hand = []
                 for card_id in player_deck:
@@ -496,6 +501,7 @@ func on_card_played(who: Turn, card: Card, index: int, brood_parasite_roll: floa
                     await deck_hand_update_positions()
                 player_deck_hand_visible = true
                 state = State.PLAYER_DECK_DRAW
+                is_process_disabled = false
                 await player_deck_draw_finished
             else:
                 popup.open("Opponent is choosing a card from their deck.")
@@ -1314,7 +1320,8 @@ enum NetworkActionType {
     SACRIFICE,
     SUMMON,
     BELL,
-    YIELD
+    YIELD,
+    HOARDER
 }
 
 func network_process():
@@ -1357,6 +1364,8 @@ func network_process():
         assert(network_action_queue.is_empty())
         popup.open("Your turn.", 1.0)
         state = State.PLAYER_DRAW
+    elif action.type == NetworkActionType.HOARDER:
+        popup.open("Opponent is choosing a card from their deck.")
     network_is_action_running = false
 
 @rpc("any_peer", "reliable")
@@ -1400,6 +1409,12 @@ func _on_opponent_ring_bell():
 func _on_opponent_yield_turn():
     network_action_queue.push_back({
         "type": NetworkActionType.YIELD
+    })
+
+@rpc("any_peer", "reliable")
+func _on_opponent_use_hoarder():
+    network_action_queue.push_back({
+        "type": NetworkActionType.HOARDER
     })
 
 @rpc("any_peer", "reliable")

@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="Deck" load_steps=9 format=3 uid="uid://tsli5732a4b2"]
+
+[ext_resource type="Resource" uid="uid://c8da7e4tl0jfd" path="res://data/card/bird_magpie.tres" id="1_j5q0e"]
+[ext_resource type="Script" path="res://data/deck.gd" id="1_yihnr"]
+[ext_resource type="Script" path="res://data/deck_entry.gd" id="2_uystf"]
+[ext_resource type="Resource" uid="uid://byd0s1kdxed8y" path="res://data/card/beast_stoat.tres" id="3_mgbty"]
+[ext_resource type="Resource" uid="uid://dghoax6tsiydv" path="res://data/card/bird_kingfisher.tres" id="4_jhra4"]
+
+[sub_resource type="Resource" id="Resource_irho2"]
+script = ExtResource("2_uystf")
+card = ExtResource("1_j5q0e")
+count = 4
+
+[sub_resource type="Resource" id="Resource_ca8rx"]
+script = ExtResource("2_uystf")
+card = ExtResource("3_mgbty")
+count = 4
+
+[sub_resource type="Resource" id="Resource_jotyk"]
+script = ExtResource("2_uystf")
+card = ExtResource("4_jhra4")
+count = 4
+
+[resource]
+script = ExtResource("1_yihnr")
+name = "Test"
+cards = Array[ExtResource("2_uystf")]([SubResource("Resource_irho2"), SubResource("Resource_ca8rx"), SubResource("Resource_jotyk")])
