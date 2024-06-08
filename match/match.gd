@@ -1,6 +1,6 @@
 extends Node2D
 
-signal server_ready
+signal opponent_ready
 signal player_deck_draw_finished
 
 @onready var director = get_node("/root/Director")
@@ -88,7 +88,7 @@ var network_is_action_running = false
 
 var is_game_over = false
 var is_process_disabled = false
-var is_server_ready = false
+var is_opponent_ready = false
 
 var skip_draw = false
 var skip_combat = false
@@ -99,8 +99,8 @@ func _ready():
         blood_counter_sprites.push_back(child.get_child(0))
     bell.frame_coords.x = int(BellState.DISABLED)
     score_scale.display_scores(0, 0)
-    network.server_client_disconnected.connect(_on_opponent_disconnect)
-    network.client_server_disconnected.connect(_on_opponent_disconnect)
+    network.client_opponent_disconnected.connect(_on_opponent_disconnect)
+    network.client_server_disconnected.connect(_on_server_disconnect)
     bone_popup.visible = false
     concede_menu.player_conceded.connect(_on_player_concede)
     rulebook_close()
@@ -128,37 +128,26 @@ func _ready():
 
     ui_update_deck_counters()
 
-    if not network.network_is_connected():
+    if not network.client_has_opponent():
         state = State.PLAYER_DRAW
     else:
         state = State.WAIT
-        if not multiplayer.is_server():
-            _on_client_ready.rpc_id(network.opponent_id)
-        else:
-            is_server_ready = true
-            server_ready.emit()
+        _on_opponent_ready.rpc_id(network.opponent_id)
+        if not is_opponent_ready:
+            popup.open("Waiting for opponent...")
+            await opponent_ready
+        var message = "You go first." if network.player_goes_first else "Opponent goes first."
+        popup.open(message, 1.0)
+        skip_draw = network.player_goes_first
+        state = State.PLAYER_DRAW if network.player_goes_first else State.WAIT
 
 @rpc("any_peer", "reliable")
-func _on_client_ready():
-    if not is_server_ready:
-        await server_ready
-    var server_goes_first = bool(randi_range(0, 1))
-    _on_server_declared_first_turn.rpc_id(network.opponent_id, server_goes_first)
-    state = State.PLAYER_DRAW if server_goes_first else State.WAIT
-    var message = "You go first." if server_goes_first else "Opponent goes first."
-    skip_draw = server_goes_first
-    popup.open(message, 1.0)
-
-@rpc("any_peer", "reliable")
-func _on_server_declared_first_turn(server_goes_first):
-    state = State.WAIT if server_goes_first else State.PLAYER_DRAW
-    var message = "Opponent goes first" if server_goes_first else "You go first." 
-    skip_draw = not server_goes_first
-    popup.open(message, 1.0)
+func _on_opponent_ready():
+    is_opponent_ready = true
+    opponent_ready.emit()
 
 func _process(_delta):
     if is_process_disabled:
-        print(network.player.name, ": process disabled")
         return
     if is_game_over:
         if Input.is_action_just_pressed("mouse_button_left"):
@@ -166,7 +155,10 @@ func _process(_delta):
             var tween = get_tree().create_tween()
             tween.tween_property(fade, "color", Color(0, 0, 0, 1), 1.0)
             await tween.finished
-            director.end_match()
+            if not network.client_is_connected():
+                director.set_scene(director.Scene.MENU)
+            else:
+                director.set_scene(director.Scene.LOBBY)
         return
     if Input.is_action_just_pressed("escape"):
         if concede_menu.visible:
@@ -346,7 +338,7 @@ func opponent_board_play_card(index: int, card_id: int, eternal_counter: int = 0
 
 func player_summon_card(card: Card, index: int, pay_cost: bool = true):
     var brood_parasite_roll = randf()
-    if network.network_is_connected():
+    if network.client_has_opponent():
         var eternal_counter = 0
         if card.has_ability(Ability.Name.ETERNAL):
             eternal_counter = card.base_power - card.data.power
@@ -487,7 +479,7 @@ func on_card_played(who: Turn, card: Card, index: int, brood_parasite_roll: floa
         if player_deck.size() > 0:
             if who == Turn.PLAYER:
                 # Tell the opponent we played a magpie
-                if network.network_is_connected():
+                if network.client_has_opponent():
                     _on_opponent_use_hoarder.rpc_id(network.opponent_id)
 
                 state = State.WAIT
@@ -782,7 +774,7 @@ func player_draw_process():
 
     if player_deck.size() == 0 and player_squirrel_deck_count == 0:
         state = State.WAIT
-        if network.network_is_connected():
+        if network.client_has_opponent():
             _on_opponent_cannot_draw_card.rpc_id(network.opponent_id)
         await popup.open("No cards to draw. Take 1 damage.", 2.0)
 
@@ -820,7 +812,7 @@ func player_draw_process():
 
     if drawn_card != null:
         popup.close()
-        if network.network_is_connected():
+        if network.client_has_opponent():
             _on_opponent_draw_card.rpc_id(network.opponent_id)
         state = State.WAIT
         ui_update_deck_counters()
@@ -971,7 +963,7 @@ func player_turn_process():
             state = State.WAIT
 
             # Tell the opponent
-            if network.network_is_connected():
+            if network.client_has_opponent():
                 _on_opponent_ring_bell.rpc_id(network.opponent_id)
 
             # Ring the bell
@@ -988,7 +980,7 @@ func player_turn_process():
                 return
 
             # Yield the turn
-            if network.network_is_connected():
+            if network.client_has_opponent():
                 popup.open("Opponent's turn.", 1.0)
                 _on_opponent_yield_turn.rpc_id(network.opponent_id)
             else:
@@ -1007,7 +999,7 @@ func player_deck_draw_process():
     if selected_card != null and Input.is_action_just_pressed("mouse_button_left"):
         state = State.WAIT
         # Tell opponent we drew a card
-        if network.network_is_connected():
+        if network.client_has_opponent():
             _on_opponent_draw_card.rpc_id(network.opponent_id)
         # Place the card in our hand
         player_deck_hand.erase(selected_card)
@@ -1089,7 +1081,7 @@ func player_summoning_process():
             if Input.is_action_just_pressed("mouse_button_left"):
                 # PERFORM SACRIFICE
                 state = State.WAIT
-                if network.network_is_connected():
+                if network.client_has_opponent():
                     _on_opponent_sacrifice_card.rpc_id(network.opponent_id, hovered_cardslot_index)
                 director.set_cursor(director.CursorType.POINTER)
                 card_hover.close()
@@ -1427,12 +1419,16 @@ func _on_opponent_disconnect():
     popup.open("Your opponent disconnected.")
     set_game_over()
 
+func _on_server_disconnect():
+    popup.open("Server disconnected.")
+    set_game_over()
+
 func set_game_over():
     rulebook_close()
     is_game_over = true
 
 func _on_player_concede():
-    if network.network_is_connected():
+    if network.client_has_opponent():
         _on_opponent_concede.rpc_id(network.opponent_id)
     else:
         print("conceded but network disconnected?")

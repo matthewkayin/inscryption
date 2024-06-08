@@ -1,8 +1,6 @@
 extends Node
 
 @onready var network = get_node("/root/Network")
-@onready var match_scene = preload("res://match/match.tscn")
-@onready var menu_scene = preload("res://menu/menu.tscn")
 
 @export var CARD_DATA: Array[CardData] = []
 @export var STARTER_DECKS: Array[Deck] = []
@@ -23,6 +21,15 @@ var player_deck = []
 var decks = []
 var player_equipped_deck = -1
 
+enum Scene {
+    MENU,
+    LOBBY,
+    MATCH
+}
+
+var scenes = {}
+var current_scene = Scene.MENU
+
 func _ready():
     while not CARD_DATA.is_empty():
         Card.DATA.push_back(CARD_DATA.pop_front())
@@ -38,6 +45,10 @@ func _ready():
         mouse_cursors[i] = load("res://ui/cursor/" + CursorType.keys()[i].to_lower() + ".png")
     set_cursor(CursorType.POINTER)
     root = get_parent()
+
+    scenes[Scene.MENU] = load("res://menu/menu.tscn")
+    scenes[Scene.LOBBY] = load("res://menu/lobby.tscn")
+    scenes[Scene.MATCH] = load("res://match/match.tscn")
 
 func is_player_deck_valid():
     return player_equipped_deck != -1
@@ -126,22 +137,18 @@ func set_cursor(cursor_type: CursorType):
     current_cursor = cursor_type
     Input.set_custom_mouse_cursor(mouse_cursors[int(cursor_type)])
 
-func start_match():
-    var menu_instance = get_node_or_null("/root/menu")
-    if menu_instance == null:
-        print(network.player.name + ": MENU IS NULL")
-        return
-    var match_instance = match_scene.instantiate()
-    root.remove_child(menu_instance)
-    root.add_child(match_instance)
-    menu_instance.queue_free()
+func set_scene(to: Scene):
+    if network.client_is_connected():
+        if current_scene == Scene.MATCH and to == Scene.LOBBY:
+            network._on_client_return_to_lobby.rpc_id(1)
 
-func end_match():
-    var match_instance = get_node_or_null("/root/match")
-    if match_instance == null:
-        print(network.player.name + ": MATCH IS NULL")
+    var from: String = Scene.keys()[current_scene].to_lower()
+    var old_instance = get_node_or_null("/root/" + from)
+    if old_instance == null:
+        print(network.player.name + ": scene /root/" + from + " is null")
         return
-    var menu_instance = menu_scene.instantiate()
-    root.remove_child(match_instance)
-    root.add_child(menu_instance)
-    match_instance.queue_free()
+    var new_instance = scenes[to].instantiate()
+    root.remove_child(old_instance)
+    root.add_child(new_instance)
+    old_instance.queue_free()
+    current_scene = to
