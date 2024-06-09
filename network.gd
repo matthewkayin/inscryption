@@ -7,7 +7,8 @@ signal client_server_rejected_game
 signal client_server_accepted_game
 
 const VERSION = "0.9.2"
-const SERVER_IP = "127.0.0.1"
+const SERVER_IP = "wss://inscryption.xyz:6767"
+# const SERVER_IP = "ws://127.0.0.1:6767"
 const PORT = 6767
 
 var peer
@@ -27,9 +28,8 @@ func _ready():
     multiplayer.connection_failed.connect(_client_on_connection_fail)
     multiplayer.server_disconnected.connect(_client_on_server_disconnected)
 
-func _on_peer_connected(id):
-    if opponent_id == id:
-        client_opponent_disconnected.emit()
+func _on_peer_connected(_id):
+    pass
 
 # SERVER
 
@@ -46,6 +46,9 @@ func _on_peer_disconnected(id):
         print("Client ", id, " disconnected.")
         players.erase(id)
         server_broadcast_player_list()
+    else:
+        if opponent_id == id:
+            client_opponent_disconnected.emit()
 
 func server_broadcast_player_list():
     print("Broadcasting player list...")
@@ -100,8 +103,11 @@ func _on_client_return_to_lobby():
     server_broadcast_player_list()
 
 func server_create():
-    peer = ENetMultiplayerPeer.new()
-    peer.create_server(PORT, 11)
+    var server_cas = load("./fullchain.crt")
+    var server_key = load("./privkey.key")
+    var server_tls = TLSOptions.server(server_key, server_cas)
+    peer = WebSocketMultiplayerPeer.new()
+    peer.create_server(PORT, "*", server_tls)
     multiplayer.multiplayer_peer = peer
     print("Created server.")
 
@@ -114,8 +120,8 @@ func client_is_connected():
     return peer != null
 
 func client_connect():
-    peer = ENetMultiplayerPeer.new()
-    var error = peer.create_client(SERVER_IP, PORT)
+    peer = WebSocketMultiplayerPeer.new()
+    var error = peer.create_client(SERVER_IP)
     if error:
         client_disconnect()
         return false
