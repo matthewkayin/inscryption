@@ -6,7 +6,8 @@ signal client_opponent_disconnected
 signal client_server_rejected_game
 signal client_server_accepted_game
 
-const VERSION = "0.9.2"
+var SERVER_VERSION = ""
+const VERSION = "0.9.3"
 const SERVER_IP = "wss://inscryption.xyz:6767"
 # const SERVER_IP = "ws://127.0.0.1:6767"
 const PORT = 6767
@@ -62,7 +63,7 @@ func _server_on_client_greeting(client_info):
         return
     var new_client_id = multiplayer.get_remote_sender_id()
     print("Received new client: ", new_client_id)
-    if client_info.version != VERSION:
+    if client_info.version != SERVER_VERSION:
         # Reject the client
         print("Version mismatch. Client ", new_client_id, " rejected.")
         _client_on_version_rejected.rpc_id(new_client_id)
@@ -102,14 +103,37 @@ func _on_client_return_to_lobby():
     players[multiplayer.get_remote_sender_id()].in_game = false
     server_broadcast_player_list()
 
+func server_config_get_key(server_config, key) -> String:
+    if not server_config.keys().has(key):
+        print("Server config is missing key ", key)
+        get_tree().quit()
+    
+    return server_config[key]
+
 func server_create():
-    var server_cas = load("./fullchain.crt")
-    var server_key = load("./privkey.key")
+    var server_config_file = FileAccess.open("./server.cfg", FileAccess.READ)
+    if not server_config_file.is_open():
+        print("Could not open server config.")
+        get_tree().quit()
+
+    var server_config = {}
+    while server_config_file.get_position() < server_config_file.get_length():
+        var next_line = server_config_file.get_line()
+        var key_value = next_line.split("=")
+        if key_value.size() != 2:
+            print("Server config not invalid.")
+            get_tree().quit()
+
+        server_config[key_value[0]] = key_value[1]
+
+    SERVER_VERSION = server_config_get_key(server_config, "version")
+    var server_cas = load(server_config_get_key(server_config, "cas"))
+    var server_key = load(server_config_get_key(server_config, "privkey"))
     var server_tls = TLSOptions.server(server_key, server_cas)
     peer = WebSocketMultiplayerPeer.new()
     peer.create_server(PORT, "*", server_tls)
     multiplayer.multiplayer_peer = peer
-    print("Created server.")
+    print("Started Inscryption server v" + SERVER_VERSION)
 
 # CLIENT
 
