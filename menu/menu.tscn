@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://ddc4t62k3m8be"]
+[gd_scene load_steps=12 format=3 uid="uid://ddc4t62k3m8be"]
 
 [ext_resource type="Script" path="res://menu/menu.gd" id="1_dcs8p"]
 [ext_resource type="FontFile" uid="uid://dpq6fp6gls8cw" path="res://ui/Marksman.ttf" id="1_h3v4o"]
@@ -6,10 +6,6 @@
 [ext_resource type="AudioStream" uid="uid://c6gdoo4rj0u5d" path="res://sfx/crunch_short#2.wav" id="3_lyxv8"]
 [ext_resource type="Shader" path="res://tv.gdshader" id="3_sgn10"]
 [ext_resource type="Texture2D" uid="uid://bvk0ohc7fd3me" path="res://menu/goobert.png" id="4_cbtlr"]
-[ext_resource type="Texture2D" uid="uid://2xdkmxx21ax1" path="res://library/library_button.png" id="5_8yjkw"]
-[ext_resource type="PackedScene" uid="uid://cr32uawgvgfw3" path="res://library/decklist.tscn" id="7_qqura"]
-[ext_resource type="PackedScene" uid="uid://byd1ebrm0dlya" path="res://library/library.tscn" id="7_tkvqw"]
-[ext_resource type="Script" path="res://menu/library_button.gd" id="7_yrp07"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_4q6e8"]
 font = ExtResource("1_h3v4o")
@@ -29,12 +25,7 @@ font_color = Color(0, 0, 0, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_p1isb"]
 font = ExtResource("1_h3v4o")
 font_size = 32
-font_color = Color(0.835294, 0, 0, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_vc6rj"]
-font = ExtResource("1_h3v4o")
-font_size = 48
-font_color = Color(0, 0, 0, 1)
+font_color = Color(0.00784314, 0.0392157, 0.0666667, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_uvxoy"]
 shader = ExtResource("3_sgn10")
@@ -87,7 +78,6 @@ text = "Goobert's"
 label_settings = SubResource("LabelSettings_tyegr")
 
 [node name="main_cluster" type="Control" parent="."]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -111,31 +101,18 @@ offset_bottom = 42.0
 theme_override_fonts/font = ExtResource("1_h3v4o")
 theme_override_font_sizes/font_size = 48
 
-[node name="warn" type="Label" parent="main_cluster"]
-visible = false
+[node name="status" type="Label" parent="main_cluster"]
 layout_mode = 0
 offset_left = 116.0
-offset_top = 152.0
+offset_top = 208.0
 offset_right = 500.0
-offset_bottom = 190.0
+offset_bottom = 246.0
 text = "Please enter a name."
 label_settings = SubResource("LabelSettings_p1isb")
 horizontal_alignment = 2
 
-[node name="hide_timer" type="Timer" parent="main_cluster/warn"]
+[node name="hide_timer" type="Timer" parent="main_cluster/status"]
 one_shot = true
-
-[node name="host_button" type="Button" parent="main_cluster"]
-layout_mode = 0
-offset_left = 301.0
-offset_top = 325.0
-offset_right = 393.0
-offset_bottom = 371.0
-theme_override_colors/font_color = Color(0.00784314, 0.0392157, 0.0666667, 1)
-theme_override_colors/font_focus_color = Color(0.00784314, 0.0392157, 0.0666667, 1)
-theme_override_fonts/font = ExtResource("1_h3v4o")
-theme_override_font_sizes/font_size = 48
-text = "HOST"
 
 [node name="join_button" type="Button" parent="main_cluster"]
 layout_mode = 0
@@ -149,202 +126,17 @@ theme_override_fonts/font = ExtResource("1_h3v4o")
 theme_override_font_sizes/font_size = 48
 text = "JOIN"
 
-[node name="host_cluster" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="status" type="Label" parent="host_cluster"]
-layout_mode = 0
-offset_left = 96.0
-offset_top = 228.0
-offset_right = 588.0
-offset_bottom = 307.0
-text = "Awaiting an opponent..."
-label_settings = SubResource("LabelSettings_vc6rj")
-horizontal_alignment = 1
-
-[node name="back_button" type="Button" parent="host_cluster"]
-layout_mode = 0
-offset_left = 264.0
-offset_top = 325.0
-offset_right = 398.0
-offset_bottom = 371.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("1_h3v4o")
-theme_override_font_sizes/font_size = 48
-text = "CANCEL"
-
-[node name="yes_button" type="Button" parent="host_cluster"]
-visible = false
-layout_mode = 0
-offset_left = 220.0
-offset_top = 325.0
-offset_right = 301.0
-offset_bottom = 371.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("1_h3v4o")
-theme_override_font_sizes/font_size = 48
-text = "YES"
-
-[node name="no_button" type="Button" parent="host_cluster"]
-visible = false
-layout_mode = 0
-offset_left = 349.0
-offset_top = 325.0
-offset_right = 430.0
-offset_bottom = 371.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("1_h3v4o")
-theme_override_font_sizes/font_size = 48
-text = "NO"
-
-[node name="join_cluster" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="ip" type="Label" parent="join_cluster"]
-layout_mode = 0
-offset_left = 197.0
-offset_top = 251.0
-offset_right = 299.0
-offset_bottom = 289.0
-text = "IP:"
-label_settings = SubResource("LabelSettings_280jt")
-
-[node name="edit" type="LineEdit" parent="join_cluster/ip"]
-layout_mode = 0
-offset_left = 53.0
-offset_top = -4.0
-offset_right = 304.0
-offset_bottom = 42.0
-theme_override_fonts/font = ExtResource("1_h3v4o")
-theme_override_font_sizes/font_size = 48
-text = "127.0.0.1"
-
-[node name="warn" type="Label" parent="join_cluster"]
-visible = false
-layout_mode = 0
-offset_left = 116.0
-offset_top = 152.0
-offset_right = 500.0
-offset_bottom = 190.0
-text = "Please enter a name."
-label_settings = SubResource("LabelSettings_p1isb")
-horizontal_alignment = 2
-
-[node name="hide_timer" type="Timer" parent="join_cluster/warn"]
-one_shot = true
-
-[node name="connect_button" type="Button" parent="join_cluster"]
-layout_mode = 0
-offset_left = 346.0
-offset_top = 325.0
-offset_right = 501.0
-offset_bottom = 371.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("1_h3v4o")
-theme_override_font_sizes/font_size = 48
-text = "CONNECT"
-
-[node name="back_button" type="Button" parent="join_cluster"]
-layout_mode = 0
-offset_left = 235.0
-offset_top = 325.0
-offset_right = 331.0
-offset_bottom = 371.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("1_h3v4o")
-theme_override_font_sizes/font_size = 48
-text = "BACK"
-
-[node name="status" type="Label" parent="join_cluster"]
-layout_mode = 0
-offset_left = 96.0
-offset_top = 228.0
-offset_right = 588.0
-offset_bottom = 307.0
-text = "Awaiting an opponent..."
-label_settings = SubResource("LabelSettings_vc6rj")
-horizontal_alignment = 1
-
-[node name="connect_back_button" type="Button" parent="join_cluster"]
-layout_mode = 0
-offset_left = 264.0
-offset_top = 325.0
-offset_right = 398.0
-offset_bottom = 371.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("1_h3v4o")
-theme_override_font_sizes/font_size = 48
-text = "CANCEL"
-
-[node name="lobby_cluster" type="Control" parent="."]
-visible = false
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="start_button" type="Button" parent="lobby_cluster"]
-layout_mode = 0
-offset_left = 385.0
-offset_top = 325.0
-offset_right = 504.0
-offset_bottom = 371.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("1_h3v4o")
-theme_override_font_sizes/font_size = 48
-text = "READY"
-
-[node name="back_button" type="Button" parent="lobby_cluster"]
-layout_mode = 0
-offset_left = 273.0
-offset_top = 325.0
-offset_right = 369.0
-offset_bottom = 371.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("1_h3v4o")
-theme_override_font_sizes/font_size = 48
-text = "BACK"
-
-[node name="status" type="Label" parent="lobby_cluster"]
-layout_mode = 0
-offset_left = 96.0
-offset_top = 184.0
-offset_right = 588.0
-offset_bottom = 304.0
-text = "You are in a lobby.
-fr: NOT READY
-bread: READY"
-label_settings = SubResource("LabelSettings_vc6rj")
-
-[node name="decklist" parent="." instance=ExtResource("7_qqura")]
-
-[node name="library" parent="." instance=ExtResource("7_tkvqw")]
-visible = false
-
-[node name="library_button" type="Sprite2D" parent="."]
-position = Vector2(605, 50)
-scale = Vector2(2, 2)
-texture = ExtResource("5_8yjkw")
-hframes = 5
-script = ExtResource("7_yrp07")
-
 [node name="tv_filter" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_uvxoy")
 offset_right = 640.0
 offset_bottom = 480.0
 mouse_filter = 2
 color = Color(0, 0, 0, 0.101961)
+
+[node name="version" type="Label" parent="."]
+offset_left = 8.0
+offset_top = 450.0
+offset_right = 392.0
+offset_bottom = 488.0
+text = "Version 0.9.2"
+label_settings = SubResource("LabelSettings_p1isb")
