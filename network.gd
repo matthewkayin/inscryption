@@ -8,8 +8,8 @@ signal client_server_accepted_game
 
 var SERVER_VERSION = ""
 const VERSION = "0.9.3"
-const SERVER_IP = "wss://inscryption.xyz:6767"
-# const SERVER_IP = "ws://127.0.0.1:6767"
+# const SERVER_IP = "wss://inscryption.xyz:6767"
+const SERVER_IP = "ws://127.0.0.1:6767"
 const PORT = 6767
 
 var peer
@@ -127,11 +127,12 @@ func server_create():
         server_config[key_value[0]] = key_value[1]
 
     SERVER_VERSION = server_config_get_key(server_config, "version")
-    var server_cas = load(server_config_get_key(server_config, "cas"))
-    var server_key = load(server_config_get_key(server_config, "privkey"))
-    var server_tls = TLSOptions.server(server_key, server_cas)
+    # var server_cas = load(server_config_get_key(server_config, "cas"))
+    # var server_key = load(server_config_get_key(server_config, "privkey"))
+    # var server_tls = TLSOptions.server(server_key, server_cas)
     peer = WebSocketMultiplayerPeer.new()
-    peer.create_server(PORT, "*", server_tls)
+    # peer.create_server(PORT, "*", server_tls)
+    peer.create_server(PORT, "*", null)
     multiplayer.multiplayer_peer = peer
     print("Started Inscryption server v" + SERVER_VERSION)
 
